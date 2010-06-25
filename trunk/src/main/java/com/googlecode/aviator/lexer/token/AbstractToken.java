@@ -33,7 +33,7 @@ public abstract class AbstractToken<T> implements Token<T> {
 
     @Override
     public String toString() {
-        return "[" + getType().name() + " " + getLexeme() + "]";
+        return "[" + getType().name() + " " + getLexeme() + ",index=" + startIndex + "]";
     }
 
 
@@ -72,7 +72,5 @@ public abstract class AbstractToken<T> implements Token<T> {
         }
         return true;
     }
-
-
 
 }

@@ -1,7 +1,6 @@
 package com.googlecode.aviator.parser;
 
 import com.googlecode.aviator.code.CodeGenerator;
-import com.googlecode.aviator.exception.CompileExpressionErrorException;
 import com.googlecode.aviator.exception.ExpressionSyntaxErrorException;
 import com.googlecode.aviator.lexer.ExpressionLexer;
 import com.googlecode.aviator.lexer.token.CharToken;
@@ -39,7 +38,7 @@ public class ExpressionParser {
         this.lexer = lexer;
         this.lookhead = this.lexer.scan();
         if (this.lookhead == null) {
-            throw new CompileExpressionErrorException("Illegal expression");
+            throw new ExpressionSyntaxErrorException("Blank expression");
         }
         this.codeGenerator = codeGenerator;
     }
@@ -49,9 +48,9 @@ public class ExpressionParser {
         join();
         while (true) {
             if (isJoinToken()) {
-                move();
+                move(true);
                 if (isJoinToken()) {
-                    move();
+                    move(true);
                     join();
                     codeGenerator.onJoin(lookhead);
                 }
@@ -103,9 +102,9 @@ public class ExpressionParser {
         equality();
         while (true) {
             if (isAndToken()) {
-                move();
+                move(true);
                 if (isAndToken()) {
-                    move();
+                    move(true);
                     equality();
                     codeGenerator.onAnd(lookhead);
                 }
@@ -125,15 +124,15 @@ public class ExpressionParser {
         rel();
         while (true) {
             if (expectLexeme("=")) {
-                move();
+                move(true);
                 if (expectLexeme("=")) {
-                    move();
+                    move(true);
                     rel();
                     codeGenerator.onEq(lookhead);
                 }
                 else if (expectLexeme("~")) {
                     // It is a regular expression
-                    move();
+                    move(true);
                     rel();
                     codeGenerator.onMatch(lookhead);
                 }
@@ -142,9 +141,9 @@ public class ExpressionParser {
                 }
             }
             else if (expectLexeme("!")) {
-                move();
+                move(true);
                 if (expectLexeme("=")) {
-                    move();
+                    move(true);
                     rel();
                     codeGenerator.onNeq(lookhead);
                 }
@@ -163,9 +162,9 @@ public class ExpressionParser {
         expr();
         while (true) {
             if (expectLexeme("<")) {
-                move();
+                move(true);
                 if (expectLexeme("=")) {
-                    move();
+                    move(true);
                     expr();
                     codeGenerator.onLe(lookhead);
                 }
@@ -175,9 +174,9 @@ public class ExpressionParser {
                 }
             }
             else if (expectLexeme(">")) {
-                move();
+                move(true);
                 if (expectLexeme("=")) {
-                    move();
+                    move(true);
                     expr();
                     codeGenerator.onGe(lookhead);
                 }
@@ -197,12 +196,12 @@ public class ExpressionParser {
         term();
         while (true) {
             if (expectLexeme("+")) {
-                move();
+                move(true);
                 term();
                 codeGenerator.onAdd(lookhead);
             }
             else if (expectLexeme("-")) {
-                move();
+                move(true);
                 term();
                 codeGenerator.onSub(lookhead);
             }
@@ -217,17 +216,17 @@ public class ExpressionParser {
         unary(0);
         while (true) {
             if (expectLexeme("*")) {
-                move();
+                move(true);
                 unary(0);
                 codeGenerator.onMult(lookhead);
             }
             else if (expectLexeme("/")) {
-                move();
+                move(true);
                 unary(0);
                 codeGenerator.onDiv(lookhead);
             }
             else if (expectLexeme("%")) {
-                move();
+                move(true);
                 unary(0);
                 codeGenerator.onMod(lookhead);
             }
@@ -240,12 +239,12 @@ public class ExpressionParser {
 
     public void unary(int depth) {
         if (expectLexeme("!")) {
-            move();
+            move(true);
             unary(depth++);
             this.codeGenerator.onNot(lookhead, depth);
         }
         else if (expectLexeme("-")) {
-            move();
+            move(true);
             unary(depth++);
             this.codeGenerator.onNeg(lookhead, depth);
         }
@@ -261,50 +260,55 @@ public class ExpressionParser {
     public void factor() {
         if (expectLexeme("(")) {
             this.parenDepth++;
-            move();
+            move(true);
             bool();
             if (!expectLexeme(")")) {
                 reportSyntaxError("insert ')' to complete Expression");
             }
             else {
-                move();
+                move(true);
             }
             this.parenDepth--;
         }
         else if (lookhead.getType() == TokenType.Number || lookhead.getType() == TokenType.String
                 || lookhead.getType() == TokenType.Variable || lookhead == Variable.TRUE || lookhead == Variable.FALSE) {
             codeGenerator.onConstant(lookhead);
-            move();
+            move(true);
         }
         else if (isPattern()) {
-            // It is a pattern
-            int startIndex = this.lookhead.getStartIndex();
-            move();
-            this.inPattern = true;
-            StringBuffer sb = new StringBuffer();
-            while (lookhead != null) {
-                while (!isPattern()) {
-                    sb.append(lookhead.getLexeme());
-                    move();
-                }
-                if (prevToken.getType() == TokenType.Char && ((CharToken) prevToken).getLexeme().equals("\\")) {
-                    sb.append("/");
-                    move();
-                    continue;
-                }
-                this.inPattern = false;
-                break;
-            }
-            if (this.inPattern) {
-                reportSyntaxError();
-            }
-            codeGenerator.onConstant(new PatternToken(sb.toString(), startIndex));
-            move();
+            pattern();
         }
         else {
             reportSyntaxError();
         }
 
+    }
+
+
+    private void pattern() {
+        // It is a pattern
+        int startIndex = this.lookhead.getStartIndex();
+        move(true);
+        this.inPattern = true;
+        StringBuffer sb = new StringBuffer();
+        while (lookhead != null) {
+            while (!isPattern()) {
+                sb.append(lookhead.getLexeme());
+                move(false);
+            }
+            if (prevToken.getType() == TokenType.Char && ((CharToken) prevToken).getLexeme().equals("\\")) {
+                sb.append("/");
+                move(false);
+                continue;
+            }
+            this.inPattern = false;
+            break;
+        }
+        if (this.inPattern) {
+            reportSyntaxError();
+        }
+        codeGenerator.onConstant(new PatternToken(sb.toString(), startIndex));
+        move(true);
     }
 
 
@@ -314,7 +318,8 @@ public class ExpressionParser {
 
 
     private void reportSyntaxError() {
-        throw new ExpressionSyntaxErrorException("Syntax error:" + (prevToken != null ? prevToken : "") + lookhead);
+        throw new ExpressionSyntaxErrorException("Syntax error:prev=" + (prevToken != null ? prevToken : "")
+                + ",current=" + lookhead);
     }
 
 
@@ -323,10 +328,10 @@ public class ExpressionParser {
     }
 
 
-    public void move() {
+    public void move(boolean analyse) {
         if (lookhead != null) {
             prevToken = lookhead;
-            lookhead = lexer.scan();
+            lookhead = lexer.scan(analyse);
         }
         else {
             reportSyntaxError();

@@ -47,25 +47,45 @@ public class ExpressionLexer {
 
 
     public Token<?> scan() {
+        return scan(true);
+    }
+
+
+    public void nextChar() {
+        this.peek = iterator.next();
+    }
+
+
+    public Token<?> scan(boolean analyse) {
         // If buffer is not empty,return
         if (!tokenBuffer.isEmpty()) {
             return tokenBuffer.pop();
         }
         // Skip white space or line
-        for (;; peek = iterator.next()) {
+        for (;; nextChar()) {
             if (peek == CharacterIterator.DONE) {
                 return null;
             }
-            if (peek == ' ' || peek == '\t') {
-                continue;
-            }
-            if (peek == '\n') {
-                throw new CompileExpressionErrorException("Aviator doesn't support newline expression,index="
-                        + iterator.getIndex());
+
+            if (analyse) {
+                if (peek == ' ' || peek == '\t') {
+                    continue;
+                }
+                if (peek == '\n') {
+                    throw new CompileExpressionErrorException("Aviator doesn't support newline expression,index="
+                            + iterator.getIndex());
+                }
+                else {
+                    break;
+                }
             }
             else {
-                break;
+                char ch = peek;
+                int index = this.iterator.getIndex();
+                nextChar();
+                return new CharToken(ch, index);
             }
+
         }
 
         // If it is a digit
@@ -84,19 +104,19 @@ public class ExpressionLexer {
                     else {
                         hasDot = true;
                         value = new Double(value.longValue());
-                        peek = iterator.next();
+                        nextChar();
                     }
 
                 }
                 else {
                     if (!hasDot) {
                         value = 10 * value.longValue() + Character.digit(peek, 10);
-                        peek = iterator.next();
+                        nextChar();
                     }
                     else {
                         value = value.doubleValue() + Character.digit(peek, 10) / d;
                         d = d * 10;
-                        peek = iterator.next();
+                        nextChar();
                     }
                 }
             } while (Character.isDigit(peek) || peek == '.');
@@ -109,7 +129,7 @@ public class ExpressionLexer {
             StringBuilder sb = new StringBuilder();
             do {
                 sb.append(peek);
-                peek = iterator.next();
+                nextChar();
             } while (Character.isLetterOrDigit(peek) || peek == '.');
             String lexeme = sb.toString();
             Variable variable = new Variable(lexeme, startIndex);
@@ -121,11 +141,12 @@ public class ExpressionLexer {
                 symbolTable.reserve(lexeme, variable);
                 return variable;
             }
+
         }
 
         if (isBinaryOP(peek)) {
             CharToken opToken = new CharToken(peek, iterator.getIndex());
-            peek = iterator.next();
+            nextChar();
             return opToken;
         }
         // String
@@ -141,12 +162,12 @@ public class ExpressionLexer {
                     sb.append(peek);
                 }
             }
-            peek = iterator.next();
+            nextChar();
             return new StringToken(sb.toString(), startIndex);
         }
 
         Token<Character> token = new CharToken(peek, iterator.getIndex());
-        peek = ' ';
+        nextChar();
         return token;
     }
 

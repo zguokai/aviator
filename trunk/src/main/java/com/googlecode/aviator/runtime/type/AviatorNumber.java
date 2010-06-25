@@ -57,8 +57,15 @@ public abstract class AviatorNumber extends AviatorObject {
             return innerAdd((AviatorNumber) other);
         case JavaType:
             AviatorJavaType otherJavaType = (AviatorJavaType) other;
-            // 交换率
-            return otherJavaType.add(this);
+            if (otherJavaType.object instanceof Number) {
+                return innerAdd(AviatorNumber.valueOf(otherJavaType.object));
+            }
+            else if (otherJavaType.object instanceof String) {
+                return new AviatorString(this.number.toString() + otherJavaType.object);
+            }
+            else {
+                return super.add(other);
+            }
         default:
             return super.add(other);
         }
