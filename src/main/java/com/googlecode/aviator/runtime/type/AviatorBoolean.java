@@ -14,10 +14,21 @@ public class AviatorBoolean extends AviatorObject {
 
     @Override
     public AviatorObject add(AviatorObject other) {
-        if (other.getAviatorType() == AviatorType.String) {
+        switch (other.getAviatorType()) {
+        case String:
             return new AviatorString(this.value.toString() + ((AviatorString) other).lexeme);
+        case JavaType:
+            AviatorJavaType javaType = (AviatorJavaType) other;
+            if (javaType.getObject() instanceof String || javaType.getObject() instanceof Character) {
+                return new AviatorString(this.value.toString() + javaType.getObject().toString());
+            }
+            else {
+                return super.add(other);
+            }
+        default:
+            return super.add(other);
         }
-        return super.add(other);
+
     }
 
 
@@ -41,11 +52,22 @@ public class AviatorBoolean extends AviatorObject {
 
     @Override
     public int compare(AviatorObject other) {
-        if (other.getAviatorType() != AviatorType.Boolean) {
+        switch (other.getAviatorType()) {
+        case Boolean:
+            AviatorBoolean otherBoolean = (AviatorBoolean) other;
+            return this.value.compareTo(otherBoolean.value);
+        case JavaType:
+            AviatorJavaType javaType = (AviatorJavaType) other;
+            if (javaType.getObject() instanceof Boolean) {
+                return this.value.compareTo((Boolean) javaType.getObject());
+            }
+            else {
+                throw new ExpressionRuntimeException("Could not compare " + this + " with " + other);
+            }
+        default:
             throw new ExpressionRuntimeException("Could not compare " + this + " with " + other);
         }
-        AviatorBoolean otherBoolean = (AviatorBoolean) other;
-        return this.value.compareTo(otherBoolean.value);
+
     }
 
 }
