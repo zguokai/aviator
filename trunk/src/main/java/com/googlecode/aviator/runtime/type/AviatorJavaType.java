@@ -160,12 +160,16 @@ public class AviatorJavaType extends AviatorObject {
             AviatorString aviatorString = new AviatorString((String) object);
             return aviatorString.add(other);
         }
+        else if (this.object instanceof Character) {
+            AviatorString aviatorString = new AviatorString(String.valueOf(object));
+            return aviatorString.add(other);
+        }
         else if (this.object instanceof Number) {
             AviatorNumber aviatorNumber = AviatorNumber.valueOf(object);
             return aviatorNumber.add(other);
         }
         else {
-            throw new ExpressionRuntimeException("'+' operator only supports String and Number");
+            return super.add(other);
         }
     }
 

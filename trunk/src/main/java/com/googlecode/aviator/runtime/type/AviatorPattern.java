@@ -24,6 +24,15 @@ public class AviatorPattern extends AviatorObject {
 
 
     @Override
+    public AviatorObject add(AviatorObject other) {
+        if (other.getAviatorType() == AviatorType.String) {
+            return new AviatorString(this.pattern.pattern() + ((AviatorString) other).lexeme);
+        }
+        return super.add(other);
+    }
+
+
+    @Override
     public AviatorObject match(AviatorObject other) {
         switch (other.getAviatorType()) {
         case String:

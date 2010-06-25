@@ -13,6 +13,15 @@ public class AviatorBoolean extends AviatorObject {
 
 
     @Override
+    public AviatorObject add(AviatorObject other) {
+        if (other.getAviatorType() == AviatorType.String) {
+            return new AviatorString(this.value.toString() + ((AviatorString) other).lexeme);
+        }
+        return super.add(other);
+    }
+
+
+    @Override
     public AviatorType getAviatorType() {
         return AviatorType.Boolean;
     }
