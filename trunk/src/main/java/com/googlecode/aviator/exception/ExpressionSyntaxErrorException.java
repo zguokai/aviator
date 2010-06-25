@@ -1,7 +1,7 @@
 package com.googlecode.aviator.exception;
 
 /**
- * Expression syntax error
+ * Expression syntax exception
  * 
  * @author dennis
  * 

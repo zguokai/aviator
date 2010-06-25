@@ -193,12 +193,6 @@ public class ExpressionParser {
     }
 
 
-    private void back() {
-        lexer.pushback(lookhead);
-        lookhead = prevToken;
-    }
-
-
     public void expr() {
         term();
         while (true) {
