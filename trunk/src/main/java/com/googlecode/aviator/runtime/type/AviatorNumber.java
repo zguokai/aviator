@@ -24,8 +24,9 @@ public abstract class AviatorNumber extends AviatorObject {
         return this.number;
     }
 
-    
+
     public abstract AviatorObject neg();
+
 
     public static AviatorNumber valueOf(Object value) {
         if (value instanceof Long || value instanceof Byte || value instanceof Short || value instanceof Integer) {
@@ -59,7 +60,7 @@ public abstract class AviatorNumber extends AviatorObject {
             // 交换率
             return otherJavaType.add(this);
         default:
-            throw new ExpressionRuntimeException("'+' operator only supports String and Number");
+            return super.add(other);
         }
 
     }
@@ -76,10 +77,10 @@ public abstract class AviatorNumber extends AviatorObject {
                 return innerSub(AviatorNumber.valueOf(otherJavaType.object));
             }
             else {
-                throw new ExpressionRuntimeException("'-' operator only supports String and Number");
+                return super.sub(other);
             }
         default:
-            throw new ExpressionRuntimeException("'-' operator only supports String and Number");
+            return super.sub(other);
         }
 
     }
@@ -96,10 +97,10 @@ public abstract class AviatorNumber extends AviatorObject {
                 return innerMod(AviatorNumber.valueOf(otherJavaType.object));
             }
             else {
-                throw new ExpressionRuntimeException("'%' operator only supports String and Number");
+                return super.mod(other);
             }
         default:
-            throw new ExpressionRuntimeException("'%' operator only supports String and Number");
+            return super.mod(other);
         }
     }
 
@@ -115,10 +116,10 @@ public abstract class AviatorNumber extends AviatorObject {
                 return innerDiv(AviatorNumber.valueOf(otherJavaType.object));
             }
             else {
-                throw new ExpressionRuntimeException("'/' operator only supports String and Number");
+                return super.div(other);
             }
         default:
-            throw new ExpressionRuntimeException("'/' operator only supports String and Number");
+            return super.div(other);
         }
 
     }
@@ -135,10 +136,10 @@ public abstract class AviatorNumber extends AviatorObject {
                 return innerMult(AviatorNumber.valueOf(otherJavaType.object));
             }
             else {
-                throw new ExpressionRuntimeException("'*' operator only supports String and Number");
+                return super.mult(other);
             }
         default:
-            throw new ExpressionRuntimeException("'*' operator only supports String and Number");
+            return super.mult(other);
         }
 
     }
@@ -155,11 +156,10 @@ public abstract class AviatorNumber extends AviatorObject {
                 return innerCompare(AviatorNumber.valueOf(otherJavaType.object));
             }
             else {
-                throw new ExpressionRuntimeException("Could not compare Number with "
-                        + otherJavaType.getClass().getName());
+                throw new ExpressionRuntimeException("Could not compare " + this + " with " + other);
             }
         default:
-            throw new ExpressionRuntimeException("Could not compare Number with " + other.getAviatorType());
+            throw new ExpressionRuntimeException("Could not compare " + this + " with " + other);
 
         }
     }

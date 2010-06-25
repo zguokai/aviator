@@ -3,8 +3,8 @@ package com.googlecode.aviator;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import com.googlecode.aviator.code.ASMCodeGenerator;
 import com.googlecode.aviator.code.CodeGenerator;
+import com.googlecode.aviator.code.asm.ASMCodeGenerator;
 import com.googlecode.aviator.exception.CompileExpressionErrorException;
 import com.googlecode.aviator.lexer.ExpressionLexer;
 import com.googlecode.aviator.parser.AviatorClassLoader;

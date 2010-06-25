@@ -16,36 +16,42 @@ public abstract class AviatorObject {
     public abstract AviatorType getAviatorType();
 
 
+    public AviatorObject match(AviatorObject other) {
+        throw new ExpressionRuntimeException(toString() + " doesn't support match operation '=~'");
+    }
+
+
+    @Override
+    public String toString() {
+        return this.getAviatorType() + "(" + this.getValue() + ")";
+    }
+
+
     public abstract Object getValue();
 
 
     public AviatorObject add(AviatorObject other) {
-        throw new ExpressionRuntimeException("Could not add " + this.getAviatorType() + " with "
-                + other.getAviatorType());
+        throw new ExpressionRuntimeException("Could not add " + this + " with " + other);
     }
 
 
     public AviatorObject sub(AviatorObject other) {
-        throw new ExpressionRuntimeException("Could not sub " + this.getAviatorType() + " with "
-                + other.getAviatorType());
+        throw new ExpressionRuntimeException("Could not sub " + this + " with " + other);
     }
 
 
     public AviatorObject mod(AviatorObject other) {
-        throw new ExpressionRuntimeException("Could not mod " + this.getAviatorType() + " with "
-                + other.getAviatorType());
+        throw new ExpressionRuntimeException("Could not mod " + this + " with " + other);
     }
 
 
     public AviatorObject div(AviatorObject other) {
-        throw new ExpressionRuntimeException("Could not div " + this.getAviatorType() + " with "
-                + other.getAviatorType());
+        throw new ExpressionRuntimeException("Could not div " + this + " with " + other);
     }
 
 
     public AviatorObject mult(AviatorObject other) {
-        throw new ExpressionRuntimeException("Could not mult " + this.getAviatorType() + " with "
-                + other.getAviatorType());
+        throw new ExpressionRuntimeException("Could not mult " + this + " with " + other);
     }
 
 

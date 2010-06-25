@@ -13,28 +13,15 @@ public class NumberToken extends AbstractToken<Number> {
 
     private Number value;
 
-    private boolean visited;
 
-
-    public boolean isVisited() {
-        return visited;
-    }
-
-
-    public void setVisited(boolean visited) {
-        this.visited = visited;
-    }
-
-
-    public NumberToken(Number value, boolean visited) {
-        super(-1);
-        this.visited = true;
+    public NumberToken(Number value, String lexeme) {
+        super(-1, lexeme);
         this.value = value;
     }
 
 
-    public NumberToken(Number value, int startIndex) {
-        super(startIndex);
+    public NumberToken(Number value, String lexeme, int startIndex) {
+        super(startIndex, lexeme);
         this.value = value;
     }
 
@@ -59,17 +46,11 @@ public class NumberToken extends AbstractToken<Number> {
     }
 
 
-    public String getLexeme() {
-        return this.value.toString();
-    }
-
-
     @Override
     public int hashCode() {
         final int prime = 31;
         int result = super.hashCode();
         result = prime * result + ((value == null) ? 0 : value.hashCode());
-        result = prime * result + (visited ? 1231 : 1237);
         return result;
     }
 
@@ -92,9 +73,6 @@ public class NumberToken extends AbstractToken<Number> {
             }
         }
         else if (!value.equals(other.value)) {
-            return false;
-        }
-        if (visited != other.visited) {
             return false;
         }
         return true;

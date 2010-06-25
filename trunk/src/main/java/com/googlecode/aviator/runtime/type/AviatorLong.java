@@ -44,7 +44,7 @@ public class AviatorLong extends AviatorNumber {
             }
         }
         else {
-            throw new ExpressionRuntimeException("'+' operator only supports String and Number");
+            throw new ExpressionRuntimeException("Could not compare " + this + " with " + other);
         }
     }
 

@@ -4,7 +4,7 @@ import java.util.Map;
 
 
 /**
- * Lex token
+ * Lex token interface
  * 
  * @author dennis
  * 
@@ -16,7 +16,8 @@ public interface Token<T> {
         Variable,
         Number,
         Char,
-        Operator
+        Operator,
+        Pattern
     }
 
 

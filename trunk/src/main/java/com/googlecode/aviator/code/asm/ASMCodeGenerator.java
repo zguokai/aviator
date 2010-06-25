@@ -1,10 +1,8 @@
-package com.googlecode.aviator.code;
+package com.googlecode.aviator.code.asm;
 
 import static org.objectweb.asm.Opcodes.*;
 
 import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Stack;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -15,11 +13,10 @@ import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.util.CheckClassAdapter;
 import org.objectweb.asm.util.TraceClassVisitor;
 
+import com.googlecode.aviator.code.CodeGenerator;
 import com.googlecode.aviator.lexer.token.NumberToken;
-import com.googlecode.aviator.lexer.token.OperatorToken;
 import com.googlecode.aviator.lexer.token.Token;
 import com.googlecode.aviator.lexer.token.Variable;
-import com.googlecode.aviator.lexer.token.Token.TokenType;
 import com.googlecode.aviator.parser.AviatorClassLoader;
 
 
@@ -45,14 +42,15 @@ public class ASMCodeGenerator implements CodeGenerator {
 
     private static final AtomicLong CLASS_COUNTER = new AtomicLong();
 
+    /**
+     * Operands stack for checking
+     */
     private final Stack<Token<?>> operandStack = new Stack<Token<?>>();
-
-    private final List<OperatorToken> tokenList = new ArrayList<OperatorToken>();
 
     private int maxStacks = 0;
 
     // Argument at index 1
-    private int maxLocals = 1;
+    private final int maxLocals = 1;
 
 
     private void setMaxStacks(int newMaxStacks) {
@@ -62,6 +60,11 @@ public class ASMCodeGenerator implements CodeGenerator {
     }
 
 
+    /**
+     * Calc current stack depth
+     * 
+     * @return
+     */
     private int calcStacks() {
         int newMaxStacks = 0;
         for (Token<?> t : this.operandStack) {
@@ -73,8 +76,7 @@ public class ASMCodeGenerator implements CodeGenerator {
                 // ignore;
                 break;
             case String:
-                newMaxStacks += 1;
-                break;
+            case Pattern:
             case Variable:
                 newMaxStacks += 1;
                 break;
@@ -86,7 +88,7 @@ public class ASMCodeGenerator implements CodeGenerator {
 
     public ASMCodeGenerator(AviatorClassLoader classLoader, boolean trace) {
         this.classLoader = classLoader;
-        // Generate class name
+        // Generate inner class name
         className = "Script_" + System.currentTimeMillis() + "_" + CLASS_COUNTER.getAndIncrement();
         // Auto compute frames
         classWriter = new ClassWriter(ClassWriter.COMPUTE_FRAMES);
@@ -98,11 +100,11 @@ public class ASMCodeGenerator implements CodeGenerator {
             checkClassAdapter = new CheckClassAdapter(classWriter);
         }
         makeConstructor();
-        startVisitCode();
+        startVisitMethodCode();
     }
 
 
-    private void startVisitCode() {
+    private void startVisitMethodCode() {
         mv =
                 checkClassAdapter.visitMethod(ACC_PUBLIC + ACC_STATIC, "run", "(Ljava/util/Map;)Ljava/lang/Object;",
                     "(Ljava/util/Map<Ljava/lang/String;Ljava/lang/Object;>;)Ljava/lang/Object;", null);
@@ -127,7 +129,7 @@ public class ASMCodeGenerator implements CodeGenerator {
 
 
     /**
-     * Make a constructor
+     * Make a default constructor
      */
     private void makeConstructor() {
         checkClassAdapter.visit(V1_5, ACC_PUBLIC + ACC_SUPER, className, null, "java/lang/Object", null);
@@ -144,29 +146,7 @@ public class ASMCodeGenerator implements CodeGenerator {
     }
 
     // 标记Token，用于中间结果表示
-    private static final Token<?> MARK_TOKEN = new NumberToken(new Double(0), -1);
-
-
-    private int getStoreIndex(TokenType tokenType) {
-        int offset = 1;
-        switch (tokenType) {
-        case Number:
-            offset = 2;
-            break;
-        case String:
-            offset = 1;
-            break;
-        case Char:
-            // ignore;
-            break;
-        case Variable:
-            offset = 1;
-            break;
-        }
-        int result = this.maxLocals;
-        this.maxLocals += offset;
-        return result;
-    }
+    private static final Token<?> MARK_TOKEN = new Variable("mark", -1);
 
 
     /**
@@ -191,15 +171,23 @@ public class ASMCodeGenerator implements CodeGenerator {
     }
 
 
-    private void doArthOperation(String method) {
+    /**
+     * Do arithmetic operation
+     * 
+     * @param methodName
+     */
+    private void doArthOperation(String methodName) {
         popOperand();
         popOperand();
-        mv.visitMethodInsn(INVOKEVIRTUAL, "com/googlecode/aviator/runtime/type/AviatorObject", method,
+        mv.visitMethodInsn(INVOKEVIRTUAL, "com/googlecode/aviator/runtime/type/AviatorObject", methodName,
             "(Lcom/googlecode/aviator/runtime/type/AviatorObject;)Lcom/googlecode/aviator/runtime/type/AviatorObject;");
         pushOperand(MARK_TOKEN, 0);
     }
 
 
+    /**
+     * Pop a operand from stack
+     */
     private void popOperand() {
         this.operandStack.pop();
     }
@@ -253,6 +241,9 @@ public class ASMCodeGenerator implements CodeGenerator {
     }
 
 
+    /**
+     * Do logic operation "&&"
+     */
     public void onAnd(Token<?> lookhead) {
         popOperand();
         popOperand();
@@ -279,6 +270,9 @@ public class ASMCodeGenerator implements CodeGenerator {
     }
 
 
+    /**
+     * Do logic operation "||"
+     */
     public void onJoin(Token<?> lookhead) {
         popOperand();
         popOperand();
@@ -308,6 +302,16 @@ public class ASMCodeGenerator implements CodeGenerator {
 
     public void onEq(Token<?> lookhead) {
         doCompareAndJump(IFNE);
+    }
+
+
+    public void onMatch(Token<?> lookhead) {
+        popOperand();
+        popOperand();
+        this.mv.visitInsn(SWAP);
+        mv.visitMethodInsn(INVOKEVIRTUAL, "com/googlecode/aviator/runtime/type/AviatorObject", "match",
+            "(Lcom/googlecode/aviator/runtime/type/AviatorObject;)Lcom/googlecode/aviator/runtime/type/AviatorObject;");
+        pushOperand(MARK_TOKEN, 0);
     }
 
 
@@ -371,6 +375,9 @@ public class ASMCodeGenerator implements CodeGenerator {
     }
 
 
+    /**
+     * Logic operation '!'
+     */
     public void onNot(Token<?> lookhead, int depth) {
         popOperand();
         mv.visitMethodInsn(INVOKEVIRTUAL, "com/googlecode/aviator/runtime/type/AviatorObject", "booleanValue", "()Z");
@@ -384,7 +391,7 @@ public class ASMCodeGenerator implements CodeGenerator {
         mv.visitFieldInsn(GETSTATIC, "com/googlecode/aviator/runtime/type/AviatorBoolean", "TRUE",
             "Lcom/googlecode/aviator/runtime/type/AviatorBoolean;");
         mv.visitLabel(l1);
-        pushOperand(lookhead, 0);
+        pushOperand(MARK_TOKEN, 0);
     }
 
 
@@ -434,7 +441,6 @@ public class ASMCodeGenerator implements CodeGenerator {
                 mv.visitMethodInsn(INVOKESTATIC, "java/lang/Double", "valueOf", "(D)Ljava/lang/Double;");
                 mv.visitMethodInsn(INVOKESPECIAL, "com/googlecode/aviator/runtime/type/AviatorDouble", "<init>",
                     "(Ljava/lang/Number;)V");
-                pushOperand(lookhead, 2);
             }
             else {
                 mv.visitTypeInsn(NEW, "com/googlecode/aviator/runtime/type/AviatorLong");
@@ -443,8 +449,8 @@ public class ASMCodeGenerator implements CodeGenerator {
                 mv.visitMethodInsn(INVOKESTATIC, "java/lang/Long", "valueOf", "(J)Ljava/lang/Long;");
                 mv.visitMethodInsn(INVOKESPECIAL, "com/googlecode/aviator/runtime/type/AviatorLong", "<init>",
                     "(Ljava/lang/Number;)V");
-                pushOperand(lookhead, 2);
             }
+            pushOperand(lookhead, 2);
             break;
         case String:
             // load string
@@ -452,6 +458,15 @@ public class ASMCodeGenerator implements CodeGenerator {
             mv.visitInsn(DUP);
             mv.visitLdcInsn(lookhead.getValue(null));
             mv.visitMethodInsn(INVOKESPECIAL, "com/googlecode/aviator/runtime/type/AviatorString", "<init>",
+                "(Ljava/lang/String;)V");
+            pushOperand(lookhead, 2);
+            break;
+        case Pattern:
+            // load pattern
+            mv.visitTypeInsn(NEW, "com/googlecode/aviator/runtime/type/AviatorPattern");
+            mv.visitInsn(DUP);
+            mv.visitLdcInsn(lookhead.getValue(null));
+            mv.visitMethodInsn(INVOKESPECIAL, "com/googlecode/aviator/runtime/type/AviatorPattern", "<init>",
                 "(Ljava/lang/String;)V");
             pushOperand(lookhead, 2);
             break;
@@ -469,11 +484,17 @@ public class ASMCodeGenerator implements CodeGenerator {
                 pushOperand(lookhead, 0);
             }
             else {
+                // 嵌套map
+                String[] variableNames = variable.getLexeme().split("\\.");
                 mv.visitTypeInsn(NEW, "com/googlecode/aviator/runtime/type/AviatorJavaType");
                 mv.visitInsn(DUP);
                 mv.visitVarInsn(ALOAD, 0);
-                mv.visitLdcInsn(variable.getLexeme());
-                mv.visitMethodInsn(INVOKEINTERFACE, "java/util/Map", "get", "(Ljava/lang/Object;)Ljava/lang/Object;");
+                for (String variableName : variableNames) {
+                    mv.visitTypeInsn(CHECKCAST, "java/util/Map");
+                    mv.visitLdcInsn(variableName);
+                    mv.visitMethodInsn(INVOKEINTERFACE, "java/util/Map", "get",
+                        "(Ljava/lang/Object;)Ljava/lang/Object;");
+                }
                 mv.visitMethodInsn(INVOKESPECIAL, "com/googlecode/aviator/runtime/type/AviatorJavaType", "<init>",
                     "(Ljava/lang/Object;)V");
                 pushOperand(lookhead, 3);

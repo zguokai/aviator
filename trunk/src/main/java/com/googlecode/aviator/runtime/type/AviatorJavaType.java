@@ -120,6 +120,10 @@ public class AviatorJavaType extends AviatorObject {
                     AviatorString thisAviatorString = new AviatorString((String) object);
                     return thisAviatorString.compare(other);
                 }
+                else if (this.object instanceof Character) {
+                    AviatorString thisAviatorString = new AviatorString(String.valueOf(object));
+                    return thisAviatorString.compare(other);
+                }
                 else {
                     return ((Comparable) object).compareTo(otherJavaType);
                 }

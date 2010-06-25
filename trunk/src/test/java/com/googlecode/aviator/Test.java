@@ -1,12 +1,11 @@
 package com.googlecode.aviator;
 
-import com.googlecode.aviator.runtime.type.AviatorNumber;
-import com.googlecode.aviator.runtime.type.AviatorObject;
+import java.util.Map;
 
 
 
 public class Test {
-    public static AviatorObject test(AviatorObject a) {
-       return ((AviatorNumber)a).neg();
+    public static Object test(Object a) {
+       return ((Map<String, Object>)a).get("c");
     }
 }

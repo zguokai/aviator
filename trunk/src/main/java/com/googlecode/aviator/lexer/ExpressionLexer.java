@@ -2,8 +2,7 @@ package com.googlecode.aviator.lexer;
 
 import java.text.CharacterIterator;
 import java.text.StringCharacterIterator;
-import java.util.LinkedList;
-import java.util.Queue;
+import java.util.Stack;
 
 import com.googlecode.aviator.exception.CompileExpressionErrorException;
 import com.googlecode.aviator.lexer.token.CharToken;
@@ -14,16 +13,20 @@ import com.googlecode.aviator.lexer.token.Variable;
 
 
 /**
- * Expression Lexer
+ * Expression Lexer,scan tokens from string
  * 
  * @author dennis
  * 
  */
 public class ExpressionLexer {
+    // current char
     private char peek;
+    // Char iterator for string
     private final CharacterIterator iterator;
+    // symbol table
     private final SymbolTable symbolTable;
-    private final Queue<Token<?>> tokenBuffer = new LinkedList<Token<?>>();
+    // Tokens buffer
+    private final Stack<Token<?>> tokenBuffer = new Stack<Token<?>>();
 
 
     public ExpressionLexer(String expression) {
@@ -33,15 +36,22 @@ public class ExpressionLexer {
     }
 
 
+    /**
+     * Push back token
+     * 
+     * @param token
+     */
     public void pushback(Token<?> token) {
-        this.tokenBuffer.add(token);
+        this.tokenBuffer.push(token);
     }
 
 
     public Token<?> scan() {
+        // If buffer is not empty,return
         if (!tokenBuffer.isEmpty()) {
-            return tokenBuffer.poll();
+            return tokenBuffer.pop();
         }
+        // Skip white space or line
         for (;; peek = iterator.next()) {
             if (peek == CharacterIterator.DONE) {
                 return null;
@@ -58,12 +68,15 @@ public class ExpressionLexer {
             }
         }
 
+        // If it is a digit
         if (Character.isDigit(peek) || peek == '.') {
+            StringBuffer sb = new StringBuffer();
             int startIndex = iterator.getIndex();
             Number value = 0L;
             boolean hasDot = false;
             double d = 10.0;
             do {
+                sb.append(peek);
                 if (peek == '.') {
                     if (hasDot) {
                         throw new CompileExpressionErrorException("Illegal Number, index=" + iterator.getIndex());
@@ -87,9 +100,10 @@ public class ExpressionLexer {
                     }
                 }
             } while (Character.isDigit(peek) || peek == '.');
-            return new NumberToken(value, startIndex);
+            return new NumberToken(value, sb.toString(), startIndex);
         }
 
+        // It is a variable
         if (Character.isLetter(peek)) {
             int startIndex = iterator.getIndex();
             StringBuilder sb = new StringBuilder();
@@ -99,6 +113,7 @@ public class ExpressionLexer {
             } while (Character.isLetterOrDigit(peek) || peek == '.');
             String lexeme = sb.toString();
             Variable variable = new Variable(lexeme, startIndex);
+            // If it is a reserved word(true or false)
             if (symbolTable.contains(lexeme)) {
                 return symbolTable.getVariable(lexeme);
             }
@@ -147,13 +162,4 @@ public class ExpressionLexer {
         return false;
     }
 
-
-    public static void main(String[] args) {
-        String expression = "3----3  test";
-        ExpressionLexer lexer = new ExpressionLexer(expression);
-        Token<?> token = null;
-        while ((token = lexer.scan()) != null) {
-            System.out.println(token);
-        }
-    }
 }

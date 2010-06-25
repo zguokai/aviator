@@ -2,6 +2,7 @@ package com.googlecode.aviator;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 
 public class Example {
@@ -11,7 +12,11 @@ public class Example {
         env.put("b", 2);
         env.put("c", "99");
         env.put("d", 27.901d);
-        Object value = AviatorEvaluator.execute("-true", env);
+        env.put("map", new HashMap<String, Object>());
+        ((Map<String, Object>) env.get("map")).put("e", "hello");
+
+        Pattern.compile("a\\.b\\/c");
+        Object value = AviatorEvaluator.execute("'3.4.5'=~/[\\d.]+/", env);
         System.out.println(value);
 
         // value = AviatorEvaluator.execute("a+c-d/1>b", env);
