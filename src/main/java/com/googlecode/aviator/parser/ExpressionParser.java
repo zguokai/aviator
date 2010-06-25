@@ -5,6 +5,7 @@ import com.googlecode.aviator.exception.CompileExpressionErrorException;
 import com.googlecode.aviator.exception.ExpressionSyntaxErrorException;
 import com.googlecode.aviator.lexer.ExpressionLexer;
 import com.googlecode.aviator.lexer.token.CharToken;
+import com.googlecode.aviator.lexer.token.PatternToken;
 import com.googlecode.aviator.lexer.token.Token;
 import com.googlecode.aviator.lexer.token.Variable;
 import com.googlecode.aviator.lexer.token.Token.TokenType;
@@ -29,6 +30,8 @@ public class ExpressionParser {
 
     // Paren depth
     private int parenDepth = 0;
+
+    private boolean inPattern = false;
 
 
     public ExpressionParser(ExpressionLexer lexer, CodeGenerator codeGenerator) {
@@ -96,11 +99,6 @@ public class ExpressionParser {
     }
 
 
-    public void print(Object s) {
-        System.out.print(s + " ");
-    }
-
-
     public void join() {
         equality();
         while (true) {
@@ -132,6 +130,12 @@ public class ExpressionParser {
                     move();
                     rel();
                     codeGenerator.onEq(lookhead);
+                }
+                else if (expectLexeme("~")) {
+                    // It is a regular expression
+                    move();
+                    rel();
+                    codeGenerator.onMatch(lookhead);
                 }
                 else {
                     reportSyntaxError();
@@ -278,10 +282,40 @@ public class ExpressionParser {
             codeGenerator.onConstant(lookhead);
             move();
         }
+        else if (isPattern()) {
+            // It is a pattern
+            int startIndex = this.lookhead.getStartIndex();
+            move();
+            this.inPattern = true;
+            StringBuffer sb = new StringBuffer();
+            while (lookhead != null) {
+                while (!isPattern()) {
+                    sb.append(lookhead.getLexeme());
+                    move();
+                }
+                if (prevToken.getType() == TokenType.Char && ((CharToken) prevToken).getLexeme().equals("\\")) {
+                    sb.append("/");
+                    move();
+                    continue;
+                }
+                this.inPattern = false;
+                break;
+            }
+            if (this.inPattern) {
+                reportSyntaxError();
+            }
+            codeGenerator.onConstant(new PatternToken(sb.toString(), startIndex));
+            move();
+        }
         else {
             reportSyntaxError();
         }
 
+    }
+
+
+    private boolean isPattern() {
+        return lookhead.getType() == TokenType.Char && ((CharToken) lookhead).getLexeme().equals("/");
     }
 
 

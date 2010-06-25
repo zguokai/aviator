@@ -30,6 +30,8 @@ public interface CodeGenerator {
 
 
     public void onEq(Token<?> lookhead);
+    
+    public void onMatch(Token<?> lookhead);
 
 
     public void onNeq(Token<?> lookhead);

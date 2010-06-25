@@ -3,6 +3,12 @@ package com.googlecode.aviator.runtime.type;
 import com.googlecode.aviator.exception.ExpressionRuntimeException;
 
 
+/**
+ * A aviator string
+ * 
+ * @author dennis
+ * 
+ */
 public class AviatorString extends AviatorObject {
     final String lexeme;
 
@@ -41,18 +47,31 @@ public class AviatorString extends AviatorObject {
             AviatorJavaType otherJavaType = (AviatorJavaType) other;
             return new AviatorString(this.lexeme + otherJavaType.object);
         default:
-            throw new ExpressionRuntimeException("Illegal operand type for string to add  " + other.getAviatorType());
+            return super.add(other);
         }
     }
 
 
     @Override
     public int compare(AviatorObject other) {
-        if (other.getAviatorType() != AviatorType.String) {
-            throw new ExpressionRuntimeException("Could not compare String with" + other.getClass().getName());
+        switch (other.getAviatorType()) {
+        case String:
+            AviatorString otherString = (AviatorString) other;
+            return this.lexeme.compareTo(otherString.lexeme);
+        case JavaType:
+            AviatorJavaType javaType = (AviatorJavaType) other;
+            if (javaType.getObject() instanceof String) {
+                return this.lexeme.compareTo((String) javaType.getObject());
+            }
+            else if (javaType.getObject() instanceof Character) {
+                return this.lexeme.compareTo(String.valueOf(javaType.getObject()));
+            }
+            else {
+                throw new ExpressionRuntimeException("Could not compare " + this + " with " + other);
+            }
+        default:
+            throw new ExpressionRuntimeException("Could not compare " + this + " with " + other);
         }
-        AviatorString otherString = (AviatorString) other;
-        return this.lexeme.compareTo(otherString.lexeme);
     }
 
 

@@ -131,6 +131,14 @@ public class ExpressionLexerUnitTest {
         assertEquals(0, token.getStartIndex());
     }
 
+    @Test
+    public void testExpressionHasPattern(){
+        this.lexer=new ExpressionLexer("/abcdef/");
+        Token<?> token=null;
+        while((token=this.lexer.scan())!=null){
+            System.out.println(token);
+        }
+    }
 
     @Test
     public void testExpressionWithParen() {

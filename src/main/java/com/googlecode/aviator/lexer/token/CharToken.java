@@ -15,18 +15,13 @@ public class CharToken extends AbstractToken<Character> {
 
 
     public CharToken(char peek, int startIndex) {
-        super(startIndex);
+        super(startIndex, String.valueOf(peek));
         this.ch = peek;
     }
 
 
     public com.googlecode.aviator.lexer.token.Token.TokenType getType() {
         return TokenType.Char;
-    }
-
-
-    public String getLexeme() {
-        return String.valueOf(ch);
     }
 
 

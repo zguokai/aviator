@@ -11,6 +11,9 @@ import java.util.Map;
  */
 public class Variable extends AbstractToken<Object> {
 
+    /**
+     * Boolean value true
+     */
     public static final Variable TRUE = new Variable("true", -1) {
 
         @Override
@@ -20,6 +23,9 @@ public class Variable extends AbstractToken<Object> {
 
     };
 
+    /**
+     * Boolean value false
+     */
     public static final Variable FALSE = new Variable("false", -1) {
 
         @Override
@@ -29,8 +35,6 @@ public class Variable extends AbstractToken<Object> {
 
     };
 
-    private final String name;
-
 
     public com.googlecode.aviator.lexer.token.Token.TokenType getType() {
         return TokenType.Variable;
@@ -39,55 +43,16 @@ public class Variable extends AbstractToken<Object> {
 
     public Object getValue(Map<String, Object> env) {
         if (env != null) {
-            return env.get(this.name);
+            return env.get(this.lexeme);
         }
         else {
-            return name;
+            return this.lexeme;
         }
-    }
-
-
-    public String getLexeme() {
-        return this.name;
     }
 
 
     public Variable(String name, int startIndex) {
-        super(startIndex);
-        this.name = name;
-    }
-
-
-    @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = super.hashCode();
-        result = prime * result + ((name == null) ? 0 : name.hashCode());
-        return result;
-    }
-
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (!super.equals(obj)) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        Variable other = (Variable) obj;
-        if (name == null) {
-            if (other.name != null) {
-                return false;
-            }
-        }
-        else if (!name.equals(other.name)) {
-            return false;
-        }
-        return true;
+        super(startIndex, name);
     }
 
 }

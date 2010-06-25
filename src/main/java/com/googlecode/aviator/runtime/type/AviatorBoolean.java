@@ -33,7 +33,7 @@ public class AviatorBoolean extends AviatorObject {
     @Override
     public int compare(AviatorObject other) {
         if (other.getAviatorType() != AviatorType.Boolean) {
-            throw new ExpressionRuntimeException("Could not compare boolean with " + other.getClass().getName());
+            throw new ExpressionRuntimeException("Could not compare " + this + " with " + other);
         }
         AviatorBoolean otherBoolean = (AviatorBoolean) other;
         return this.value.compareTo(otherBoolean.value);

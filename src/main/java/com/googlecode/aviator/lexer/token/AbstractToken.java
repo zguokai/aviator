@@ -11,10 +11,18 @@ public abstract class AbstractToken<T> implements Token<T> {
 
     private final int startIndex;
 
+    protected final String lexeme;
 
-    public AbstractToken(int startIndex) {
+
+    public AbstractToken(int startIndex, String lexeme) {
         super();
         this.startIndex = startIndex;
+        this.lexeme = lexeme;
+    }
+
+
+    public String getLexeme() {
+        return this.lexeme;
     }
 
 
@@ -33,6 +41,7 @@ public abstract class AbstractToken<T> implements Token<T> {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
+        result = prime * result + ((lexeme == null) ? 0 : lexeme.hashCode());
         result = prime * result + startIndex;
         return result;
     }
@@ -49,11 +58,21 @@ public abstract class AbstractToken<T> implements Token<T> {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        AbstractToken<?> other = (AbstractToken<?>) obj;
+        AbstractToken other = (AbstractToken) obj;
+        if (lexeme == null) {
+            if (other.lexeme != null) {
+                return false;
+            }
+        }
+        else if (!lexeme.equals(other.lexeme)) {
+            return false;
+        }
         if (startIndex != other.startIndex) {
             return false;
         }
         return true;
     }
+
+
 
 }
