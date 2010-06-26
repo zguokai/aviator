@@ -2,10 +2,11 @@ package com.googlecode.aviator;
 
 import java.util.Map;
 
+import com.googlecode.aviator.runtime.type.AviatorJavaType;
 
 
 public class Test {
-    public static Object test(Object a) {
-       return ((Map<String, Object>)a).get("c");
+    public static Object test(Map<String, Object> a, String name) {
+       return new AviatorJavaType(a,name);
     }
 }

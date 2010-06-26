@@ -147,4 +147,18 @@ public class AviatorPatternUnitTest {
         p1.match(new AviatorJavaType(3000L));
 
     }
+
+
+    @Test(expected = ExpressionRuntimeException.class)
+    public void testNot() {
+        new AviatorPattern("\\d+").not();
+
+    }
+
+
+    @Test(expected = ExpressionRuntimeException.class)
+    public void testNeg() {
+        new AviatorPattern("\\d+").neg();
+
+    }
 }

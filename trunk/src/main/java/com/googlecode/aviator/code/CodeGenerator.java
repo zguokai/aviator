@@ -52,10 +52,10 @@ public interface CodeGenerator {
     public void onMod(Token<?> lookhead);
 
 
-    public void onNot(Token<?> lookhead, int depth);
+    public void onNot(Token<?> lookhead);
 
 
-    public void onNeg(Token<?> lookhead, int depth);
+    public void onNeg(Token<?> lookhead);
 
 
     public Class<?> getResult();

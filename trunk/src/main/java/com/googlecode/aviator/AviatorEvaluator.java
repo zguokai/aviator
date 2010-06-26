@@ -1,11 +1,12 @@
 package com.googlecode.aviator;
 
+import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 import com.googlecode.aviator.code.CodeGenerator;
 import com.googlecode.aviator.code.asm.ASMCodeGenerator;
 import com.googlecode.aviator.exception.CompileExpressionErrorException;
+import com.googlecode.aviator.exception.ExpressionRuntimeException;
 import com.googlecode.aviator.lexer.ExpressionLexer;
 import com.googlecode.aviator.parser.AviatorClassLoader;
 import com.googlecode.aviator.parser.ExpressionParser;
@@ -25,11 +26,11 @@ public final class AviatorEvaluator {
     /**
      * Compiled Expression cache
      */
-    private final static ConcurrentHashMap<String/* text expression */, Expression/*
-                                                                                   * Compiled
-                                                                                   * expression
-                                                                                   */> cacheExpression =
-            new ConcurrentHashMap<String, Expression>();
+    private final static Map<String/* text expression */, Expression/*
+                                                                     * Compiled
+                                                                     * expression
+                                                                     */> cacheExpressions =
+            new HashMap<String, Expression>();
 
 
     private AviatorEvaluator() {
@@ -38,7 +39,7 @@ public final class AviatorEvaluator {
 
 
     public static void clearExpressionCache() {
-        cacheExpression.clear();
+        cacheExpressions.clear();
     }
 
 
@@ -62,8 +63,16 @@ public final class AviatorEvaluator {
      * @return
      */
     public static Expression compile(String expression, boolean cached) {
-        if (expression == null || expression.length() == 0) {
-            throw new IllegalArgumentException("Blank expression");
+        if (expression == null || expression.trim().length() == 0) {
+            throw new CompileExpressionErrorException("Blank expression");
+        }
+        if (cached) {
+            synchronized (cacheExpressions) {
+                Expression result = cacheExpressions.get(expression);
+                if (result != null) {
+                    return result;
+                }
+            }
         }
         ExpressionLexer lexer = new ExpressionLexer(expression);
         CodeGenerator codeGenerator =
@@ -72,17 +81,37 @@ public final class AviatorEvaluator {
         ExpressionParser parser = new ExpressionParser(lexer, codeGenerator);
 
         try {
-            Class<?> clazz = parser.parse();
-            Expression compiledExpression = new Expression(clazz);
             if (cached) {
-                cacheExpression.putIfAbsent(expression, compiledExpression);
+                synchronized (cacheExpressions) {
+                    // double check
+                    Expression result = cacheExpressions.get(expression);
+                    if (result != null) {
+                        return result;
+                    }
+                    else {
+                        result = innerCompile(parser);
+                        // store result to cache
+                        cacheExpressions.put(expression, result);
+                        return result;
+                    }
+                }
             }
-            return compiledExpression;
+            else {
+                return innerCompile(parser);
+            }
         }
         catch (Throwable t) {
             throw new CompileExpressionErrorException("Compile expression error", t);
         }
 
+    }
+
+
+    private static Expression innerCompile(ExpressionParser parser) throws NoSuchMethodException {
+        Expression result;
+        Class<?> clazz = parser.parse();
+        result = new Expression(clazz);
+        return result;
     }
 
 
@@ -108,20 +137,23 @@ public final class AviatorEvaluator {
      *            Whether to cache the compiled result,make true to cache it.
      */
     public static Object execute(String expression, Map<String, Object> env, boolean cached) {
+        Expression compiledExpression = null;
         if (cached) {
-            Expression compiledExpression = cacheExpression.get(expression);
-            if (compiledExpression == null) {
-                compiledExpression = compile(expression);
-                Expression oldExpression = cacheExpression.putIfAbsent(expression, compiledExpression);
-                if (oldExpression != null) {
-                    compiledExpression = oldExpression;
+            synchronized (cacheExpressions) {
+                compiledExpression = cacheExpressions.get(expression);
+                if (compiledExpression == null) {
+                    compiledExpression = compile(expression);
                 }
             }
+        }
+        else {
+            compiledExpression = compile(expression);
+        }
+        if (compiledExpression != null) {
             return compiledExpression.execute(env);
         }
         else {
-
-            return compile(expression).execute(env);
+            throw new ExpressionRuntimeException("Null compiled expression for " + expression);
         }
     }
 
@@ -135,5 +167,16 @@ public final class AviatorEvaluator {
      */
     public static Object execute(String expression, Map<String, Object> env) {
         return execute(expression, env, false);
+    }
+
+
+    /**
+     * Execute a text expression without cacheing and enviroment
+     * 
+     * @param expression
+     * @return
+     */
+    public static Object execute(String expression) {
+        return execute(expression, null);
     }
 }

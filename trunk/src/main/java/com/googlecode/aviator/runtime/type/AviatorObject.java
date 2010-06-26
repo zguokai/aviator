@@ -21,6 +21,16 @@ public abstract class AviatorObject {
     }
 
 
+    public AviatorObject neg() {
+        throw new ExpressionRuntimeException(toString() + " doesn't support negative operation '-'");
+    }
+
+
+    public AviatorObject not() {
+        throw new ExpressionRuntimeException(toString() + " doesn't support not operation '!'");
+    }
+
+
     @Override
     public String toString() {
         return this.getAviatorType() + "(" + this.getValue() + ")";

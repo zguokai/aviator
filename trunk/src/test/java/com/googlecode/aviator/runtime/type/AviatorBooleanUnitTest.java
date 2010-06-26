@@ -66,6 +66,19 @@ public class AviatorBooleanUnitTest {
 
 
     @Test
+    public void testNot() {
+        assertEquals(Boolean.TRUE, AviatorBoolean.FALSE.not().getValue());
+        assertEquals(Boolean.FALSE, AviatorBoolean.TRUE.not().getValue());
+    }
+
+
+    @Test(expected = ExpressionRuntimeException.class)
+    public void testNeg() {
+        AviatorBoolean.TRUE.neg();
+    }
+
+
+    @Test
     public void testCompareJavaBoolean() {
         AviatorBoolean t = new AviatorBoolean(Boolean.TRUE);
         AviatorBoolean f = new AviatorBoolean(Boolean.FALSE);

@@ -150,9 +150,10 @@ public class AviatorNumberUnitTest {
         assertEquals("1000hello", a.add(s).getValue());
         assertEquals(AviatorType.String, a.add(s).getAviatorType());
     }
-    
+
+
     @Test
-    public void testAddWithJavaString(){
+    public void testAddWithJavaString() {
         AviatorNumber a = AviatorNumber.valueOf(1000);
         AviatorJavaType s = new AviatorJavaType("hello");
         assertEquals("1000hello", a.add(s).getValue());
@@ -366,6 +367,22 @@ public class AviatorNumberUnitTest {
 
         }
 
+    }
+
+
+    @Test(expected = ExpressionRuntimeException.class)
+    public void testNot() {
+        AviatorNumber.valueOf(3).not();
+    }
+
+
+    @Test
+    public void testNeg() {
+        AviatorNumber n = AviatorNumber.valueOf(3.3);
+        assertEquals(-3.3, n.neg().getValue());
+
+        n = AviatorNumber.valueOf(3);
+        assertEquals(-3L, n.neg().getValue());
     }
 
 }
