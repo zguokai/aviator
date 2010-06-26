@@ -14,7 +14,7 @@ import com.googlecode.aviator.exception.ExpressionRuntimeException;
  */
 public class AviatorPattern extends AviatorObject {
 
-    private final Pattern pattern;
+    final Pattern pattern;
 
 
     public AviatorPattern(String expression) {
@@ -25,10 +25,21 @@ public class AviatorPattern extends AviatorObject {
 
     @Override
     public AviatorObject add(AviatorObject other) {
-        if (other.getAviatorType() == AviatorType.String) {
+        switch (other.getAviatorType()) {
+        case String:
             return new AviatorString(this.pattern.pattern() + ((AviatorString) other).lexeme);
+        case JavaType:
+            AviatorJavaType javaType = (AviatorJavaType) other;
+            if (javaType.getObject() instanceof String || javaType.getObject() instanceof Character) {
+                return new AviatorString(this.pattern.pattern() + javaType.getObject().toString());
+            }
+            else {
+                return super.add(other);
+            }
+        default:
+            return super.add(other);
+
         }
-        return super.add(other);
     }
 
 

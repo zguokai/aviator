@@ -12,7 +12,7 @@ import com.googlecode.aviator.parser.ExpressionParser;
 
 
 /**
- * Avaitor Evaluator
+ * Avaitor Expression evaluator
  * 
  * @author dennis
  * 
