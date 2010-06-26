@@ -269,6 +269,33 @@ public class ASMCodeGenerator implements CodeGenerator {
         pushOperand(MARK_TOKEN, 0);
     }
 
+    /**
+     * Label stack for ternary operator
+     */
+    private final Stack<Label> l0stack = new Stack<Label>();
+    private final Stack<Label> l1stack = new Stack<Label>();
+
+
+    public void onTernaryBoolean(Token<?> lookhead) {
+        mv.visitMethodInsn(INVOKEVIRTUAL, "com/googlecode/aviator/runtime/type/AviatorObject", "booleanValue", "()Z");
+        Label l0 = new Label();
+        Label l1 = new Label();
+        l0stack.push(l0);
+        l1stack.push(l1);
+        mv.visitJumpInsn(IFEQ, l0);
+    }
+
+
+    public void onTernaryLeft(Token<?> lookhead) {
+        mv.visitJumpInsn(GOTO, l1stack.peek());
+        mv.visitLabel(l0stack.pop());
+    }
+
+
+    public void onTernaryRight(Token<?> lookhead) {
+        mv.visitLabel(l1stack.pop());
+    }
+
 
     /**
      * Do logic operation "||"

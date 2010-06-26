@@ -18,8 +18,9 @@ public class Example {
         ((Map<String, Object>) env.get("map")).put("e", "hello");
 
         Pattern.compile("a\\.b\\/c");
-        Object value = AviatorEvaluator.execute("c=~/[\\d.]+/ && 3>1 || 1/2>1", env);
+        Object value = AviatorEvaluator.execute("3>1?6>7?0:100:3>2?9:0", env);
         System.out.println(value);
+        System.out.println(3>1?6>7?0:100:3>2?9:0);
 
         // value = AviatorEvaluator.execute("a+c-d/1>b", env);
     }

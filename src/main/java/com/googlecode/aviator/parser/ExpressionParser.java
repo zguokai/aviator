@@ -32,6 +32,8 @@ public class ExpressionParser {
 
     private boolean inPattern = false;
 
+    private boolean top = true;
+
 
     public ExpressionParser(ExpressionLexer lexer, CodeGenerator codeGenerator) {
         super();
@@ -41,6 +43,40 @@ public class ExpressionParser {
             throw new ExpressionSyntaxErrorException("Blank expression");
         }
         this.codeGenerator = codeGenerator;
+    }
+
+
+    public void ternary() {
+        bool();
+        if (lookhead == null || (!top && !expectLexeme("?"))) {
+            return;
+        }
+        if (expectLexeme("?")) {
+            move(true);
+            top = false;
+            this.codeGenerator.onTernaryBoolean(lookhead);
+            ternary();
+            if (expectLexeme(":")) {
+                move(true);
+                this.codeGenerator.onTernaryLeft(lookhead);
+                ternary();
+                this.codeGenerator.onTernaryRight(lookhead);
+            }
+            else {
+                reportSyntaxError();
+            }
+        }
+        else {
+            if (expectLexeme(")")) {
+                if (this.parenDepth > 0) {
+                    return;
+                }
+                else {
+                    reportSyntaxError("Insert '(' to complete Expression");
+                }
+            }
+            reportSyntaxError();
+        }
     }
 
 
@@ -62,18 +98,10 @@ public class ExpressionParser {
                 if (lookhead == null) {
                     break;
                 }
-                if (expectLexeme(")")) {
-                    if (this.parenDepth > 0) {
-                        break;
-                    }
-                    else {
-                        reportSyntaxError("Insert '(' to complete Expression");
-                    }
-                }
-                else {
-                    reportSyntaxError();
-                }
 
+                else {
+                    break;
+                }
             }
 
         }
@@ -258,10 +286,13 @@ public class ExpressionParser {
 
 
     public void factor() {
+        if (lookhead == null) {
+            reportSyntaxError();
+        }
         if (expectLexeme("(")) {
             this.parenDepth++;
             move(true);
-            bool();
+            ternary();
             if (!expectLexeme(")")) {
                 reportSyntaxError("insert ')' to complete Expression");
             }
@@ -341,7 +372,7 @@ public class ExpressionParser {
 
 
     public Class<?> parse() {
-        bool();
+        ternary();
         if (this.parenDepth > 0) {
             reportSyntaxError("insert ')' to complete Expression");
         }

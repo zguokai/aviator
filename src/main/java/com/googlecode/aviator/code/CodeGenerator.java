@@ -26,11 +26,21 @@ public interface CodeGenerator {
     public void onAnd(Token<?> lookhead);
 
 
+    public void onTernaryBoolean(Token<?> lookhead);
+
+
+    public void onTernaryLeft(Token<?> lookhead);
+
+
+    public void onTernaryRight(Token<?> lookhead);
+
+
     public void onJoin(Token<?> lookhead);
 
 
     public void onEq(Token<?> lookhead);
-    
+
+
     public void onMatch(Token<?> lookhead);
 
 
