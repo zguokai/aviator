@@ -1,12 +1,10 @@
 package com.googlecode.aviator;
 
-import java.util.Map;
-
-import com.googlecode.aviator.runtime.type.AviatorJavaType;
+import com.googlecode.aviator.runtime.type.AviatorObject;
 
 
 public class Test {
-    public static Object test(Map<String, Object> a, String name) {
-       return new AviatorJavaType(a,name);
+    public static Object test(AviatorObject a, int b, int c) {
+        return a.booleanValue() ? b : c;
     }
 }

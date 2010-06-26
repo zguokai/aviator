@@ -6,9 +6,12 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import junit.framework.Assert;
+
 import org.junit.Test;
 
 import com.googlecode.aviator.AviatorEvaluator;
+import com.googlecode.aviator.exception.ExpressionRuntimeException;
 
 
 /**
@@ -145,11 +148,117 @@ public class GrammarUnitTest {
     }
 
 
-    /**
-     * 操作符的操作数限制
-     */
     @Test
-    public void testOperatorLimit() {
+    public void testNotOperandLimit() {
+        Map<String, Object> env = new HashMap<String, Object>();
+        env.put("bool", false);
+
+        assertFalse((Boolean) AviatorEvaluator.execute("!true"));
+        assertTrue((Boolean) AviatorEvaluator.execute("!bool", env));
+
+        try {
+            AviatorEvaluator.execute("!3");
+            Assert.fail();
+        }
+        catch (ExpressionRuntimeException e) {
+        }
+        try {
+            AviatorEvaluator.execute("!3.3");
+            Assert.fail();
+        }
+        catch (ExpressionRuntimeException e) {
+        }
+        try {
+            AviatorEvaluator.execute("!/\\d+/");
+            Assert.fail();
+        }
+        catch (ExpressionRuntimeException e) {
+        }
+        try {
+            AviatorEvaluator.execute("!'hello'");
+            Assert.fail();
+        }
+        catch (ExpressionRuntimeException e) {
+        }
+
+    }
+
+
+    @Test
+    public void testNegOperandLimit() {
+        Map<String, Object> env = new HashMap<String, Object>();
+        env.put("d", -3.3);
+
+        assertEquals(-3L, AviatorEvaluator.execute("-3"));
+        assertEquals(3.3, (Double) AviatorEvaluator.execute("-d", env), 0.001);
+
+        try {
+            AviatorEvaluator.execute("-true");
+            Assert.fail();
+        }
+        catch (ExpressionRuntimeException e) {
+        }
+        try {
+            AviatorEvaluator.execute("-'hello'");
+            Assert.fail();
+        }
+        catch (ExpressionRuntimeException e) {
+        }
+        try {
+            AviatorEvaluator.execute("-/\\d+/");
+            Assert.fail();
+        }
+        catch (ExpressionRuntimeException e) {
+        }
+    }
+
+
+    @Test
+    public void testAddOperandsLimit() {
+        // Add only support number and string
+        Map<String, Object> env = new HashMap<String, Object>();
+        env.put("d", -3.3);
+        env.put("s", "aviator");
+        env.put("bool", true);
+
+        assertEquals(6, AviatorEvaluator.execute("1+2+3"));
+        assertEquals(2.7, (Double) AviatorEvaluator.execute("6+d", env), 0.001);
+        assertEquals("hello aviator", AviatorEvaluator.execute("'hello '+s", env));
+        assertEquals("-3.3aviator", AviatorEvaluator.execute("d+s", env));
+        assertEquals("trueaviator", AviatorEvaluator.execute("bool+s", env));
+        assertEquals("1aviator3", AviatorEvaluator.execute("1+s+3", env));
+
+        Foo foo = new Foo(2);
+        env.put("foo", foo);
+        assertEquals(6, AviatorEvaluator.execute("1+foo.a+3", env));
+        try {
+            AviatorEvaluator.execute("foo+s", env);
+            Assert.fail();
+        }
+        catch (ExpressionRuntimeException e) {
+
+        }
+        try {
+            AviatorEvaluator.execute("d+bool", env);
+            Assert.fail();
+        }
+        catch (ExpressionRuntimeException e) {
+
+        }
+        try {
+            AviatorEvaluator.execute("1+bool+3", env);
+            Assert.fail();
+        }
+        catch (ExpressionRuntimeException e) {
+
+        }
+        try {
+            AviatorEvaluator.execute("/\\d+/+100", env);
+            Assert.fail();
+        }
+        catch (ExpressionRuntimeException e) {
+
+        }
 
     }
 }

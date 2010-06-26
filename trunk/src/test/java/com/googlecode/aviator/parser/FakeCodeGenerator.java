@@ -53,6 +53,21 @@ public class FakeCodeGenerator implements CodeGenerator {
     }
 
 
+    public void onTernaryBoolean(Token<?> lookhead) {
+
+    }
+
+
+    public void onTernaryLeft(Token<?> lookhead) {
+
+    }
+
+
+    public void onTernaryRight(Token<?> lookhead) {
+        appendToken("?:");
+    }
+
+
     public void onConstant(Token<?> lookhead) {
         appendToken(lookhead.getLexeme());
     }

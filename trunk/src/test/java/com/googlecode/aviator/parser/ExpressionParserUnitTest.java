@@ -322,4 +322,83 @@ public class ExpressionParserUnitTest {
         this.codeGenerator.reset();
     }
 
+
+    @Test
+    public void testTernary1() {
+        this.parser = new ExpressionParser(new ExpressionLexer("3>1?1:-3"), codeGenerator);
+        this.parser.parse();
+        assertEquals("3 1 > 1 3 - ?:", this.codeGenerator.getPostFixExpression());
+    }
+
+
+    @Test
+    public void testTernary2() {
+        int d = 3 > 1 ? 6 <= 7 ? 0 : 100 : 3 > 2 ? 9 : 0;
+        this.parser = new ExpressionParser(new ExpressionLexer("3>1?6<=7?0:100:3>2?9:0"), codeGenerator);
+        this.parser.parse();
+        assertEquals("3 1 > 6 7 <= 0 100 ?: 3 2 > 9 0 ?: ?:", this.codeGenerator.getPostFixExpression());
+    }
+
+
+    @Test
+    public void testTernary3() {
+        this.parser = new ExpressionParser(new ExpressionLexer("3>1?true:false?1:0"), codeGenerator);
+        this.parser.parse();
+        assertEquals("3 1 > true false 1 0 ?: ?:", codeGenerator.getPostFixExpression());
+        Object d = 3 > 1 ? true : false ? 1 : 0;
+        System.out.println(d);
+
+    }
+
+
+    @Test(expected = ExpressionSyntaxErrorException.class)
+    public void testIllegalTernary1() {
+        this.parser = new ExpressionParser(new ExpressionLexer("3>1?true"), codeGenerator);
+        this.parser.parse();
+    }
+
+
+    @Test(expected = ExpressionSyntaxErrorException.class)
+    public void testIllegalTernary2() {
+        this.parser = new ExpressionParser(new ExpressionLexer("3>1?true:"), codeGenerator);
+        this.parser.parse();
+    }
+
+
+    @Test(expected = ExpressionSyntaxErrorException.class)
+    public void testIllegalTernary3() {
+        this.parser = new ExpressionParser(new ExpressionLexer("3>1?true:false?9"), codeGenerator);
+        this.parser.parse();
+    }
+
+
+    @Test
+    public void testTernaryWithParen1() {
+        this.parser = new ExpressionParser(new ExpressionLexer("3==1?(9.0-3>5?-1:2):(false?9:0)"), codeGenerator);
+        this.parser.parse();
+        assertEquals("3 1 == 9.0 3 - 5 > 1 - 2 ?: false 9 0 ?: ?:", this.codeGenerator.getPostFixExpression());
+    }
+
+
+    @Test
+    public void testTernaryWithParen2() {
+        this.parser = new ExpressionParser(new ExpressionLexer("3==1?(100-(3+1)):(false?9:0)"), codeGenerator);
+        this.parser.parse();
+        assertEquals("3 1 == 100 3 1 + - false 9 0 ?: ?:", this.codeGenerator.getPostFixExpression());
+    }
+
+
+    @Test(expected = ExpressionSyntaxErrorException.class)
+    public void testTernaryWithIllegalParen1() {
+        this.parser = new ExpressionParser(new ExpressionLexer("3==1?(100-(3+1):(false?9:0)"), codeGenerator);
+        this.parser.parse();
+    }
+
+
+    @Test(expected = ExpressionSyntaxErrorException.class)
+    public void testTernaryWithIllegalParen2() {
+        this.parser = new ExpressionParser(new ExpressionLexer("3==1?(100-3+1)):(false?9:0)"), codeGenerator);
+        this.parser.parse();
+    }
+
 }

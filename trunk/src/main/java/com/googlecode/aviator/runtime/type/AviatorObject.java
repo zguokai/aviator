@@ -66,16 +66,25 @@ public abstract class AviatorObject {
 
 
     public Number numberValue() {
-        return ((AviatorNumber) this).number;
+        if (!(this.getValue() instanceof Number)) {
+            throw new ExpressionRuntimeException(this + " is not a number value");
+        }
+        return (Number) this.getValue();
     }
 
 
     public String stringValue() {
-        return ((AviatorString) this).lexeme;
+        if (!(this.getValue() instanceof String) && !(this.getValue() instanceof Character)) {
+            throw new ExpressionRuntimeException(this + " is not a string value");
+        }
+        return String.valueOf(this.getValue());
     }
 
 
     public boolean booleanValue() {
-        return ((AviatorBoolean) this).value;
+        if (!(this.getValue() instanceof Boolean)) {
+            throw new ExpressionRuntimeException(this + " is not a boolean value");
+        }
+        return (Boolean) this.getValue();
     }
 }
