@@ -32,8 +32,6 @@ public class ExpressionParser {
 
     private boolean inPattern = false;
 
-    private boolean top = true;
-
 
     public ExpressionParser(ExpressionLexer lexer, CodeGenerator codeGenerator) {
         super();
@@ -48,12 +46,11 @@ public class ExpressionParser {
 
     public void ternary() {
         bool();
-        if (lookhead == null || (!top && !expectLexeme("?"))) {
+        if (lookhead == null || expectLexeme(":")) {
             return;
         }
         if (expectLexeme("?")) {
             move(true);
-            top = false;
             this.codeGenerator.onTernaryBoolean(lookhead);
             ternary();
             if (expectLexeme(":")) {
