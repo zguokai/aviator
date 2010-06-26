@@ -31,8 +31,13 @@ public class AviatorJavaType extends AviatorObject {
     public AviatorObject div(AviatorObject other) {
         switch (other.getAviatorType()) {
         case Number:
-            AviatorNumber aviatorNumber = AviatorNumber.valueOf(this.object);
-            return aviatorNumber.div(other);
+            if (this.object instanceof Number) {
+                AviatorNumber aviatorNumber = AviatorNumber.valueOf(this.object);
+                return aviatorNumber.div(other);
+            }
+            else {
+                return super.div(other);
+            }
         case JavaType:
             if (this.object instanceof Number) {
                 AviatorNumber thisAviatorNumber = AviatorNumber.valueOf(object);
@@ -57,8 +62,13 @@ public class AviatorJavaType extends AviatorObject {
     public AviatorObject mod(AviatorObject other) {
         switch (other.getAviatorType()) {
         case Number:
-            AviatorNumber aviatorNumber = AviatorNumber.valueOf(this.object);
-            return aviatorNumber.mod(other);
+            if (this.object instanceof Number) {
+                AviatorNumber aviatorNumber = AviatorNumber.valueOf(this.object);
+                return aviatorNumber.mod(other);
+            }
+            else {
+                return super.mod(other);
+            }
         case JavaType:
             if (this.object instanceof Number) {
                 AviatorNumber thisAviatorNumber = AviatorNumber.valueOf(object);
@@ -77,8 +87,13 @@ public class AviatorJavaType extends AviatorObject {
     public AviatorObject sub(AviatorObject other) {
         switch (other.getAviatorType()) {
         case Number:
-            AviatorNumber aviatorNumber = AviatorNumber.valueOf(this.object);
-            return aviatorNumber.sub(other);
+            if (this.object instanceof Number) {
+                AviatorNumber aviatorNumber = AviatorNumber.valueOf(this.object);
+                return aviatorNumber.sub(other);
+            }
+            else {
+                return super.sub(other);
+            }
         case JavaType:
             if (this.object instanceof Number) {
                 AviatorNumber thisAviatorNumber = AviatorNumber.valueOf(object);
@@ -98,14 +113,14 @@ public class AviatorJavaType extends AviatorObject {
     public int compare(AviatorObject other) {
         switch (other.getAviatorType()) {
         case Number:
-            AviatorNumber aviatorNumber = AviatorNumber.valueOf(this.object);
-            return aviatorNumber.compare(other);
+            AviatorNumber aviatorNumber = (AviatorNumber) other;
+            return -aviatorNumber.compare(this);
         case String:
-            AviatorString aviatorString = new AviatorString((String) object);
-            return aviatorString.compare(other);
+            AviatorString aviatorString = (AviatorString) other;
+            return -aviatorString.compare(this);
         case Boolean:
-            AviatorBoolean aviatorBoolean = new AviatorBoolean((Boolean) object);
-            return aviatorBoolean.compare(other);
+            AviatorBoolean aviatorBoolean = (AviatorBoolean) other;
+            return -aviatorBoolean.compare(this);
         case JavaType:
             AviatorJavaType otherJavaType = (AviatorJavaType) other;
             if (this.object.equals(otherJavaType.object)) {
@@ -124,8 +139,17 @@ public class AviatorJavaType extends AviatorObject {
                     AviatorString thisAviatorString = new AviatorString(String.valueOf(object));
                     return thisAviatorString.compare(other);
                 }
+                else if (this.object instanceof Boolean) {
+                    AviatorBoolean thisAviatorBoolean = new AviatorBoolean((Boolean) this.object);
+                    return thisAviatorBoolean.compare(other);
+                }
                 else {
-                    return ((Comparable) object).compareTo(otherJavaType);
+                    try {
+                        return ((Comparable) object).compareTo(otherJavaType.object);
+                    }
+                    catch (Throwable t) {
+                        throw new ExpressionRuntimeException("Compare " + this + " with " + other + " error", t);
+                    }
                 }
             }
         default:
@@ -138,8 +162,13 @@ public class AviatorJavaType extends AviatorObject {
     public AviatorObject mult(AviatorObject other) {
         switch (other.getAviatorType()) {
         case Number:
-            AviatorNumber aviatorNumber = AviatorNumber.valueOf(this.object);
-            return aviatorNumber.mult(other);
+            if (this.object instanceof Number) {
+                AviatorNumber aviatorNumber = AviatorNumber.valueOf(this.object);
+                return aviatorNumber.mult(other);
+            }
+            else {
+                return super.mult(other);
+            }
         case JavaType:
             if (this.object instanceof Number) {
                 AviatorNumber thisAviatorNumber = AviatorNumber.valueOf(object);
