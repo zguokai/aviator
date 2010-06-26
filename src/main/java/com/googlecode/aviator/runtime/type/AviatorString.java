@@ -46,6 +46,9 @@ public class AviatorString extends AviatorObject {
         case JavaType:
             AviatorJavaType otherJavaType = (AviatorJavaType) other;
             return new AviatorString(this.lexeme + otherJavaType.object);
+        case Pattern:
+            AviatorPattern otherPatterh = (AviatorPattern) other;
+            return new AviatorString(this.lexeme + otherPatterh.pattern.pattern());
         default:
             return super.add(other);
         }
