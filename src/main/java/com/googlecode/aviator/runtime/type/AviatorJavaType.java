@@ -1,5 +1,9 @@
 package com.googlecode.aviator.runtime.type;
 
+import java.util.Map;
+
+import org.apache.commons.beanutils.PropertyUtils;
+
 import com.googlecode.aviator.exception.ExpressionRuntimeException;
 
 
@@ -19,6 +23,17 @@ public class AviatorJavaType extends AviatorObject {
     public AviatorJavaType(Object object) {
         super();
         this.object = object;
+    }
+
+
+    public AviatorJavaType(Map<String, Object> env, String name) {
+        super();
+        try {
+            this.object = PropertyUtils.getProperty(env, name);
+        }
+        catch (Exception e) {
+            throw new ExpressionRuntimeException("Could not get variable " + name + " value", e);
+        }
     }
 
 
@@ -184,6 +199,28 @@ public class AviatorJavaType extends AviatorObject {
 
 
     @Override
+    public AviatorObject neg() {
+        if (this.object instanceof Number) {
+            return AviatorNumber.valueOf(this.object).neg();
+        }
+        else {
+            return super.neg();
+        }
+    }
+
+
+    @Override
+    public AviatorObject not() {
+        if (this.object instanceof Boolean) {
+            return new AviatorBoolean((Boolean) this.object).not();
+        }
+        else {
+            return super.not();
+        }
+    }
+
+
+    @Override
     public AviatorObject add(AviatorObject other) {
         if (this.object instanceof String) {
             AviatorString aviatorString = new AviatorString((String) object);
@@ -196,6 +233,9 @@ public class AviatorJavaType extends AviatorObject {
         else if (this.object instanceof Number) {
             AviatorNumber aviatorNumber = AviatorNumber.valueOf(object);
             return aviatorNumber.add(other);
+        }
+        else if (this.object instanceof Boolean) {
+            return new AviatorBoolean((Boolean) object).add(other);
         }
         else {
             return super.add(other);

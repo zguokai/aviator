@@ -118,7 +118,7 @@ public class FakeCodeGenerator implements CodeGenerator {
     }
 
 
-    public void onNeg(Token<?> lookhead, int depth) {
+    public void onNeg(Token<?> lookhead) {
         appendToken("-");
 
     }
@@ -130,7 +130,7 @@ public class FakeCodeGenerator implements CodeGenerator {
     }
 
 
-    public void onNot(Token<?> lookhead, int depth) {
+    public void onNot(Token<?> lookhead) {
         appendToken("!");
 
     }

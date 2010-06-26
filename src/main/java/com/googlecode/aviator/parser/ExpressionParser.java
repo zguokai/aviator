@@ -213,21 +213,21 @@ public class ExpressionParser {
 
 
     public void term() {
-        unary(0);
+        unary();
         while (true) {
             if (expectLexeme("*")) {
                 move(true);
-                unary(0);
+                unary();
                 codeGenerator.onMult(lookhead);
             }
             else if (expectLexeme("/")) {
                 move(true);
-                unary(0);
+                unary();
                 codeGenerator.onDiv(lookhead);
             }
             else if (expectLexeme("%")) {
                 move(true);
-                unary(0);
+                unary();
                 codeGenerator.onMod(lookhead);
             }
             else {
@@ -237,16 +237,16 @@ public class ExpressionParser {
     }
 
 
-    public void unary(int depth) {
+    public void unary() {
         if (expectLexeme("!")) {
             move(true);
-            unary(depth++);
-            this.codeGenerator.onNot(lookhead, depth);
+            unary();
+            this.codeGenerator.onNot(lookhead);
         }
         else if (expectLexeme("-")) {
             move(true);
-            unary(depth++);
-            this.codeGenerator.onNeg(lookhead, depth);
+            unary();
+            this.codeGenerator.onNeg(lookhead);
         }
         else {
             factor();

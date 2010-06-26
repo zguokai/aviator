@@ -13,6 +13,12 @@ public class AviatorBoolean extends AviatorObject {
 
 
     @Override
+    public AviatorObject not() {
+        return this.value.booleanValue() ? FALSE : TRUE;
+    }
+
+
+    @Override
     public AviatorObject add(AviatorObject other) {
         switch (other.getAviatorType()) {
         case String:

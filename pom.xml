@@ -130,8 +130,28 @@
 		</dependency>
 		<dependency>
 			<groupId>asm</groupId>
-			<artifactId>asm-all</artifactId>
+			<artifactId>asm-commons</artifactId>
 			<version>3.2</version>
+		</dependency>
+		<dependency>
+			<groupId>asm</groupId>
+			<artifactId>asm</artifactId>
+			<version>3.2</version>
+		</dependency>
+		<dependency>
+			<groupId>asm</groupId>
+			<artifactId>asm-analysis</artifactId>
+			<version>3.2</version>
+		</dependency>
+		<dependency>
+			<groupId>asm</groupId>
+			<artifactId>asm-util</artifactId>
+			<version>3.2</version>
+		</dependency>
+		<dependency>
+			<groupId>commons-beanutils</groupId>
+			<artifactId>commons-beanutils</artifactId>
+			<version>1.8.2</version>
 		</dependency>
 	</dependencies>
 	<reporting>

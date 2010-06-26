@@ -534,4 +534,76 @@ public class AviatorJavaTypeUnitTest {
         assertEquals(0, dateType.compare(dateType));
 
     }
+
+
+    @Test
+    public void testNot() {
+        AviatorJavaType intType = new AviatorJavaType(3);
+        AviatorJavaType boolType = new AviatorJavaType(Boolean.FALSE);
+        AviatorJavaType stringType = new AviatorJavaType("hello");
+        AviatorJavaType charType = new AviatorJavaType('c');
+        AviatorJavaType dateType = new AviatorJavaType(new Date());
+
+        assertEquals(Boolean.TRUE, boolType.not().getValue());
+        try {
+            intType.not();
+            Assert.fail();
+        }
+        catch (ExpressionRuntimeException e) {
+        }
+        try {
+            stringType.not();
+            Assert.fail();
+        }
+        catch (ExpressionRuntimeException e) {
+        }
+        try {
+            charType.not();
+            Assert.fail();
+        }
+        catch (ExpressionRuntimeException e) {
+        }
+        try {
+            dateType.not();
+            Assert.fail();
+        }
+        catch (ExpressionRuntimeException e) {
+        }
+    }
+
+
+    @Test
+    public void testNeg() {
+        AviatorJavaType intType = new AviatorJavaType(3);
+        AviatorJavaType boolType = new AviatorJavaType(Boolean.FALSE);
+        AviatorJavaType stringType = new AviatorJavaType("hello");
+        AviatorJavaType charType = new AviatorJavaType('c');
+        AviatorJavaType dateType = new AviatorJavaType(new Date());
+
+        assertEquals(-3L, intType.neg().getValue());
+        try {
+            boolType.neg();
+            Assert.fail();
+        }
+        catch (ExpressionRuntimeException e) {
+        }
+        try {
+            stringType.neg();
+            Assert.fail();
+        }
+        catch (ExpressionRuntimeException e) {
+        }
+        try {
+            charType.neg();
+            Assert.fail();
+        }
+        catch (ExpressionRuntimeException e) {
+        }
+        try {
+            dateType.neg();
+            Assert.fail();
+        }
+        catch (ExpressionRuntimeException e) {
+        }
+    }
 }

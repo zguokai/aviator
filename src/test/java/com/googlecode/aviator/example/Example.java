@@ -1,8 +1,10 @@
-package com.googlecode.aviator;
+package com.googlecode.aviator.example;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
+
+import com.googlecode.aviator.AviatorEvaluator;
 
 
 public class Example {

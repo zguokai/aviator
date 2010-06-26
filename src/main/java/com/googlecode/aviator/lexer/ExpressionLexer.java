@@ -124,13 +124,13 @@ public class ExpressionLexer {
         }
 
         // It is a variable
-        if (Character.isLetter(peek)) {
+        if (Character.isJavaIdentifierStart(peek)) {
             int startIndex = iterator.getIndex();
             StringBuilder sb = new StringBuilder();
             do {
                 sb.append(peek);
                 nextChar();
-            } while (Character.isLetterOrDigit(peek) || peek == '.');
+            } while (Character.isJavaIdentifierPart(peek) || peek == '.');
             String lexeme = sb.toString();
             Variable variable = new Variable(lexeme, startIndex);
             // If it is a reserved word(true or false)

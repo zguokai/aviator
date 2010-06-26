@@ -125,4 +125,17 @@ public class AviatorStringUnitTest {
         s.compare(n);
     }
 
+
+    @Test(expected = ExpressionRuntimeException.class)
+    public void testNot() {
+        new AviatorString("hello").not();
+
+    }
+
+
+    @Test(expected = ExpressionRuntimeException.class)
+    public void testNeg() {
+        new AviatorString("hello").neg();
+
+    }
 }

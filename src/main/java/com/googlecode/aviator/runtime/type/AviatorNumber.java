@@ -25,8 +25,7 @@ public abstract class AviatorNumber extends AviatorObject {
     }
 
 
-    public abstract AviatorObject neg();
-
+    
 
     public static AviatorNumber valueOf(Object value) {
         if (value instanceof Long || value instanceof Byte || value instanceof Short || value instanceof Integer) {
