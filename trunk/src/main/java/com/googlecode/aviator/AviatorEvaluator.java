@@ -127,12 +127,12 @@ public final class AviatorEvaluator {
 
 
     /**
-     * Execute a text expression with enviroment
+     * Execute a text expression with environment
      * 
      * @param expression
      *            text expression
      * @param env
-     *            Binding variable enviroment
+     *            Binding variable environment
      * @param cached
      *            Whether to cache the compiled result,make true to cache it.
      */
@@ -171,7 +171,7 @@ public final class AviatorEvaluator {
 
 
     /**
-     * Execute a text expression without cacheing and enviroment
+     * Execute a text expression without caching and environment
      * 
      * @param expression
      * @return
