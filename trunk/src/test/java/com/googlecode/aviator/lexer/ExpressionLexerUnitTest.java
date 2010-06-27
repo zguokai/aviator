@@ -438,4 +438,37 @@ public class ExpressionLexerUnitTest {
 
     }
 
+
+    @Test(expected = CompileExpressionErrorException.class)
+    public void testScanHasLine() {
+        this.lexer = new ExpressionLexer("4+5>\n5");
+
+        while (lexer.scan() != null) {
+            ;
+        }
+
+    }
+
+
+    @Test
+    public void testPushBack() {
+        this.lexer = new ExpressionLexer("13+100");
+        Token<?> token = this.lexer.scan();
+        assertEquals("13", token.getLexeme());
+        this.lexer.pushback(token);
+        token = this.lexer.scan();
+        assertEquals("13", token.getLexeme());
+
+        token = this.lexer.scan();
+        assertEquals("+", token.getLexeme());
+
+        this.lexer.pushback(token);
+        token = this.lexer.scan();
+        assertEquals("+", token.getLexeme());
+        token = this.lexer.scan();
+        assertEquals("100", token.getLexeme());
+        assertNull(this.lexer.scan());
+
+    }
+
 }
