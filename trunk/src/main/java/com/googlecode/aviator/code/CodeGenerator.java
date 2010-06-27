@@ -23,7 +23,9 @@ public interface CodeGenerator {
     public void onDiv(Token<?> lookhead);
 
 
-    public void onAnd(Token<?> lookhead);
+    public void onAndLeft(Token<?> lookhead);
+    
+    public void onAndRight(Token<?> lookhead);
 
 
     public void onTernaryBoolean(Token<?> lookhead);
@@ -35,7 +37,10 @@ public interface CodeGenerator {
     public void onTernaryRight(Token<?> lookhead);
 
 
-    public void onJoin(Token<?> lookhead);
+    public void onJoinLeft(Token<?> lookhead);
+
+
+    public void onJoinRight(Token<?> lookhead);
 
 
     public void onEq(Token<?> lookhead);

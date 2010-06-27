@@ -48,8 +48,19 @@ public class FakeCodeGenerator implements CodeGenerator {
     }
 
 
-    public void onAnd(Token<?> lookhead) {
+    public void onAndLeft(Token<?> lookhead) {
+
+    }
+
+
+    public void onAndRight(Token<?> lookhead) {
         appendToken("&&");
+
+    }
+
+
+    public void onJoinRight(Token<?> lookhead) {
+        appendToken("||");
     }
 
 
@@ -97,8 +108,7 @@ public class FakeCodeGenerator implements CodeGenerator {
     }
 
 
-    public void onJoin(Token<?> lookhead) {
-        appendToken("||");
+    public void onJoinLeft(Token<?> lookhead) {
 
     }
 

@@ -255,36 +255,45 @@ public class ASMCodeGenerator implements CodeGenerator {
 
 
     /**
-     * Do logic operation "&&"
+     * Do logic operation "&&" left operand
      */
-    public void onAnd(Token<?> lookhead) {
+    public void onAndLeft(Token<?> lookhead) {
         pushMarkToken();
 
         mv.visitVarInsn(ALOAD, 0);
         mv.visitMethodInsn(INVOKEVIRTUAL, "com/googlecode/aviator/runtime/type/AviatorObject", "booleanValue",
             "(Ljava/util/Map;)Z");
         Label l0 = new Label();
+        l0stack.push(l0);
         mv.visitJumpInsn(IFEQ, l0);
+
+        popOperand();
+        popOperand();
+        pushMarkToken();
+    }
+
+
+    /**
+     * Do logic operation "&&" right operand
+     */
+    public void onAndRight(Token<?> lookhead) {
+        pushMarkToken();
+
         mv.visitVarInsn(ALOAD, 0);
         mv.visitMethodInsn(INVOKEVIRTUAL, "com/googlecode/aviator/runtime/type/AviatorObject", "booleanValue",
             "(Ljava/util/Map;)Z");
-        Label l1 = new Label();
-        mv.visitJumpInsn(IFEQ, l1);
+        mv.visitJumpInsn(IFEQ, l0stack.peek());
         // Result is true
         mv.visitFieldInsn(GETSTATIC, "com/googlecode/aviator/runtime/type/AviatorBoolean", "TRUE",
             "Lcom/googlecode/aviator/runtime/type/AviatorBoolean;");
-        Label l2 = new Label();
-        mv.visitJumpInsn(GOTO, l2);
-        mv.visitLabel(l0);
-        // 短路操作，为了保持堆栈一致，弹出右操作数
-        mv.visitInsn(POP);
-        mv.visitLabel(l1);
+        Label l1 = new Label();
+        mv.visitJumpInsn(GOTO, l1);
+        mv.visitLabel(l0stack.pop());
         // Result is false
         mv.visitFieldInsn(GETSTATIC, "com/googlecode/aviator/runtime/type/AviatorBoolean", "FALSE",
             "Lcom/googlecode/aviator/runtime/type/AviatorBoolean;");
-        mv.visitLabel(l2);
+        mv.visitLabel(l1);
 
-        popOperand();
         popOperand();
         popOperand();
         pushMarkToken();
@@ -325,36 +334,45 @@ public class ASMCodeGenerator implements CodeGenerator {
 
 
     /**
-     * Do logic operation "||"
+     * Do logic operation "||" right operand
      */
-    public void onJoin(Token<?> lookhead) {
+    public void onJoinRight(Token<?> lookhead) {
+        pushMarkToken();
+
+        mv.visitVarInsn(ALOAD, 0);
+        mv.visitMethodInsn(INVOKEVIRTUAL, "com/googlecode/aviator/runtime/type/AviatorObject", "booleanValue",
+            "(Ljava/util/Map;)Z");
+        Label l1 = new Label();
+        mv.visitJumpInsn(IFNE, l0stack.peek());
+        // Result is False
+        mv.visitFieldInsn(GETSTATIC, "com/googlecode/aviator/runtime/type/AviatorBoolean", "FALSE",
+            "Lcom/googlecode/aviator/runtime/type/AviatorBoolean;");
+        mv.visitJumpInsn(GOTO, l1);
+        mv.visitLabel(l0stack.pop());
+        // Result is True
+        mv.visitFieldInsn(GETSTATIC, "com/googlecode/aviator/runtime/type/AviatorBoolean", "TRUE",
+            "Lcom/googlecode/aviator/runtime/type/AviatorBoolean;");
+        mv.visitLabel(l1);
+        popOperand();
+        popOperand();
+        pushMarkToken();
+
+    }
+
+
+    /**
+     * Do logic operation "||" left operand
+     */
+    public void onJoinLeft(Token<?> lookhead) {
         pushMarkToken();
 
         mv.visitVarInsn(ALOAD, 0);
         mv.visitMethodInsn(INVOKEVIRTUAL, "com/googlecode/aviator/runtime/type/AviatorObject", "booleanValue",
             "(Ljava/util/Map;)Z");
         Label l0 = new Label();
+        l0stack.push(l0);
         mv.visitJumpInsn(IFNE, l0);
-        mv.visitVarInsn(ALOAD, 0);
-        mv.visitMethodInsn(INVOKEVIRTUAL, "com/googlecode/aviator/runtime/type/AviatorObject", "booleanValue",
-            "(Ljava/util/Map;)Z");
-        Label l1 = new Label();
-        mv.visitJumpInsn(IFNE, l1);
-        // Result is False
-        mv.visitFieldInsn(GETSTATIC, "com/googlecode/aviator/runtime/type/AviatorBoolean", "FALSE",
-            "Lcom/googlecode/aviator/runtime/type/AviatorBoolean;");
-        Label l2 = new Label();
-        mv.visitJumpInsn(GOTO, l2);
-        mv.visitLabel(l0);
-        // 短路操作，为了保持堆栈一致，弹出右操作数
-        mv.visitInsn(POP);
-        mv.visitLabel(l1);
-        // Result is True
-        mv.visitFieldInsn(GETSTATIC, "com/googlecode/aviator/runtime/type/AviatorBoolean", "TRUE",
-            "Lcom/googlecode/aviator/runtime/type/AviatorBoolean;");
-        mv.visitLabel(l2);
 
-        popOperand();
         popOperand();
         popOperand();
         pushMarkToken();

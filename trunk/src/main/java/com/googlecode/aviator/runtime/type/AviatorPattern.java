@@ -99,7 +99,7 @@ public class AviatorPattern extends AviatorObject {
 
     @Override
     public Object getValue(Map<String, Object> env) {
-        return pattern.pattern();
+        return "/" + pattern.pattern() + "/";
     }
 
 }

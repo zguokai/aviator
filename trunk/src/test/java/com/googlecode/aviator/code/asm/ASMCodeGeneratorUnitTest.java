@@ -93,7 +93,7 @@ public class ASMCodeGeneratorUnitTest {
         Class<?> clazz = this.codeGenerator.getResult();
         Method runMethod = clazz.getDeclaredMethod("run", Map.class);
         Object result = runMethod.invoke(null, new HashMap<String, Object>());
-        assertEquals("[a-z_A-Z]+", result);
+        assertEquals("/[a-z_A-Z]+/", result);
     }
 
 
@@ -195,8 +195,9 @@ public class ASMCodeGeneratorUnitTest {
     @Test
     public void testOnAnd_False() throws Exception {
         codeGenerator.onConstant(Variable.TRUE);
+        codeGenerator.onAndLeft(null);
         codeGenerator.onConstant(Variable.FALSE);
-        codeGenerator.onAnd(null);
+        codeGenerator.onAndRight(null);
         Object result = eval(new HashMap<String, Object>());
         assertEquals(Boolean.FALSE, result);
     }
@@ -205,8 +206,9 @@ public class ASMCodeGeneratorUnitTest {
     @Test
     public void testOnAnd_True() throws Exception {
         codeGenerator.onConstant(Variable.TRUE);
+        codeGenerator.onAndLeft(null);
         codeGenerator.onConstant(Variable.TRUE);
-        codeGenerator.onAnd(null);
+        codeGenerator.onAndRight(null);
         Object result = eval(new HashMap<String, Object>());
         assertEquals(Boolean.TRUE, result);
     }
@@ -215,8 +217,9 @@ public class ASMCodeGeneratorUnitTest {
     @Test
     public void testOnJoin_True() throws Exception {
         codeGenerator.onConstant(Variable.TRUE);
+        codeGenerator.onJoinLeft(null);
         codeGenerator.onConstant(Variable.FALSE);
-        codeGenerator.onJoin(null);
+        codeGenerator.onJoinRight(null);
         Object result = eval(new HashMap<String, Object>());
         assertEquals(Boolean.TRUE, result);
     }
@@ -225,8 +228,9 @@ public class ASMCodeGeneratorUnitTest {
     @Test
     public void testOnJoin_False() throws Exception {
         codeGenerator.onConstant(Variable.FALSE);
+        codeGenerator.onJoinLeft(null);
         codeGenerator.onConstant(Variable.FALSE);
-        codeGenerator.onJoin(null);
+        codeGenerator.onJoinRight(null);
         Object result = eval(new HashMap<String, Object>());
         assertEquals(Boolean.FALSE, result);
     }

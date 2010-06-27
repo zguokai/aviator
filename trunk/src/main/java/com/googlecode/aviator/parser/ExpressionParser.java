@@ -81,11 +81,12 @@ public class ExpressionParser {
         join();
         while (true) {
             if (isJoinToken()) {
+                codeGenerator.onJoinLeft(lookhead);
                 move(true);
                 if (isJoinToken()) {
                     move(true);
                     join();
-                    codeGenerator.onJoin(lookhead);
+                    codeGenerator.onJoinRight(lookhead);
                 }
                 else {
                     reportSyntaxError();
@@ -127,11 +128,12 @@ public class ExpressionParser {
         equality();
         while (true) {
             if (isAndToken()) {
+                codeGenerator.onAndLeft(lookhead);
                 move(true);
                 if (isAndToken()) {
                     move(true);
                     equality();
-                    codeGenerator.onAnd(lookhead);
+                    codeGenerator.onAndRight(lookhead);
                 }
                 else {
                     reportSyntaxError();
