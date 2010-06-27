@@ -300,16 +300,54 @@ public class ExpressionParser {
         }
         else if (lookhead.getType() == TokenType.Number || lookhead.getType() == TokenType.String
                 || lookhead.getType() == TokenType.Variable || lookhead == Variable.TRUE || lookhead == Variable.FALSE) {
+            if (lookhead.getType() == TokenType.Variable) {
+                String[] names = lookhead.getLexeme().split("\\.");
+                for (String name : names) {
+                    if (!isJavaIdentifier(name)) {
+                        reportSyntaxError();
+                    }
+                }
+            }
+
             codeGenerator.onConstant(lookhead);
             move(true);
         }
-        else if (isPattern()) {
+        else if (expectLexeme("/")) {
             pattern();
         }
         else {
             reportSyntaxError();
         }
 
+    }
+
+
+    /**
+     * Test whether a given string is a valid Java identifier.
+     * 
+     * @param id
+     *            string which should be checked
+     * @return <code>true</code> if a valid identifier
+     */
+    public static final boolean isJavaIdentifier(String id) {
+        if (id == null) {
+            return false;
+        }
+
+        if (id.equals("")) {
+            return false;
+        }
+
+        if (!(java.lang.Character.isJavaIdentifierStart(id.charAt(0)))) {
+            return false;
+        }
+
+        for (int i = 1; i < id.length(); i++) {
+            if (!(java.lang.Character.isJavaIdentifierPart(id.charAt(i)))) {
+                return false;
+            }
+        }
+        return true;
     }
 
 
@@ -320,7 +358,7 @@ public class ExpressionParser {
         this.inPattern = true;
         StringBuffer sb = new StringBuffer();
         while (lookhead != null) {
-            while (!isPattern()) {
+            while (!expectLexeme("/")) {
                 sb.append(lookhead.getLexeme());
                 move(false);
             }
@@ -337,11 +375,6 @@ public class ExpressionParser {
         }
         codeGenerator.onConstant(new PatternToken(sb.toString(), startIndex));
         move(true);
-    }
-
-
-    private boolean isPattern() {
-        return lookhead.getType() == TokenType.Char && ((CharToken) lookhead).getLexeme().equals("/");
     }
 
 

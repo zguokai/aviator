@@ -2,6 +2,9 @@ package com.googlecode.aviator.runtime.type;
 
 import static org.junit.Assert.*;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.junit.Test;
 
 import com.googlecode.aviator.exception.ExpressionRuntimeException;
@@ -12,7 +15,7 @@ public class AviatorStringUnitTest {
     public void testAddNumber() {
         AviatorString s = new AviatorString("hello ");
         AviatorNumber n = AviatorNumber.valueOf(30L);
-        assertEquals("hello 30", s.add(n).getValue());
+        assertEquals("hello 30", s.add(n, null).getValue(null));
     }
 
 
@@ -20,7 +23,7 @@ public class AviatorStringUnitTest {
     public void testAddBoolean() {
         AviatorString s = new AviatorString("hello ");
         AviatorBoolean n = AviatorBoolean.TRUE;
-        assertEquals("hello true", s.add(n).getValue());
+        assertEquals("hello true", s.add(n, null).getValue(null));
     }
 
 
@@ -28,24 +31,35 @@ public class AviatorStringUnitTest {
     public void testAddString() {
         AviatorString s = new AviatorString("hello ");
         AviatorString n = new AviatorString("world");
-        assertEquals("hello world", s.add(n).getValue());
+        assertEquals("hello world", s.add(n, null).getValue(null));
     }
 
 
     @Test
     public void testAddJavaType() {
         AviatorString s = new AviatorString("hello ");
-        AviatorJavaType javaType = new AviatorJavaType("world");
-        assertEquals("hello world", s.add(javaType).getValue());
+        AviatorJavaType javaType = new AviatorJavaType("s");
+        assertEquals("hello world", s.add(javaType, createEnvWith("s", "world")).getValue(null));
 
-        javaType = new AviatorJavaType(Boolean.TRUE);
-        assertEquals("hello true", s.add(javaType).getValue());
+        javaType = new AviatorJavaType("true");
+        assertEquals("hello true", s.add(javaType, createEnvWith(null, null)).getValue(null));
 
-        javaType = new AviatorJavaType(400);
-        assertEquals("hello 400", s.add(javaType).getValue());
+        javaType = new AviatorJavaType("a");
+        assertEquals("hello 400", s.add(javaType, createEnvWith("a", 400)).getValue(null));
 
-        javaType = new AviatorJavaType(3.4f);
-        assertEquals("hello 3.4", s.add(javaType).getValue());
+        javaType = new AviatorJavaType("a");
+        assertEquals("hello 3.4", s.add(javaType, createEnvWith("a", 3.4f)).getValue(null));
+    }
+
+
+    private Map<String, Object> createEnvWith(String name, Object obj) {
+        Map<String, Object> env = new HashMap<String, Object>();
+        if (name != null) {
+            env.put(name, obj);
+        }
+        env.put("true", Boolean.TRUE);
+        env.put("false", Boolean.FALSE);
+        return env;
     }
 
 
@@ -53,7 +67,7 @@ public class AviatorStringUnitTest {
     public void testAddPattern() {
         AviatorString s = new AviatorString("hello ");
         AviatorPattern n = new AviatorPattern("[\\d\\.]+");
-        assertEquals("hello [\\d\\.]+", s.add(n).getValue());
+        assertEquals("hello [\\d\\.]+", s.add(n,null).getValue(null));
     }
 
 
@@ -61,11 +75,11 @@ public class AviatorStringUnitTest {
     public void testCompareString() {
         AviatorString s = new AviatorString("hello ");
         AviatorString n = new AviatorString("world");
-        assertTrue(s.compare(n) < 0);
-        assertEquals(0, s.compare(s));
+        assertTrue(s.compare(n,null) < 0);
+        assertEquals(0, s.compare(s,null));
 
         n = new AviatorString("awt");
-        assertFalse(s.compare(n) < 0);
+        assertFalse(s.compare(n,null) < 0);
     }
 
 
@@ -73,24 +87,24 @@ public class AviatorStringUnitTest {
     public void testCompareJavaString() {
         AviatorString s = new AviatorString("hello ");
         assertEquals("hello ", s.getLexeme());
-        AviatorJavaType n = new AviatorJavaType("world");
-        assertTrue(s.compare(n) < 0);
-        assertEquals(0, s.compare(s));
+        AviatorJavaType n = new AviatorJavaType("s");
+        assertTrue(s.compare(n,createEnvWith("s", "world")) < 0);
+        assertEquals(0, s.compare(s,createEnvWith("s", "world")));
 
-        n = new AviatorJavaType("awt");
-        assertFalse(s.compare(n) < 0);
+        n = new AviatorJavaType("s");
+        assertFalse(s.compare(n,createEnvWith("s", "awt")) < 0);
     }
 
 
     @Test
     public void testCompareJavaChar() {
         AviatorString s = new AviatorString("hello ");
-        AviatorJavaType n = new AviatorJavaType('w');
-        assertTrue(s.compare(n) < 0);
-        assertEquals(0, s.compare(s));
+        AviatorJavaType n = new AviatorJavaType("s");
+        assertTrue(s.compare(n,createEnvWith("s", 'w')) < 0);
+        assertEquals(0, s.compare(s,createEnvWith("s", 'w')));
 
-        n = new AviatorJavaType('a');
-        assertFalse(s.compare(n) < 0);
+        n = new AviatorJavaType("s");
+        assertFalse(s.compare(n,createEnvWith("s", 'a')) < 0);
     }
 
 
@@ -98,7 +112,7 @@ public class AviatorStringUnitTest {
     public void testCompareBoolean() {
         AviatorString s = new AviatorString("hello ");
         AviatorBoolean n = AviatorBoolean.TRUE;
-        s.compare(n);
+        s.compare(n,null);
     }
 
 
@@ -106,7 +120,7 @@ public class AviatorStringUnitTest {
     public void testComparePattern() {
         AviatorString s = new AviatorString("hello ");
         AviatorPattern n = new AviatorPattern("\\d+");
-        s.compare(n);
+        s.compare(n,null);
     }
 
 
@@ -114,28 +128,28 @@ public class AviatorStringUnitTest {
     public void testCompareNumber() {
         AviatorString s = new AviatorString("hello ");
         AviatorNumber n = AviatorNumber.valueOf(3.4f);
-        s.compare(n);
+        s.compare(n,null);
     }
 
 
     @Test(expected = ExpressionRuntimeException.class)
     public void testCompareJavaNumber() {
         AviatorString s = new AviatorString("hello ");
-        AviatorJavaType n = new AviatorJavaType(3.4f);
-        s.compare(n);
+        AviatorJavaType n = new AviatorJavaType("f");
+        s.compare(n,createEnvWith("f", 3.4f));
     }
 
 
     @Test(expected = ExpressionRuntimeException.class)
     public void testNot() {
-        new AviatorString("hello").not();
+        new AviatorString("hello").not(null);
 
     }
 
 
     @Test(expected = ExpressionRuntimeException.class)
     public void testNeg() {
-        new AviatorString("hello").neg();
+        new AviatorString("hello").neg(null);
 
     }
 }

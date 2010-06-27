@@ -1,5 +1,7 @@
 package com.googlecode.aviator.runtime.type;
 
+import java.util.Map;
+
 import com.googlecode.aviator.exception.ExpressionRuntimeException;
 
 
@@ -10,81 +12,80 @@ import com.googlecode.aviator.exception.ExpressionRuntimeException;
  * 
  */
 public abstract class AviatorObject {
-    public abstract int compare(AviatorObject other);
+    public abstract int compare(AviatorObject other, Map<String, Object> env);
 
 
     public abstract AviatorType getAviatorType();
 
 
-    public AviatorObject match(AviatorObject other) {
-        throw new ExpressionRuntimeException(toString() + " doesn't support match operation '=~'");
+    public AviatorObject match(AviatorObject other, Map<String, Object> env) {
+        throw new ExpressionRuntimeException(desc(env) + " doesn't support match operation '=~'");
     }
 
 
-    public AviatorObject neg() {
-        throw new ExpressionRuntimeException(toString() + " doesn't support negative operation '-'");
+    public AviatorObject neg(Map<String, Object> env) {
+        throw new ExpressionRuntimeException(desc(env) + " doesn't support negative operation '-'");
     }
 
 
-    public AviatorObject not() {
-        throw new ExpressionRuntimeException(toString() + " doesn't support not operation '!'");
+    public AviatorObject not(Map<String, Object> env) {
+        throw new ExpressionRuntimeException(desc(env) + " doesn't support not operation '!'");
     }
 
 
-    @Override
-    public String toString() {
-        return this.getAviatorType() + "(" + this.getValue() + ")";
+    public String desc(Map<String, Object> env) {
+        return this.getAviatorType() + "(" + this.getValue(env) + ")";
     }
 
 
-    public abstract Object getValue();
+    public abstract Object getValue(Map<String, Object> env);
 
 
-    public AviatorObject add(AviatorObject other) {
-        throw new ExpressionRuntimeException("Could not add " + this + " with " + other);
+    public AviatorObject add(AviatorObject other, Map<String, Object> env) {
+        throw new ExpressionRuntimeException("Could not add " + this.desc(env) + " with " + other.desc(env));
     }
 
 
-    public AviatorObject sub(AviatorObject other) {
-        throw new ExpressionRuntimeException("Could not sub " + this + " with " + other);
+    public AviatorObject sub(AviatorObject other, Map<String, Object> env) {
+        throw new ExpressionRuntimeException("Could not sub " + this.desc(env) + " with " + other.desc(env));
     }
 
 
-    public AviatorObject mod(AviatorObject other) {
-        throw new ExpressionRuntimeException("Could not mod " + this + " with " + other);
+    public AviatorObject mod(AviatorObject other, Map<String, Object> env) {
+        throw new ExpressionRuntimeException("Could not mod " + this.desc(env) + " with " + other.desc(env));
     }
 
 
-    public AviatorObject div(AviatorObject other) {
-        throw new ExpressionRuntimeException("Could not div " + this + " with " + other);
+    public AviatorObject div(AviatorObject other, Map<String, Object> env) {
+        throw new ExpressionRuntimeException("Could not div " + this.desc(env) + " with " + other.desc(env));
     }
 
 
-    public AviatorObject mult(AviatorObject other) {
-        throw new ExpressionRuntimeException("Could not mult " + this + " with " + other);
+    public AviatorObject mult(AviatorObject other, Map<String, Object> env) {
+        throw new ExpressionRuntimeException("Could not mult " + this.desc(env) + " with " + other.desc(env));
     }
 
 
-    public Number numberValue() {
-        if (!(this.getValue() instanceof Number)) {
-            throw new ExpressionRuntimeException(this + " is not a number value");
+    public Number numberValue(Map<String, Object> env) {
+        if (!(this.getValue(env) instanceof Number)) {
+            throw new ExpressionRuntimeException(this.desc(env) + " is not a number value");
         }
-        return (Number) this.getValue();
+        return (Number) this.getValue(env);
     }
 
 
-    public String stringValue() {
-        if (!(this.getValue() instanceof String) && !(this.getValue() instanceof Character)) {
-            throw new ExpressionRuntimeException(this + " is not a string value");
+    public String stringValue(Map<String, Object> env) {
+        if (!(this.getValue(env) instanceof String) && !(this.getValue(env) instanceof Character)) {
+            throw new ExpressionRuntimeException(this.desc(env) + " is not a string value");
         }
-        return String.valueOf(this.getValue());
+        return String.valueOf(this.getValue(env));
     }
 
 
-    public boolean booleanValue() {
-        if (!(this.getValue() instanceof Boolean)) {
-            throw new ExpressionRuntimeException(this + " is not a boolean value");
+    public boolean booleanValue(Map<String, Object> env) {
+        if (!(this.getValue(env) instanceof Boolean)) {
+            throw new ExpressionRuntimeException(this.desc(env) + " is not a boolean value");
         }
-        return (Boolean) this.getValue();
+        return (Boolean) this.getValue(env);
     }
 }

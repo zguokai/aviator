@@ -171,7 +171,7 @@ public final class AviatorEvaluator {
 
 
     /**
-     * Execute a text expression without caching and environment
+     * Execute a text expression without caching 
      * 
      * @param expression
      * @return

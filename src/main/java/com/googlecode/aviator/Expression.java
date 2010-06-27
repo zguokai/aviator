@@ -1,5 +1,6 @@
 package com.googlecode.aviator;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.Map;
@@ -39,6 +40,14 @@ public class Expression {
         }
         try {
             return this.runMethod.invoke(null, env);
+        }
+        catch (InvocationTargetException e) {
+            if (e.getCause() != null) {
+                throw new ExpressionRuntimeException("Execute expression error", e.getCause());
+            }
+            else {
+                throw new ExpressionRuntimeException("Execute expression error", e);
+            }
         }
         catch (Throwable e) {
             throw new ExpressionRuntimeException("Execute expression error", e);

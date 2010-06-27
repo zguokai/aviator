@@ -1,5 +1,7 @@
 package com.googlecode.aviator.runtime.type;
 
+import java.util.Map;
+
 import com.googlecode.aviator.exception.ExpressionRuntimeException;
 
 
@@ -20,12 +22,10 @@ public abstract class AviatorNumber extends AviatorObject {
 
 
     @Override
-    public Object getValue() {
+    public Object getValue(Map<String, Object> env) {
         return this.number;
     }
 
-
-    
 
     public static AviatorNumber valueOf(Object value) {
         if (value instanceof Long || value instanceof Byte || value instanceof Short || value instanceof Integer) {
@@ -48,7 +48,7 @@ public abstract class AviatorNumber extends AviatorObject {
 
 
     @Override
-    public AviatorObject add(AviatorObject other) {
+    public AviatorObject add(AviatorObject other, Map<String, Object> env) {
         switch (other.getAviatorType()) {
         case String:
             return new AviatorString(this.number.toString() + ((AviatorString) other).getLexeme());
@@ -56,110 +56,116 @@ public abstract class AviatorNumber extends AviatorObject {
             return innerAdd((AviatorNumber) other);
         case JavaType:
             AviatorJavaType otherJavaType = (AviatorJavaType) other;
-            if (otherJavaType.object instanceof Number) {
-                return innerAdd(AviatorNumber.valueOf(otherJavaType.object));
+            final Object otherValue = otherJavaType.getValue(env);
+            if (otherValue instanceof Number) {
+                return innerAdd(AviatorNumber.valueOf(otherValue));
             }
-            else if (otherJavaType.object instanceof String) {
-                return new AviatorString(this.number.toString() + otherJavaType.object);
+            else if (otherValue instanceof String) {
+                return new AviatorString(this.number.toString() + otherValue);
             }
             else {
-                return super.add(other);
+                return super.add(other, env);
             }
         default:
-            return super.add(other);
+            return super.add(other, env);
         }
 
     }
 
 
     @Override
-    public AviatorObject sub(AviatorObject other) {
+    public AviatorObject sub(AviatorObject other, Map<String, Object> env) {
         switch (other.getAviatorType()) {
         case Number:
             return innerSub(other);
         case JavaType:
             AviatorJavaType otherJavaType = (AviatorJavaType) other;
-            if (otherJavaType.object instanceof Number) {
-                return innerSub(AviatorNumber.valueOf(otherJavaType.object));
+            final Object otherValue = otherJavaType.getValue(env);
+            if (otherValue instanceof Number) {
+                return innerSub(AviatorNumber.valueOf(otherValue));
             }
             else {
-                return super.sub(other);
+                return super.sub(other, env);
             }
         default:
-            return super.sub(other);
+            return super.sub(other, env);
         }
 
     }
 
 
     @Override
-    public AviatorObject mod(AviatorObject other) {
+    public AviatorObject mod(AviatorObject other, Map<String, Object> env) {
         switch (other.getAviatorType()) {
         case Number:
             return innerMod(other);
         case JavaType:
             AviatorJavaType otherJavaType = (AviatorJavaType) other;
-            if (otherJavaType.object instanceof Number) {
-                return innerMod(AviatorNumber.valueOf(otherJavaType.object));
+            final Object otherValue = otherJavaType.getValue(env);
+            if (otherValue instanceof Number) {
+                return innerMod(AviatorNumber.valueOf(otherValue));
             }
             else {
-                return super.mod(other);
+                return super.mod(other, env);
             }
         default:
-            return super.mod(other);
+            return super.mod(other, env);
         }
     }
 
 
     @Override
-    public AviatorObject div(AviatorObject other) {
+    public AviatorObject div(AviatorObject other, Map<String, Object> env) {
         switch (other.getAviatorType()) {
         case Number:
             return innerDiv(other);
         case JavaType:
             AviatorJavaType otherJavaType = (AviatorJavaType) other;
-            if (otherJavaType.object instanceof Number) {
-                return innerDiv(AviatorNumber.valueOf(otherJavaType.object));
+            final Object otherValue = otherJavaType.getValue(env);
+            if (otherValue instanceof Number) {
+                return innerDiv(AviatorNumber.valueOf(otherValue));
             }
             else {
-                return super.div(other);
+                return super.div(other, env);
             }
         default:
-            return super.div(other);
+            return super.div(other, env);
         }
 
     }
 
 
     @Override
-    public AviatorObject mult(AviatorObject other) {
+    public AviatorObject mult(AviatorObject other, Map<String, Object> env) {
         switch (other.getAviatorType()) {
         case Number:
             return innerMult(other);
         case JavaType:
             AviatorJavaType otherJavaType = (AviatorJavaType) other;
-            if (otherJavaType.object instanceof Number) {
-                return innerMult(AviatorNumber.valueOf(otherJavaType.object));
+            final Object otherValue = otherJavaType.getValue(env);
+            if (otherValue instanceof Number) {
+                return innerMult(AviatorNumber.valueOf(otherValue));
             }
             else {
-                return super.mult(other);
+                return super.mult(other, env);
             }
         default:
-            return super.mult(other);
+            return super.mult(other, env);
         }
 
     }
 
 
     @Override
-    public int compare(AviatorObject other) {
+    public int compare(AviatorObject other, Map<String, Object> env) {
         switch (other.getAviatorType()) {
         case Number:
             return innerCompare(other);
         case JavaType:
             AviatorJavaType otherJavaType = (AviatorJavaType) other;
-            if (otherJavaType.object instanceof Number) {
-                return innerCompare(AviatorNumber.valueOf(otherJavaType.object));
+            final Object otherValue = otherJavaType.getValue(env);
+            if (otherValue instanceof Number) {
+                return innerCompare(AviatorNumber.valueOf(otherValue));
             }
             else {
                 throw new ExpressionRuntimeException("Could not compare " + this + " with " + other);

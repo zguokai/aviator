@@ -1,5 +1,7 @@
 package com.googlecode.aviator.runtime.type;
 
+import java.util.Map;
+
 import com.googlecode.aviator.exception.ExpressionRuntimeException;
 
 
@@ -20,7 +22,7 @@ public class AviatorString extends AviatorObject {
 
 
     @Override
-    public Object getValue() {
+    public Object getValue(Map<String, Object> env) {
         return this.lexeme;
     }
 
@@ -32,7 +34,7 @@ public class AviatorString extends AviatorObject {
 
 
     @Override
-    public AviatorObject add(AviatorObject other) {
+    public AviatorObject add(AviatorObject other, Map<String, Object> env) {
         switch (other.getAviatorType()) {
         case String:
             AviatorString otherString = (AviatorString) other;
@@ -45,29 +47,30 @@ public class AviatorString extends AviatorObject {
             return new AviatorString(this.lexeme + otherNumber.number);
         case JavaType:
             AviatorJavaType otherJavaType = (AviatorJavaType) other;
-            return new AviatorString(this.lexeme + otherJavaType.object);
+            return new AviatorString(this.lexeme + otherJavaType.getValue(env));
         case Pattern:
             AviatorPattern otherPatterh = (AviatorPattern) other;
             return new AviatorString(this.lexeme + otherPatterh.pattern.pattern());
         default:
-            return super.add(other);
+            return super.add(other, env);
         }
     }
 
 
     @Override
-    public int compare(AviatorObject other) {
+    public int compare(AviatorObject other, Map<String, Object> env) {
         switch (other.getAviatorType()) {
         case String:
             AviatorString otherString = (AviatorString) other;
             return this.lexeme.compareTo(otherString.lexeme);
         case JavaType:
             AviatorJavaType javaType = (AviatorJavaType) other;
-            if (javaType.getObject() instanceof String) {
-                return this.lexeme.compareTo((String) javaType.getObject());
+            final Object javaValue = javaType.getValue(env);
+            if (javaValue instanceof String) {
+                return this.lexeme.compareTo((String) javaValue);
             }
-            else if (javaType.getObject() instanceof Character) {
-                return this.lexeme.compareTo(String.valueOf(javaType.getObject()));
+            else if (javaValue instanceof Character) {
+                return this.lexeme.compareTo(String.valueOf(javaValue));
             }
             else {
                 throw new ExpressionRuntimeException("Could not compare " + this + " with " + other);
