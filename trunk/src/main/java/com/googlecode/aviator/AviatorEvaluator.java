@@ -1,5 +1,7 @@
 package com.googlecode.aviator;
 
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -20,8 +22,17 @@ import com.googlecode.aviator.parser.ExpressionParser;
  */
 public final class AviatorEvaluator {
     // The classloader to define generated class
-    private static AviatorClassLoader aviatorClassLoader =
-            new AviatorClassLoader(AviatorEvaluator.class.getClassLoader());
+    private static AviatorClassLoader aviatorClassLoader;
+
+    static {
+        aviatorClassLoader = AccessController.doPrivileged(new PrivilegedAction<AviatorClassLoader>() {
+
+            public AviatorClassLoader run() {
+                return new AviatorClassLoader(AviatorEvaluator.class.getClassLoader());
+            }
+
+        });
+    }
 
     /**
      * Compiled Expression cache
@@ -171,7 +182,7 @@ public final class AviatorEvaluator {
 
 
     /**
-     * Execute a text expression without caching 
+     * Execute a text expression without caching
      * 
      * @param expression
      * @return

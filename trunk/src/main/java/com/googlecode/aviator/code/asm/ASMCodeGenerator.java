@@ -49,9 +49,6 @@ public class ASMCodeGenerator implements CodeGenerator {
 
     private int maxStacks = 0;
 
-    // Argument at index 1
-    private final int maxLocals = 1;
-
 
     private void setMaxStacks(int newMaxStacks) {
         if (newMaxStacks > this.maxStacks) {
@@ -126,7 +123,7 @@ public class ASMCodeGenerator implements CodeGenerator {
             mv.visitInsn(ACONST_NULL);
             mv.visitInsn(ARETURN);
         }
-        mv.visitMaxs(maxStacks, maxLocals);
+        mv.visitMaxs(maxStacks, 1);
         mv.visitEnd();
         checkClassAdapter.visitEnd();
     }
