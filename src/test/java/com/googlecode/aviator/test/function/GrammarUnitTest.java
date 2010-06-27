@@ -11,6 +11,7 @@ import junit.framework.Assert;
 import org.junit.Test;
 
 import com.googlecode.aviator.AviatorEvaluator;
+import com.googlecode.aviator.exception.CompileExpressionErrorException;
 import com.googlecode.aviator.exception.ExpressionRuntimeException;
 
 
@@ -41,7 +42,7 @@ public class GrammarUnitTest {
         assertTrue((Boolean) AviatorEvaluator.execute("true"));
         assertFalse((Boolean) AviatorEvaluator.execute("false"));
 
-        assertEquals("\\w+\\d?\\..*", AviatorEvaluator.execute("/\\w+\\d?\\..*/"));
+        assertEquals("/\\w+\\d?\\..*/", AviatorEvaluator.execute("/\\w+\\d?\\..*/"));
         Map<String, Object> env = new HashMap<String, Object>();
         env.put("_a", 3);
         assertEquals(3, AviatorEvaluator.execute("_a", env));
@@ -380,21 +381,44 @@ public class GrammarUnitTest {
         assertFalse((Boolean) AviatorEvaluator.execute("'0'=~/^[0-9]*[1-9][0-9]*$/"));
         assertFalse((Boolean) AviatorEvaluator.execute("'-3'=~/^[0-9]*[1-9][0-9]*$/"));
         assertFalse((Boolean) AviatorEvaluator.execute("'aviator'=~/^[0-9]*[1-9][0-9]*$/"));
-        
+
         assertTrue((Boolean) AviatorEvaluator.execute("'-10'=~/^((-\\d+)|(0+))$/"));
         assertTrue((Boolean) AviatorEvaluator.execute("'-99'=~/^((-\\d+)|(0+))$/"));
         assertFalse((Boolean) AviatorEvaluator.execute("'99'=~/^((-\\d+)|(0+))$/"));
         assertFalse((Boolean) AviatorEvaluator.execute("'1'=~/^((-\\d+)|(0+))$/"));
         assertFalse((Boolean) AviatorEvaluator.execute("'aviator'=~/^((-\\d+)|(0+))$/"));
-        
-        //^-?\d+$
+
+        // ^-?\d+$
         assertTrue((Boolean) AviatorEvaluator.execute("'-10'=~/^-?\\d+$/"));
         assertTrue((Boolean) AviatorEvaluator.execute("'0'=~/^-?\\d+$/"));
         assertTrue((Boolean) AviatorEvaluator.execute("'10'=~/^-?\\d+$/"));
         assertFalse((Boolean) AviatorEvaluator.execute("'aviator'=~/^-?\\d+$/"));
-        
-        
-        
+
+        assertTrue((Boolean) AviatorEvaluator.execute("'abc'=~/^[A-Za-z]+$/"));
+        assertTrue((Boolean) AviatorEvaluator.execute("'ABC'=~/^[A-Za-z]+$/"));
+        assertFalse((Boolean) AviatorEvaluator.execute("'123'=~/^[A-Za-z]+$/"));
+
+        assertFalse((Boolean) AviatorEvaluator.execute("'abc'=~/^[A-Z]+$/"));
+        assertTrue((Boolean) AviatorEvaluator.execute("'ABC'=~/^[A-Z]+$/"));
+
+        assertTrue((Boolean) AviatorEvaluator.execute("'abc'=~/^[a-z]+$/"));
+        assertFalse((Boolean) AviatorEvaluator.execute("'ABC'=~/^[a-z]+$/"));
+
+        assertTrue((Boolean) AviatorEvaluator
+            .execute("'0595-97357355'=~/^((\\+?[0-9]{2,4}\\-[0-9]{3,4}\\-)|([0-9]{3,4}\\-))?([0-9]{7,8})(\\-[0-9]+)?$/"));
+        assertTrue((Boolean) AviatorEvaluator
+            .execute("'0595-3749306-020'=~/^((\\+?[0-9]{2,4}\\-[0-9]{3,4}\\-)|([0-9]{3,4}\\-))?([0-9]{7,8})(\\-[0-9]+)?$/"));
+        assertFalse((Boolean) AviatorEvaluator
+            .execute("'0595-abc'=~/^((\\+?[0-9]{2,4}\\-[0-9]{3,4}\\-)|([0-9]{3,4}\\-))?([0-9]{7,8})(\\-[0-9]+)?$/"));
+
+        assertTrue((Boolean) AviatorEvaluator.execute("'455729032'=~/^[1-9]*[1-9][0-9]*$/"));
+        assertFalse((Boolean) AviatorEvaluator.execute("'45d729032'=~/^[1-9]*[1-9][0-9]*$/"));
+        assertTrue((Boolean) AviatorEvaluator.execute("'<html>hello</html>'=~/<(.*)>.*<\\/\\1>|<(.*) \\/>/"));
+        assertTrue((Boolean) AviatorEvaluator
+            .execute("'127.0.0.1'=~/^(\\d{1,2}|1\\d\\d|2[0-4]\\d|25[0-5]).(\\d{1,2}|1\\d\\d|2[0-4]\\d|25[0-5]).(\\d{1,2}|1\\d\\d|2[0-4]\\d|25[0-5]).(\\d{1,2}|1\\d\\d|2[0-4]\\d|25[0-5])$/"));
+
+        assertFalse((Boolean) AviatorEvaluator
+            .execute("'127.0.0.'=~/^(\\d{1,2}|1\\d\\d|2[0-4]\\d|25[0-5]).(\\d{1,2}|1\\d\\d|2[0-4]\\d|25[0-5]).(\\d{1,2}|1\\d\\d|2[0-4]\\d|25[0-5]).(\\d{1,2}|1\\d\\d|2[0-4]\\d|25[0-5])$/"));
     }
 
 
@@ -572,6 +596,226 @@ public class GrammarUnitTest {
             Assert.fail();
         }
         catch (ExpressionRuntimeException e) {
+        }
+    }
+
+
+    @Test
+    public void testLogicOr() {
+        assertTrue((Boolean) AviatorEvaluator.execute("true||true"));
+        assertTrue((Boolean) AviatorEvaluator.execute("true||false"));
+        assertTrue((Boolean) AviatorEvaluator.execute("false||true"));
+        assertFalse((Boolean) AviatorEvaluator.execute("false||false"));
+        Map<String, Object> env = new HashMap<String, Object>();
+        env.put("a", Boolean.FALSE);
+        env.put("b", Boolean.TRUE);
+        env.put("s", "hello");
+        env.put("c", 3.3);
+
+        assertTrue((Boolean) AviatorEvaluator.execute("b||b", env));
+        assertTrue((Boolean) AviatorEvaluator.execute("b||a", env));
+        assertTrue((Boolean) AviatorEvaluator.execute("a||b", env));
+        assertFalse((Boolean) AviatorEvaluator.execute("a||a", env));
+
+        try {
+            AviatorEvaluator.execute("3 || true");
+            Assert.fail();
+        }
+        catch (ExpressionRuntimeException e) {
+
+        }
+        try {
+            AviatorEvaluator.execute("false || 3");
+            Assert.fail();
+        }
+        catch (ExpressionRuntimeException e) {
+
+        }
+        try {
+            AviatorEvaluator.execute("c || 3", env);
+            Assert.fail();
+        }
+        catch (ExpressionRuntimeException e) {
+
+        }
+        try {
+            AviatorEvaluator.execute("false || c", env);
+            Assert.fail();
+        }
+        catch (ExpressionRuntimeException e) {
+
+        }
+
+        try {
+            AviatorEvaluator.execute("false || s", env);
+            Assert.fail();
+        }
+        catch (ExpressionRuntimeException e) {
+
+        }
+        try {
+            AviatorEvaluator.execute("c || s", env);
+            Assert.fail();
+        }
+        catch (ExpressionRuntimeException e) {
+        }
+        try {
+            AviatorEvaluator.execute("/test/ || s", env);
+            Assert.fail();
+        }
+        catch (ExpressionRuntimeException e) {
+        }
+        // 测试短路
+        assertTrue((Boolean) AviatorEvaluator.execute("true || s"));
+        assertTrue((Boolean) AviatorEvaluator.execute("true || c"));
+        assertTrue((Boolean) AviatorEvaluator.execute("true || 3"));
+        assertTrue((Boolean) AviatorEvaluator.execute("true || /hello/"));
+    }
+
+
+    @Test
+    public void testLogicAnd() {
+        assertTrue((Boolean) AviatorEvaluator.execute("true&&true"));
+        assertFalse((Boolean) AviatorEvaluator.execute("true&&false"));
+        assertFalse((Boolean) AviatorEvaluator.execute("false && true"));
+        assertFalse((Boolean) AviatorEvaluator.execute("false    &&false"));
+        Map<String, Object> env = new HashMap<String, Object>();
+        env.put("a", Boolean.FALSE);
+        env.put("b", Boolean.TRUE);
+        env.put("s", "hello");
+        env.put("c", 3.3);
+
+        assertTrue((Boolean) AviatorEvaluator.execute("b&&  b", env));
+        assertFalse((Boolean) AviatorEvaluator.execute("b    &&a", env));
+        assertFalse((Boolean) AviatorEvaluator.execute("a&&b", env));
+        assertFalse((Boolean) AviatorEvaluator.execute("a    &&    a", env));
+
+        try {
+            AviatorEvaluator.execute("3 && true");
+            Assert.fail();
+        }
+        catch (ExpressionRuntimeException e) {
+
+        }
+        try {
+            AviatorEvaluator.execute("true && 3");
+            Assert.fail();
+        }
+        catch (ExpressionRuntimeException e) {
+
+        }
+        try {
+            AviatorEvaluator.execute("c && 3", env);
+            Assert.fail();
+        }
+        catch (ExpressionRuntimeException e) {
+
+        }
+        try {
+            AviatorEvaluator.execute("true && c", env);
+            Assert.fail();
+        }
+        catch (ExpressionRuntimeException e) {
+
+        }
+
+        try {
+            AviatorEvaluator.execute("true && s", env);
+            Assert.fail();
+        }
+        catch (ExpressionRuntimeException e) {
+
+        }
+        try {
+            AviatorEvaluator.execute("c&& s", env);
+            Assert.fail();
+        }
+        catch (ExpressionRuntimeException e) {
+        }
+        try {
+            AviatorEvaluator.execute("/test/ && s", env);
+            Assert.fail();
+        }
+        catch (ExpressionRuntimeException e) {
+        }
+        // 测试短路
+        assertFalse((Boolean) AviatorEvaluator.execute("false && s"));
+        assertFalse((Boolean) AviatorEvaluator.execute("false &&  c"));
+        assertFalse((Boolean) AviatorEvaluator.execute("false &&  3"));
+        assertFalse((Boolean) AviatorEvaluator.execute("false &&  /hello/"));
+
+    }
+
+
+    /*
+     * 测试三元表达式
+     */
+    @Test
+    public void testTernaryOperator() {
+        Map<String, Object> env = new HashMap<String, Object>();
+        int i = 0;
+        float f = 3.14f;
+        String email = "killme2008@gmail.com";
+        char ch = 'a';
+        boolean t = true;
+        env.put("i", i);
+        env.put("f", f);
+        env.put("email", email);
+        env.put("ch", ch);
+        env.put("t", t);
+
+        assertEquals(1, AviatorEvaluator.execute("2>1?1:0"));
+        assertEquals(0, AviatorEvaluator.execute("2<1?1:0"));
+        assertEquals(f, (Float) AviatorEvaluator.execute("false?i:f", env), 0.001);
+        assertEquals(i, AviatorEvaluator.execute("true?i:f", env));
+        assertEquals("killme2008", AviatorEvaluator.execute("email=~/([\\w0-9]+)@\\w+\\.\\w+/ ? $1:'unknow'", env));
+
+        assertEquals(f, (Float) AviatorEvaluator.execute("ch!='a'?i:f", env), 0.001);
+        assertEquals(i, AviatorEvaluator.execute("ch=='a'?i:f", env));
+        assertEquals(email, AviatorEvaluator.execute("t?email:ch", env));
+
+        // 多层嵌套
+        assertEquals(ch, AviatorEvaluator.execute("t? i>0? f:ch : email", env));
+
+        assertEquals(email, AviatorEvaluator.execute("!t? i>0? f:ch : f>3?email:ch", env));
+
+        // 使用括号
+        assertEquals(email, AviatorEvaluator.execute("!t? (i>0? f:ch) :( f>3?email:ch)", env));
+        // 测试错误情况
+        try {
+            AviatorEvaluator.execute("f?1:0", env);
+            Assert.fail();
+        }
+        catch (ExpressionRuntimeException e) {
+
+        }
+        try {
+            AviatorEvaluator.execute("'hello'?1:0");
+            Assert.fail();
+        }
+        catch (ExpressionRuntimeException e) {
+
+        }
+        try {
+            AviatorEvaluator.execute("/test/?1:0");
+            Assert.fail();
+        }
+        catch (ExpressionRuntimeException e) {
+
+        }
+        try {
+            AviatorEvaluator.execute("!t? (i>0? f:ch) : f>3?email:ch)", env);
+            Assert.fail();
+        }
+        catch (CompileExpressionErrorException e) {
+
+        }
+        try {
+            AviatorEvaluator.execute("!t? (i>0? f:ch : (f>3?email:ch)", env);
+            Assert.fail();
+        }
+        catch (CompileExpressionErrorException e) {
+
         }
     }
 
