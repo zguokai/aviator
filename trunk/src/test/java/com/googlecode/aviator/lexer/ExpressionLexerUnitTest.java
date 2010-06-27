@@ -437,4 +437,5 @@ public class ExpressionLexerUnitTest {
         assertEquals(4, token.getStartIndex());
 
     }
+
 }

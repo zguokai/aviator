@@ -215,11 +215,7 @@ public class GrammarUnitTest {
 
     @Test
     public void testAddOperandsLimit() {
-        // Add only support number and string
-        Map<String, Object> env = new HashMap<String, Object>();
-        env.put("d", -3.3);
-        env.put("s", "aviator");
-        env.put("bool", true);
+        Map<String, Object> env = createEnv();
 
         assertEquals(6, AviatorEvaluator.execute("1+2+3"));
         assertEquals(2.7, (Double) AviatorEvaluator.execute("6+d", env), 0.001);
@@ -260,5 +256,334 @@ public class GrammarUnitTest {
 
         }
 
+    }
+
+
+    @Test
+    public void testSubOperandsLimit() {
+        Map<String, Object> env = createEnv();
+        assertEquals(3, AviatorEvaluator.execute("6-1-2", env));
+        assertEquals(2.86, (Double) AviatorEvaluator.execute("6-3.14"), 0.001);
+        assertEquals(4.3, (Double) AviatorEvaluator.execute("1-d", env), 0.001);
+        assertEquals(0.0, (Double) AviatorEvaluator.execute("d-d", env), 0.001);
+        assertEquals(1003.3, (Double) AviatorEvaluator.execute("a-d", env), 0.001);
+        doArithOpIllegalOperands("-");
+    }
+
+
+    @Test
+    public void testMultOperandsLimit() {
+        Map<String, Object> env = createEnv();
+        assertEquals(300, AviatorEvaluator.execute("100*3", env));
+        assertEquals(18.84, (Double) AviatorEvaluator.execute("6*3.14"), 0.001);
+        assertEquals(-9.9, (Double) AviatorEvaluator.execute("d*3", env), 0.001);
+        assertEquals(10.89, (Double) AviatorEvaluator.execute("d*d", env), 0.001);
+        assertEquals(-3300, (Double) AviatorEvaluator.execute("a*d", env), 0.001);
+        doArithOpIllegalOperands("*");
+    }
+
+
+    @Test
+    public void testDivOperandsLimit() {
+        Map<String, Object> env = createEnv();
+        assertEquals(33, AviatorEvaluator.execute("100/3", env));
+        assertEquals(1.9108, (Double) AviatorEvaluator.execute("6/3.14"), 0.001);
+        assertEquals(-1.1, (Double) AviatorEvaluator.execute("d/3", env), 0.001);
+        assertEquals(1.0, (Double) AviatorEvaluator.execute("d/d", env), 0.001);
+        assertEquals(-303.030, (Double) AviatorEvaluator.execute("a/d", env), 0.001);
+        doArithOpIllegalOperands("/");
+    }
+
+
+    @Test
+    public void testModOperandsLimit() {
+        Map<String, Object> env = createEnv();
+        assertEquals(1, AviatorEvaluator.execute("100%3", env));
+        assertEquals(2.86, (Double) AviatorEvaluator.execute("6%3.14"), 0.001);
+        assertEquals(-0.29999, (Double) AviatorEvaluator.execute("d%3", env), 0.001);
+        assertEquals(0.0, (Double) AviatorEvaluator.execute("d%d", env), 0.001);
+        assertEquals(1000 % -3.3, (Double) AviatorEvaluator.execute("a%d", env), 0.001);
+        doArithOpIllegalOperands("%");
+    }
+
+
+    private void doArithOpIllegalOperands(String op) {
+        try {
+            AviatorEvaluator.execute("1" + op + "/\\d+/");
+            Assert.fail();
+        }
+        catch (ExpressionRuntimeException e) {
+        }
+        try {
+            AviatorEvaluator.execute("true" + op + "true");
+            Assert.fail();
+        }
+        catch (ExpressionRuntimeException e) {
+        }
+        try {
+            AviatorEvaluator.execute("'hello world'" + op + "'hello'");
+            Assert.fail();
+        }
+        catch (ExpressionRuntimeException e) {
+        }
+        try {
+            AviatorEvaluator.execute("1" + op + "s");
+            Assert.fail();
+        }
+        catch (ExpressionRuntimeException e) {
+        }
+
+        try {
+            AviatorEvaluator.execute("bool" + op + "d");
+            Assert.fail();
+        }
+        catch (ExpressionRuntimeException e) {
+        }
+        try {
+            AviatorEvaluator.execute("a" + op + "s");
+            Assert.fail();
+        }
+        catch (ExpressionRuntimeException e) {
+        }
+        try {
+            AviatorEvaluator.execute("s" + op + "1000");
+            Assert.fail();
+        }
+        catch (ExpressionRuntimeException e) {
+        }
+        try {
+            AviatorEvaluator.execute("bool" + op + "90.0");
+            Assert.fail();
+        }
+        catch (ExpressionRuntimeException e) {
+        }
+        try {
+            AviatorEvaluator.execute("/hello/" + op + "/good/");
+            Assert.fail();
+        }
+        catch (ExpressionRuntimeException e) {
+        }
+    }
+
+
+    @Test
+    public void testMatch() {
+        assertTrue((Boolean) AviatorEvaluator.execute("'10'=~/^\\d+$/"));
+        assertTrue((Boolean) AviatorEvaluator.execute("'99'=~/^\\d+$/"));
+        assertTrue((Boolean) AviatorEvaluator.execute("'0'=~/^\\d+$/"));
+        assertFalse((Boolean) AviatorEvaluator.execute("'-3'=~/^\\d+$/"));
+        assertFalse((Boolean) AviatorEvaluator.execute("'-0'=~/^\\d+$/"));
+        assertFalse((Boolean) AviatorEvaluator.execute("'aviator'=~/^\\d+$/"));
+
+        assertTrue((Boolean) AviatorEvaluator.execute("'10'=~/^[0-9]*[1-9][0-9]*$/"));
+        assertTrue((Boolean) AviatorEvaluator.execute("'1'=~/^[0-9]*[1-9][0-9]*$/"));
+        assertFalse((Boolean) AviatorEvaluator.execute("'0'=~/^[0-9]*[1-9][0-9]*$/"));
+        assertFalse((Boolean) AviatorEvaluator.execute("'-3'=~/^[0-9]*[1-9][0-9]*$/"));
+        assertFalse((Boolean) AviatorEvaluator.execute("'aviator'=~/^[0-9]*[1-9][0-9]*$/"));
+        
+        assertTrue((Boolean) AviatorEvaluator.execute("'-10'=~/^((-\\d+)|(0+))$/"));
+        assertTrue((Boolean) AviatorEvaluator.execute("'-99'=~/^((-\\d+)|(0+))$/"));
+        assertFalse((Boolean) AviatorEvaluator.execute("'99'=~/^((-\\d+)|(0+))$/"));
+        assertFalse((Boolean) AviatorEvaluator.execute("'1'=~/^((-\\d+)|(0+))$/"));
+        assertFalse((Boolean) AviatorEvaluator.execute("'aviator'=~/^((-\\d+)|(0+))$/"));
+        
+        //^-?\d+$
+        assertTrue((Boolean) AviatorEvaluator.execute("'-10'=~/^-?\\d+$/"));
+        assertTrue((Boolean) AviatorEvaluator.execute("'0'=~/^-?\\d+$/"));
+        assertTrue((Boolean) AviatorEvaluator.execute("'10'=~/^-?\\d+$/"));
+        assertFalse((Boolean) AviatorEvaluator.execute("'aviator'=~/^-?\\d+$/"));
+        
+        
+        
+    }
+
+
+    @Test
+    public void testComparePattern() {
+        Map<String, Object> env = createEnv();
+
+        assertTrue((Boolean) AviatorEvaluator.execute("p1==p1", env));
+        assertTrue((Boolean) AviatorEvaluator.execute("p1>=p1", env));
+        assertTrue((Boolean) AviatorEvaluator.execute("p1<=p1", env));
+        assertTrue((Boolean) AviatorEvaluator.execute("p1<p2", env));
+        assertTrue((Boolean) AviatorEvaluator.execute("p2>p1", env));
+        assertFalse((Boolean) AviatorEvaluator.execute("p1>=p2", env));
+        assertFalse((Boolean) AviatorEvaluator.execute("p2<=p1", env));
+        assertTrue((Boolean) AviatorEvaluator.execute("/aviator/>/abc/", env));
+        assertFalse((Boolean) AviatorEvaluator.execute("/aviator/</abc/", env));
+        try {
+            AviatorEvaluator.execute("3>/abc/");
+            Assert.fail();
+        }
+        catch (ExpressionRuntimeException e) {
+        }
+        try {
+            AviatorEvaluator.execute("'abc'!=/abc/");
+            Assert.fail();
+        }
+        catch (ExpressionRuntimeException e) {
+        }
+        try {
+            AviatorEvaluator.execute("3.999==p1");
+            Assert.fail();
+        }
+        catch (ExpressionRuntimeException e) {
+        }
+        try {
+            AviatorEvaluator.execute("false==p1");
+            Assert.fail();
+        }
+        catch (ExpressionRuntimeException e) {
+        }
+        try {
+            AviatorEvaluator.execute("p2<=bool");
+            Assert.fail();
+        }
+        catch (ExpressionRuntimeException e) {
+        }
+    }
+
+
+    @Test
+    public void testCompareString() {
+        Map<String, Object> env = createEnv();
+        assertTrue((Boolean) AviatorEvaluator.execute("'b'>'a'"));
+        assertTrue((Boolean) AviatorEvaluator.execute("'b'>='a'"));
+        assertTrue((Boolean) AviatorEvaluator.execute("'b'!='a'"));
+        assertFalse((Boolean) AviatorEvaluator.execute("'b'<'a'"));
+        assertFalse((Boolean) AviatorEvaluator.execute("'b'<='a'"));
+
+        assertTrue((Boolean) AviatorEvaluator.execute("s==s", env));
+        assertTrue((Boolean) AviatorEvaluator.execute("s>'abc'", env));
+        assertFalse((Boolean) AviatorEvaluator.execute("s<'abc'", env));
+        assertFalse((Boolean) AviatorEvaluator.execute("s<='abc'", env));
+        assertTrue((Boolean) AviatorEvaluator.execute("s!='abc'", env));
+        assertTrue((Boolean) AviatorEvaluator.execute("s>'abc'", env));
+        assertTrue((Boolean) AviatorEvaluator.execute("s==s", env));
+
+        try {
+            AviatorEvaluator.execute("bool>s");
+            Assert.fail();
+        }
+        catch (ExpressionRuntimeException e) {
+        }
+        try {
+            AviatorEvaluator.execute("true<'abc'");
+            Assert.fail();
+        }
+        catch (ExpressionRuntimeException e) {
+        }
+        try {
+            AviatorEvaluator.execute("s>bool");
+            Assert.fail();
+        }
+        catch (ExpressionRuntimeException e) {
+        }
+        try {
+            AviatorEvaluator.execute("100=='hello'");
+            Assert.fail();
+        }
+        catch (ExpressionRuntimeException e) {
+        }
+        try {
+            AviatorEvaluator.execute("s!=d");
+            Assert.fail();
+        }
+        catch (ExpressionRuntimeException e) {
+        }
+        try {
+            AviatorEvaluator.execute("/\\d+/<=s");
+            Assert.fail();
+        }
+        catch (ExpressionRuntimeException e) {
+        }
+        try {
+            AviatorEvaluator.execute("'hello'==/[a-zA-Z]/");
+            Assert.fail();
+        }
+        catch (ExpressionRuntimeException e) {
+        }
+    }
+
+
+    @Test
+    public void testCompareNumber() {
+        Map<String, Object> env = createEnv();
+        assertTrue((Boolean) AviatorEvaluator.execute("3>1"));
+        assertTrue((Boolean) AviatorEvaluator.execute("3>=1"));
+        assertTrue((Boolean) AviatorEvaluator.execute("3!=1"));
+        assertFalse((Boolean) AviatorEvaluator.execute("3<1"));
+        assertFalse((Boolean) AviatorEvaluator.execute("3<=1"));
+        assertFalse((Boolean) AviatorEvaluator.execute("3==1"));
+
+        assertTrue((Boolean) AviatorEvaluator.execute("3>=3"));
+        assertTrue((Boolean) AviatorEvaluator.execute("3<=3"));
+        assertTrue((Boolean) AviatorEvaluator.execute("d<0", env));
+        assertTrue((Boolean) AviatorEvaluator.execute("a>3", env));
+        assertTrue((Boolean) AviatorEvaluator.execute("d>=d", env));
+        assertFalse((Boolean) AviatorEvaluator.execute("d>0", env));
+        assertFalse((Boolean) AviatorEvaluator.execute("d>=0", env));
+        assertFalse((Boolean) AviatorEvaluator.execute("a<3", env));
+        assertFalse((Boolean) AviatorEvaluator.execute("d>=3", env));
+        assertFalse((Boolean) AviatorEvaluator.execute("a<=3", env));
+
+        assertTrue((Boolean) AviatorEvaluator.execute("a>=a", env));
+        assertTrue((Boolean) AviatorEvaluator.execute("a>d", env));
+        assertTrue((Boolean) AviatorEvaluator.execute("d<a", env));
+
+        try {
+            AviatorEvaluator.execute("bool>3");
+            Assert.fail();
+        }
+        catch (ExpressionRuntimeException e) {
+        }
+        try {
+            AviatorEvaluator.execute("true<100");
+            Assert.fail();
+        }
+        catch (ExpressionRuntimeException e) {
+        }
+        try {
+            AviatorEvaluator.execute("d>bool");
+            Assert.fail();
+        }
+        catch (ExpressionRuntimeException e) {
+        }
+        try {
+            AviatorEvaluator.execute("100=='hello'");
+            Assert.fail();
+        }
+        catch (ExpressionRuntimeException e) {
+        }
+        try {
+            AviatorEvaluator.execute("'good'>a");
+            Assert.fail();
+        }
+        catch (ExpressionRuntimeException e) {
+        }
+        try {
+            AviatorEvaluator.execute("/\\d+/>3");
+            Assert.fail();
+        }
+        catch (ExpressionRuntimeException e) {
+        }
+        try {
+            AviatorEvaluator.execute("4.9==/[a-zA-Z]/");
+            Assert.fail();
+        }
+        catch (ExpressionRuntimeException e) {
+        }
+    }
+
+
+    private Map<String, Object> createEnv() {
+        Map<String, Object> env = new HashMap<String, Object>();
+        env.put("d", -3.3);
+        env.put("s", "aviator");
+        env.put("bool", true);
+        env.put("a", 1000);
+        env.put("p1", "[a-z-A-Z]+");
+        env.put("p2", "\\d+\\.\\d+");
+        return env;
     }
 }

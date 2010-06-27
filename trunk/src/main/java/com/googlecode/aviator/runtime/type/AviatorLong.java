@@ -1,5 +1,7 @@
 package com.googlecode.aviator.runtime.type;
 
+import java.util.Map;
+
 import com.googlecode.aviator.exception.ExpressionRuntimeException;
 
 
@@ -12,7 +14,7 @@ public class AviatorLong extends AviatorNumber {
 
 
     @Override
-    public AviatorObject neg() {
+    public AviatorObject neg( Map<String, Object> env) {
         return new AviatorLong(-this.number.longValue());
     }
 

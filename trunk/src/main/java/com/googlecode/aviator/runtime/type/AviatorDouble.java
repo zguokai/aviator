@@ -1,5 +1,7 @@
 package com.googlecode.aviator.runtime.type;
 
+import java.util.Map;
+
 public class AviatorDouble extends AviatorNumber {
 
     public AviatorDouble(Number number) {
@@ -24,7 +26,7 @@ public class AviatorDouble extends AviatorNumber {
 
 
     @Override
-    public AviatorObject neg() {
+    public AviatorObject neg( Map<String, Object> env) {
         return new AviatorDouble(-this.number.doubleValue());
     }
 

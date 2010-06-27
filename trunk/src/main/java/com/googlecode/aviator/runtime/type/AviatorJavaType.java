@@ -11,7 +11,8 @@ import com.googlecode.aviator.exception.ExpressionRuntimeException;
  * Aviator variable
  */
 public class AviatorJavaType extends AviatorObject {
-    protected final Object object;
+
+    final private String name;
 
 
     @Override
@@ -20,147 +21,143 @@ public class AviatorJavaType extends AviatorObject {
     }
 
 
-    public AviatorJavaType(Object object) {
+    public AviatorJavaType(String name) {
         super();
-        this.object = object;
+        this.name = name;
     }
 
 
-    public AviatorJavaType(Map<String, Object> env, String name) {
-        super();
+    @Override
+    public AviatorObject div(AviatorObject other, Map<String, Object> env) {
+        final Object value = getValue(env);
+        switch (other.getAviatorType()) {
+        case Number:
+            if (value instanceof Number) {
+                AviatorNumber aviatorNumber = AviatorNumber.valueOf(value);
+                return aviatorNumber.div(other, env);
+            }
+            else {
+                return super.div(other, env);
+            }
+        case JavaType:
+            if (value instanceof Number) {
+                AviatorNumber thisAviatorNumber = AviatorNumber.valueOf(value);
+                return thisAviatorNumber.div(other, env);
+            }
+            else {
+                return super.div(other, env);
+            }
+        default:
+            return super.div(other, env);
+        }
+    }
+
+
+    @Override
+    public Object getValue(Map<String, Object> env) {
         try {
-            this.object = PropertyUtils.getProperty(env, name);
+            if (env != null) {
+                return PropertyUtils.getProperty(env, name);
+            }
+            return null;
         }
-        catch (Exception e) {
-            throw new ExpressionRuntimeException("Could not get variable " + name + " value", e);
+        catch (Throwable t) {
+            throw new ExpressionRuntimeException("Could not find variable " + name, t);
         }
-    }
-
-
-    public Object getObject() {
-        return object;
     }
 
 
     @Override
-    public AviatorObject div(AviatorObject other) {
+    public AviatorObject mod(AviatorObject other, Map<String, Object> env) {
+        final Object value = getValue(env);
         switch (other.getAviatorType()) {
         case Number:
-            if (this.object instanceof Number) {
-                AviatorNumber aviatorNumber = AviatorNumber.valueOf(this.object);
-                return aviatorNumber.div(other);
+            if (value instanceof Number) {
+                AviatorNumber aviatorNumber = AviatorNumber.valueOf(value);
+                return aviatorNumber.mod(other, env);
             }
             else {
-                return super.div(other);
+                return super.mod(other, env);
             }
         case JavaType:
-            if (this.object instanceof Number) {
-                AviatorNumber thisAviatorNumber = AviatorNumber.valueOf(object);
-                return thisAviatorNumber.div(other);
+            if (value instanceof Number) {
+                AviatorNumber thisAviatorNumber = AviatorNumber.valueOf(value);
+                return thisAviatorNumber.mod(other, env);
             }
             else {
-                return super.div(other);
+                return super.mod(other, env);
             }
         default:
-            return super.div(other);
+            return super.mod(other, env);
         }
     }
 
 
     @Override
-    public Object getValue() {
-        return this.object;
-    }
-
-
-    @Override
-    public AviatorObject mod(AviatorObject other) {
+    public AviatorObject sub(AviatorObject other, Map<String, Object> env) {
+        final Object value = getValue(env);
         switch (other.getAviatorType()) {
         case Number:
-            if (this.object instanceof Number) {
-                AviatorNumber aviatorNumber = AviatorNumber.valueOf(this.object);
-                return aviatorNumber.mod(other);
+            if (value instanceof Number) {
+                AviatorNumber aviatorNumber = AviatorNumber.valueOf(value);
+                return aviatorNumber.sub(other, env);
             }
             else {
-                return super.mod(other);
+                return super.sub(other, env);
             }
         case JavaType:
-            if (this.object instanceof Number) {
-                AviatorNumber thisAviatorNumber = AviatorNumber.valueOf(object);
-                return thisAviatorNumber.mod(other);
+            if (value instanceof Number) {
+                AviatorNumber thisAviatorNumber = AviatorNumber.valueOf(value);
+                return thisAviatorNumber.sub(other, env);
             }
             else {
-                return super.mod(other);
+                return super.sub(other, env);
             }
         default:
-            return super.mod(other);
-        }
-    }
-
-
-    @Override
-    public AviatorObject sub(AviatorObject other) {
-        switch (other.getAviatorType()) {
-        case Number:
-            if (this.object instanceof Number) {
-                AviatorNumber aviatorNumber = AviatorNumber.valueOf(this.object);
-                return aviatorNumber.sub(other);
-            }
-            else {
-                return super.sub(other);
-            }
-        case JavaType:
-            if (this.object instanceof Number) {
-                AviatorNumber thisAviatorNumber = AviatorNumber.valueOf(object);
-                return thisAviatorNumber.sub(other);
-            }
-            else {
-                return super.sub(other);
-            }
-        default:
-            return super.sub(other);
+            return super.sub(other, env);
         }
     }
 
 
     @Override
     @SuppressWarnings("unchecked")
-    public int compare(AviatorObject other) {
+    public int compare(AviatorObject other, Map<String, Object> env) {
         switch (other.getAviatorType()) {
         case Number:
             AviatorNumber aviatorNumber = (AviatorNumber) other;
-            return -aviatorNumber.compare(this);
+            return -aviatorNumber.compare(this, env);
         case String:
             AviatorString aviatorString = (AviatorString) other;
-            return -aviatorString.compare(this);
+            return -aviatorString.compare(this, env);
         case Boolean:
             AviatorBoolean aviatorBoolean = (AviatorBoolean) other;
-            return -aviatorBoolean.compare(this);
+            return -aviatorBoolean.compare(this, env);
         case JavaType:
             AviatorJavaType otherJavaType = (AviatorJavaType) other;
-            if (this.object.equals(otherJavaType.object)) {
+            final Object value = getValue(env);
+            if (value.equals(otherJavaType.getValue(env))) {
                 return 0;
             }
             else {
-                if (this.object instanceof Number) {
-                    AviatorNumber thisAviatorNumber = AviatorNumber.valueOf(object);
-                    return thisAviatorNumber.compare(other);
+                if (value instanceof Number) {
+                    AviatorNumber thisAviatorNumber = AviatorNumber.valueOf(value);
+                    return thisAviatorNumber.compare(other, env);
                 }
-                else if (this.object instanceof String) {
-                    AviatorString thisAviatorString = new AviatorString((String) object);
-                    return thisAviatorString.compare(other);
+                else if (value instanceof String) {
+                    AviatorString thisAviatorString = new AviatorString((String) value);
+                    return thisAviatorString.compare(other, env);
                 }
-                else if (this.object instanceof Character) {
-                    AviatorString thisAviatorString = new AviatorString(String.valueOf(object));
-                    return thisAviatorString.compare(other);
+                else if (value instanceof Character) {
+                    AviatorString thisAviatorString = new AviatorString(String.valueOf(value));
+                    return thisAviatorString.compare(other, env);
                 }
-                else if (this.object instanceof Boolean) {
-                    AviatorBoolean thisAviatorBoolean = new AviatorBoolean((Boolean) this.object);
-                    return thisAviatorBoolean.compare(other);
+                else if (value instanceof Boolean) {
+                    AviatorBoolean thisAviatorBoolean = new AviatorBoolean((Boolean) value);
+                    return thisAviatorBoolean.compare(other, env);
                 }
                 else {
                     try {
-                        return ((Comparable) object).compareTo(otherJavaType.object);
+                        return ((Comparable) value).compareTo(otherJavaType.getValue(env));
                     }
                     catch (Throwable t) {
                         throw new ExpressionRuntimeException("Compare " + this + " with " + other + " error", t);
@@ -174,71 +171,75 @@ public class AviatorJavaType extends AviatorObject {
 
 
     @Override
-    public AviatorObject mult(AviatorObject other) {
+    public AviatorObject mult(AviatorObject other, Map<String, Object> env) {
+        final Object value = getValue(env);
         switch (other.getAviatorType()) {
         case Number:
-            if (this.object instanceof Number) {
-                AviatorNumber aviatorNumber = AviatorNumber.valueOf(this.object);
-                return aviatorNumber.mult(other);
+            if (value instanceof Number) {
+                AviatorNumber aviatorNumber = AviatorNumber.valueOf(value);
+                return aviatorNumber.mult(other, env);
             }
             else {
-                return super.mult(other);
+                return super.mult(other, env);
             }
         case JavaType:
-            if (this.object instanceof Number) {
-                AviatorNumber thisAviatorNumber = AviatorNumber.valueOf(object);
-                return thisAviatorNumber.mult(other);
+            if (value instanceof Number) {
+                AviatorNumber thisAviatorNumber = AviatorNumber.valueOf(value);
+                return thisAviatorNumber.mult(other, env);
             }
             else {
-                return super.mult(other);
+                return super.mult(other, env);
             }
         default:
-            return super.mult(other);
+            return super.mult(other, env);
         }
     }
 
 
     @Override
-    public AviatorObject neg() {
-        if (this.object instanceof Number) {
-            return AviatorNumber.valueOf(this.object).neg();
+    public AviatorObject neg(Map<String, Object> env) {
+        final Object value = getValue(env);
+        if (value instanceof Number) {
+            return AviatorNumber.valueOf(value).neg(env);
         }
         else {
-            return super.neg();
+            return super.neg(env);
         }
     }
 
 
     @Override
-    public AviatorObject not() {
-        if (this.object instanceof Boolean) {
-            return new AviatorBoolean((Boolean) this.object).not();
+    public AviatorObject not(Map<String, Object> env) {
+        final Object value = getValue(env);
+        if (value instanceof Boolean) {
+            return new AviatorBoolean((Boolean) value).not(env);
         }
         else {
-            return super.not();
+            return super.not(env);
         }
     }
 
 
     @Override
-    public AviatorObject add(AviatorObject other) {
-        if (this.object instanceof String) {
-            AviatorString aviatorString = new AviatorString((String) object);
-            return aviatorString.add(other);
+    public AviatorObject add(AviatorObject other, Map<String, Object> env) {
+        final Object value = getValue(env);
+        if (value instanceof String) {
+            AviatorString aviatorString = new AviatorString((String) value);
+            return aviatorString.add(other, env);
         }
-        else if (this.object instanceof Character) {
-            AviatorString aviatorString = new AviatorString(String.valueOf(object));
-            return aviatorString.add(other);
+        else if (value instanceof Character) {
+            AviatorString aviatorString = new AviatorString(String.valueOf(value));
+            return aviatorString.add(other, env);
         }
-        else if (this.object instanceof Number) {
-            AviatorNumber aviatorNumber = AviatorNumber.valueOf(object);
-            return aviatorNumber.add(other);
+        else if (value instanceof Number) {
+            AviatorNumber aviatorNumber = AviatorNumber.valueOf(value);
+            return aviatorNumber.add(other, env);
         }
-        else if (this.object instanceof Boolean) {
-            return new AviatorBoolean((Boolean) object).add(other);
+        else if (value instanceof Boolean) {
+            return new AviatorBoolean((Boolean) value).add(other, env);
         }
         else {
-            return super.add(other);
+            return super.add(other, env);
         }
     }
 

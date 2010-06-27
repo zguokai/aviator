@@ -401,4 +401,21 @@ public class ExpressionParserUnitTest {
         this.parser.parse();
     }
 
+
+    @Test
+    public void testParseGroup() {
+        this.parser = new ExpressionParser(new ExpressionLexer("'3.45'=~/(\\d+)\\.(\\d+)/ ? $2 : $0 "), codeGenerator);
+        this.parser.parse();
+        assertEquals("3.45 (\\d+)\\.(\\d+) =~ $2 $0 ?:", this.codeGenerator.getPostFixExpression());
+    }
+
+
+    @Test(expected = ExpressionSyntaxErrorException.class)
+    public void testParseIllegalGroup1() {
+        this.parser =
+                new ExpressionParser(new ExpressionLexer("'3.45'=~/(\\d+)\\.(\\d+)/ ? $2.3 : $0 "), codeGenerator);
+        this.parser.parse();
+
+    }
+
 }
