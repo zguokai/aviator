@@ -306,7 +306,7 @@ public class ExpressionParser {
                 String[] names = lookhead.getLexeme().split("\\.");
                 for (String name : names) {
                     if (!isJavaIdentifier(name)) {
-                        reportSyntaxError();
+                        reportSyntaxError("Illegal identifier " + name + ",index=" + lookhead.getStartIndex());
                     }
                 }
             }
@@ -348,6 +348,9 @@ public class ExpressionParser {
             if (!(java.lang.Character.isJavaIdentifierPart(id.charAt(i)))) {
                 return false;
             }
+        }
+        if (id.equals("null")) {
+            return false;
         }
         return true;
     }

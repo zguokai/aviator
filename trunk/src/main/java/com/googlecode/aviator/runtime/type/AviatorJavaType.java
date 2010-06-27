@@ -164,6 +164,14 @@ public class AviatorJavaType extends AviatorObject {
                     }
                 }
             }
+        case Nil:
+            // Any object is greater than nil except nil
+            if (this.getValue(env) == null) {
+                return 0;
+            }
+            else {
+                return 1;
+            }
         default:
             throw new ExpressionRuntimeException("Unknow aviator type");
         }

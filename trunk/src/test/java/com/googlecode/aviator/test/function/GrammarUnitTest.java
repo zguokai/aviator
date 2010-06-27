@@ -820,6 +820,54 @@ public class GrammarUnitTest {
     }
 
 
+    /**
+     * 测试nil
+     */
+    @Test
+    public void testNilObject() {
+        assertTrue((Boolean) AviatorEvaluator.execute("a==nil"));
+        assertTrue((Boolean) AviatorEvaluator.execute("nil==a"));
+
+        assertFalse((Boolean) AviatorEvaluator.execute("3==nil"));
+        assertTrue((Boolean) AviatorEvaluator.execute("3!=nil"));
+
+        assertFalse((Boolean) AviatorEvaluator.execute("3.5==nil"));
+        assertTrue((Boolean) AviatorEvaluator.execute("3.5!=nil"));
+
+        assertFalse((Boolean) AviatorEvaluator.execute("true==nil"));
+        assertTrue((Boolean) AviatorEvaluator.execute("true!=nil"));
+
+        assertFalse((Boolean) AviatorEvaluator.execute("false==nil"));
+        assertTrue((Boolean) AviatorEvaluator.execute("false!=nil"));
+
+        assertTrue((Boolean) AviatorEvaluator.execute("nil==nil"));
+        assertFalse((Boolean) AviatorEvaluator.execute("nil!=nil"));
+
+        assertFalse((Boolean) AviatorEvaluator.execute("'a'==nil"));
+        assertTrue((Boolean) AviatorEvaluator.execute("'a'!=nil"));
+
+        assertFalse((Boolean) AviatorEvaluator.execute("/\\d+/==nil"));
+        assertTrue((Boolean) AviatorEvaluator.execute("/\\d+/!=nil"));
+
+        Map<String, Object> env = createEnv();
+        assertFalse((Boolean) AviatorEvaluator.execute("p1==nil", env));
+        assertTrue((Boolean) AviatorEvaluator.execute("p1>nil", env));
+
+        assertFalse((Boolean) AviatorEvaluator.execute("d==nil", env));
+        assertTrue((Boolean) AviatorEvaluator.execute("d>nil", env));
+
+        assertFalse((Boolean) AviatorEvaluator.execute("s==nil", env));
+        assertTrue((Boolean) AviatorEvaluator.execute("s>nil", env));
+
+        assertFalse((Boolean) AviatorEvaluator.execute("bool==nil", env));
+        assertTrue((Boolean) AviatorEvaluator.execute("bool>nil", env));
+
+        assertFalse((Boolean) AviatorEvaluator.execute("a==nil", env));
+        assertTrue((Boolean) AviatorEvaluator.execute("a>nil", env));
+
+    }
+
+
     private Map<String, Object> createEnv() {
         Map<String, Object> env = new HashMap<String, Object>();
         env.put("d", -3.3);
