@@ -294,7 +294,7 @@ public class ExpressionLexerUnitTest {
     @Test(expected = CompileExpressionErrorException.class)
     public void testExpression_WithIllegalString() {
         this.lexer = new ExpressionLexer("'hello \" world");
-        Token<?> token = lexer.scan();
+        lexer.scan();
     }
 
 

@@ -4,6 +4,8 @@ import static org.junit.Assert.*;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -24,8 +26,14 @@ public class ASMCodeGeneratorUnitTest {
 
     @Before
     public void setUp() {
-        this.codeGenerator =
-                new ASMCodeGenerator(new AviatorClassLoader(Thread.currentThread().getContextClassLoader()), true);
+        final AviatorClassLoader classloader =
+                AccessController.doPrivileged(new PrivilegedAction<AviatorClassLoader>() {
+                    public AviatorClassLoader run() {
+                        return new AviatorClassLoader(Thread.currentThread().getContextClassLoader());
+                    }
+                });
+
+        this.codeGenerator = new ASMCodeGenerator(classloader, true);
     }
 
 
