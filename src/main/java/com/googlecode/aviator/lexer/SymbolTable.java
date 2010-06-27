@@ -20,6 +20,7 @@ public class SymbolTable {
     public SymbolTable() {
         reserve("true", Variable.TRUE);
         reserve("false", Variable.FALSE);
+        reserve("nil", Variable.NIL);
     }
 
 

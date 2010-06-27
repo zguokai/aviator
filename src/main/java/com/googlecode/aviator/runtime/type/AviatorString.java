@@ -75,6 +75,8 @@ public class AviatorString extends AviatorObject {
             else {
                 throw new ExpressionRuntimeException("Could not compare " + this + " with " + other);
             }
+        case Nil:
+            return 1;
         default:
             throw new ExpressionRuntimeException("Could not compare " + this + " with " + other);
         }

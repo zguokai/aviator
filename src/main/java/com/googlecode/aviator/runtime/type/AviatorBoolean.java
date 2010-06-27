@@ -74,6 +74,8 @@ public class AviatorBoolean extends AviatorObject {
             else {
                 throw new ExpressionRuntimeException("Could not compare " + desc(env) + " with " + other.desc(env));
             }
+        case Nil:
+            return 1;
         default:
             throw new ExpressionRuntimeException("Could not compare " + this.desc(env) + " with " + other.desc(env));
         }

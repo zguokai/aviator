@@ -11,5 +11,6 @@ public enum AviatorType {
     String,
     JavaType,
     Boolean,
-    Pattern
+    Pattern,
+    Nil
 }

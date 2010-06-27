@@ -577,6 +577,11 @@ public class ASMCodeGenerator implements CodeGenerator {
                     "Lcom/googlecode/aviator/runtime/type/AviatorBoolean;");
                 pushOperand(lookhead, 0);
             }
+            else if (variable.equals(Variable.NIL)) {
+                mv.visitFieldInsn(GETSTATIC, "com/googlecode/aviator/runtime/type/AviatorNil", "NIL",
+                    "Lcom/googlecode/aviator/runtime/type/AviatorNil;");
+                pushOperand(lookhead, 0);
+            }
             else {
                 mv.visitTypeInsn(NEW, "com/googlecode/aviator/runtime/type/AviatorJavaType");
                 mv.visitInsn(DUP);

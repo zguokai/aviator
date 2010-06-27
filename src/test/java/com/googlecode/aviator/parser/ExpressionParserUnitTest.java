@@ -24,6 +24,27 @@ public class ExpressionParserUnitTest {
 
 
     @Test(expected = ExpressionSyntaxErrorException.class)
+    public void testIllegalIdentifier1() {
+        this.parser = new ExpressionParser(new ExpressionLexer("null"), codeGenerator);
+        this.parser.parse();
+    }
+
+
+    @Test(expected = ExpressionSyntaxErrorException.class)
+    public void testIllegalIdentifier2() {
+        this.parser = new ExpressionParser(new ExpressionLexer("a.null"), codeGenerator);
+        this.parser.parse();
+    }
+
+
+    @Test(expected = ExpressionSyntaxErrorException.class)
+    public void testIllegalIdentifier3() {
+        this.parser = new ExpressionParser(new ExpressionLexer("a3.2"), codeGenerator);
+        this.parser.parse();
+    }
+
+
+    @Test(expected = ExpressionSyntaxErrorException.class)
     public void testParseBlankExpression1() {
         this.parser = new ExpressionParser(new ExpressionLexer(""), codeGenerator);
         this.parser.parse();

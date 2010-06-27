@@ -35,6 +35,18 @@ public class Variable extends AbstractToken<Object> {
 
     };
 
+    /**
+     * Boolean value false
+     */
+    public static final Variable NIL = new Variable("nil", -1) {
+
+        @Override
+        public Object getValue(Map<String, Object> env) {
+            return null;
+        }
+
+    };
+
 
     public com.googlecode.aviator.lexer.token.Token.TokenType getType() {
         return TokenType.Variable;

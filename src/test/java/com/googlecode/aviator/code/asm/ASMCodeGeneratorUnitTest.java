@@ -38,6 +38,16 @@ public class ASMCodeGeneratorUnitTest {
 
 
     @Test
+    public void testOnConstant_Nil() throws Exception {
+        this.codeGenerator.onConstant(Variable.NIL);
+        Class<?> clazz = this.codeGenerator.getResult();
+        Method runMethod = clazz.getDeclaredMethod("run", Map.class);
+        Object result = runMethod.invoke(null, new HashMap<String, Object>());
+        assertNull(result);
+    }
+
+
+    @Test
     public void testOnConstant_Long() throws Exception {
         this.codeGenerator.onConstant(new NumberToken(3L, "3"));
         Class<?> clazz = this.codeGenerator.getResult();

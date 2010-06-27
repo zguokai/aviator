@@ -84,10 +84,14 @@ public class AviatorPattern extends AviatorObject {
 
     @Override
     public int compare(AviatorObject other, Map<String, Object> env) {
-        if (other.getAviatorType() != AviatorType.Pattern) {
+        switch (other.getAviatorType()) {
+        case Pattern:
+            return this.pattern.pattern().compareTo(((AviatorPattern) other).pattern.pattern());
+        case Nil:
+            return 1;
+        default:
             throw new ExpressionRuntimeException("Could not compare Pattern with " + other.getAviatorType());
         }
-        return this.pattern.pattern().compareTo(((AviatorPattern) other).pattern.pattern());
     }
 
 
