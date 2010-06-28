@@ -90,10 +90,102 @@ AviatorEvaluator.execute(" 'hello '+ unknow ");  //字符串 hello null
 
 === 编译表达式 ===
 
-上面提到的例子都是直接执行表达式，事实上Aviator背后都帮你做了编译并执行的工作。你可以自己先编译表达式，返回一个编译的结果，然后传入不同的env来复用编译结果，提高性能
+上面提到的例子都是直接执行表达式，事实上Aviator背后都帮你做了编译并执行的工作。你可以自己先编译表达式，返回一个编译的结果，然后传入不同的env来复用编译结果，提高性能，这是更推荐的使用方式：
 {{{
-  
+import java.util.HashMap;
+import java.util.Map;
+
+import com.googlecode.aviator.AviatorEvaluator;
+import com.googlecode.aviator.Expression;
+
+public class CompileExample {
+    public static void main(String[] args) {
+        String expression = "a-(b-c)>100";
+        // 编译表达式
+        Expression compiledExp = AviatorEvaluator.compile(expression);
+
+        Map<String, Object> env = new HashMap<String, Object>();
+        env.put("a", 100.3);
+        env.put("b", 45);
+        env.put("c", -199.100);
+
+        // 执行表达式
+        Boolean result = (Boolean) compiledExp.execute(env);
+        System.out.println(result);
+    }
+}
+
 }}}
+
+通过compile方法可以将表达式编译成Expression的中间对象，当要执行表达式的时候传入env并调用Expression的execute方法即可。表达式中使用了括号来强制优先级，这个例子还使用了>用于比较数值大小，比较运算符!=、==、>、>=、<、<=不仅可以用于数值，也可以用于String、Pattern、Boolean等等，甚至是任何用户传入的两个都实现了java.lang。Comparable接口的对象之间。
+
+== 三元操作符 ==
+Aviator不提供if else语句，但是提供了三元操作符?:用于条件判断，使用上与java没有什么不同：
+{{{
+import java.util.HashMap;
+import java.util.Map;
+
+import com.googlecode.aviator.AviatorEvaluator;
+
+
+public class TernaryOperatorExample {
+    public static void main(String[] args) {
+        if (args.length < 1) {
+            System.err.println("Usage: java TernaryOperatorExample [number]");
+            System.exit(1);
+        }
+        int num = Integer.parseInt(args[0]);
+        Map<String, Object> env = new HashMap<String, Object>();
+        env.put("a", num);
+        String result = (String) AviatorEvaluator.execute("a>0? 'yes':'no'", env);
+        System.out.println(result);
+    }
+}
+
+}}}
+
+这个例子用来判断用户传入的数字是否是正整数，是的话打印yes。
+
+Aviator的三元表达式对于两个分支的结果类型并不要求一致，可以是任何类型，这一点与java不同。
+
+== 正则表达式匹配 ==
+
+Aviator支持类Ruby和Perl风格的表达式匹配运算，通过=~操作符，如下面这个例子匹配email并提取用户名返回：
+{{{
+import java.util.HashMap;
+import java.util.Map;
+
+import com.googlecode.aviator.AviatorEvaluator;
+
+public class RegularExpressionExample {
+    public static void main(String[] args) {
+        String email = "killme2008@gmail.com";
+        Map<String, Object> env = new HashMap<String, Object>();
+        env.put("email", email);
+        String username = (String) AviatorEvaluator.execute("email=~/([\\w0-8]+@\\w+[\\.\\w+]+)/ ? $1:'unknow'", env);
+        System.out.println(username);
+    }
+}
+}}}
+
+email与正则表达式//([\\w0-8]+@\\w+[\\.\\w+]+)/通过=~操作符来匹配，结果为一个Boolean类型，因此可以用于三元表达式判断，匹配成功的时候返回$1，指代正则表达式的分组1，也就是用户名，否则返回unknown。这个例子将打印killme2008这个用户名。
+
+Aviator在表达式级别支持正则表达式，通过//括起来的字符序列构成一个正则表达式，正则表达式可以用于匹配（作为=~的右操作数)、比较大小，匹配仅能与字符串进行匹配。匹配成功后，Aviator会自动将匹配成功的分组放入$num的变量中，其中$0指代整个匹配的字符串，而$1表示第一个分组，以此类推。
+
+Aviator的正则表达式规则跟Java完全一样，因为内部其实就是使用java.util.regex.Pattern做编译的。
+
+== 变量访问的语法糖衣 ==
+
+
+
+
+
+
+
+
+
+
+
 
 
 
