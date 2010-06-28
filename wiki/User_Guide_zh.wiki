@@ -88,7 +88,7 @@ AviatorEvaluator.execute(" 'hello'+3 ");  //字符串 hello 3
 AviatorEvaluator.execute(" 'hello '+ unknow ");  //字符串 hello null
 }}}
 
-=== 编译表达式 ===
+== 编译表达式 ==
 
 上面提到的例子都是直接执行表达式，事实上Aviator背后都帮你做了编译并执行的工作。你可以自己先编译表达式，返回一个编译的结果，然后传入不同的env来复用编译结果，提高性能，这是更推荐的使用方式：
 {{{
