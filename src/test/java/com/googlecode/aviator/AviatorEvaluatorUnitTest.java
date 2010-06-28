@@ -38,6 +38,26 @@ public class AviatorEvaluatorUnitTest {
 
 
     @Test
+    public void testInvalidateCache() {
+        Expression exp1 = AviatorEvaluator.compile("1+3", true);
+        Expression exp2 = AviatorEvaluator.compile("1+3", true);
+        assertNotNull(exp1);
+        assertNotNull(exp2);
+        assertSame(exp1, exp2);
+
+        AviatorEvaluator.invalidateCache("1+3");
+        Expression exp3 = AviatorEvaluator.compile("1+3", true);
+        assertNotSame(exp1, exp3);
+
+        assertEquals(4, exp1.execute(null));
+        assertEquals(4, exp2.execute(null));
+
+        assertEquals(4, exp3.execute(null));
+
+    }
+
+
+    @Test
     public void evaluatorWithoutCache() {
         Map<String, Object> env = new HashMap<String, Object>();
         env.put("a", "hello");

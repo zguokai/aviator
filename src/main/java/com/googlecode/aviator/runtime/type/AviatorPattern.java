@@ -74,10 +74,10 @@ public class AviatorPattern extends AviatorObject {
                 return match(new AviatorString(String.valueOf(javaValue)), env);
             }
             else {
-                throw new ExpressionRuntimeException(this + " could not match " + other);
+                throw new ExpressionRuntimeException(this.desc(env) + " could not match " + other.desc(env));
             }
         default:
-            throw new ExpressionRuntimeException(this + " could not match " + other);
+            throw new ExpressionRuntimeException(this.desc(env) + " could not match " + other.desc(env));
         }
 
     }
