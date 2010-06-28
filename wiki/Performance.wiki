@@ -2,7 +2,7 @@
 #labels Phase-Support,Featured
 
 = Introduction =
-这个测试本质上是不公平的，因为实现的机制完全不同，这里只是为了做一个直观的比较，对Aviator的性能有个直观的感受。参与测试的包括Aviator、groovy和IKExpression。
+这个测试本质上是不公平的，因为实现的机制完全不同，这里只是为了做一个直观的比较，让用户对Aviator的性能有个直观的感受。参与测试的包括Aviator、groovy和IKExpression。
 
 
 = 硬件和软件 =
@@ -17,9 +17,9 @@
 
  * Aviator :  1.0-RC
 
- * Groovy:  
+ * Groovy:    groovy-all-1.3-jsr-03
 
- * IKExpression :
+ * IKExpression :  2.1.2
 
 = 测试方法 =
 
@@ -56,3 +56,27 @@
 结论： Aviator仍然是最快的，IKExpression由于是解释执行结果较差。
 
 = 场景3 =
+
+计算算术表达式和逻辑表达式的混合，带有5个变量的表达式：
+{{{
+i * pi + (d * b - 199) / (1 - d * pi) - (2 + 100 - i / pi) % 99 ==i * pi + (d * b - 199) / (1 - d * pi) - (2 + 100 - i / pi) % 99
+}}}
+
+变量设定为：
+{{{
+        int i = 100;
+        float pi = 3.14f;
+        double d = -3.9;
+        byte b = (byte) 4;
+        boolean bool=false;
+}}}
+
+每次执行前都重新设置这些变量的值。
+
+结果：
+|| 测试 || 耗时（单位:秒）||
+|| Aviator || 31.6        ||
+|| Groovy  || 123.9      ||
+|| IKExpression ||  执行错误  ||
+
+结论： Aviator的性能仍然表现的非常优秀。
