@@ -19,6 +19,8 @@ Aviator的设计目标是*轻量级*和*高性能 *，相比于Groovy、JRuby的
 Aviator的特性
 
  * 支持大部分运算操作符，包括算术操作符、关系运算符、逻辑操作符、正则匹配操作符(=~)、三元表达式?: ，并且支持操作符的优先级和括号强制优先级，具体请看后面的操作符列表。
+ 
+ * 支持函数调用和自定义函数
 
  * 支持正则表达式匹配，类似Ruby、Perl的匹配语法，并且支持类Ruby的$digit指向匹配分组。
 
@@ -31,8 +33,6 @@ Aviator的特性
 Aviator的限制：
 
  * 没有if else、do while等语句，没有赋值语句，仅支持逻辑表达式、算术表达式、三元表达式和正则匹配。
-
- * 不支持函数调用
 
  * 没有位运算符
 
@@ -93,6 +93,88 @@ AviatorEvaluator.execute(" \"a\'b\" ");  //字符串 a"b
 AviatorEvaluator.execute(" 'hello'+3 ");  //字符串 hello 3
 AviatorEvaluator.execute(" 'hello '+ unknow ");  //字符串 hello null
 }}}
+
+== 调用函数 ==
+
+Aviator支持函数调用，函数调用的风格类似lua，下面的例子获取字符串的长度：
+{{{
+AviatorEvaluator.execute("string.length('hello')");
+}}}
+
+string.length('hello')是一个函数调用，string.length是一个函数,'hello'是调用的参数。
+
+再用string.substring来截取字符串：
+{{{
+AviatorEvaluator.execute("string.contains(\"test\",string.substring('hello',1,2))");
+}}}
+
+通过string.substring('hello',1,2)获取字符串'e'，然后通过函数string.contains判断e是否在'test'中。可以看到，函数可以嵌套调用。
+
+Aviator的内置函数列表请看后面。
+
+=== 自定义函数 ===
+
+Aviator除了内置的函数之外，还允许用户自定义函数，只要实现com.googlecode.aviator.runtime.type.AviatorFunction接口，并注册到AviatorEvaluator即可使用
+
+{{{
+public interface AviatorFunction {
+    /**
+     * Get the function name
+     * 
+     * @return
+     */
+    public String getName();
+
+
+    /**
+     * call function
+     * 
+     * @param env
+     *            Variable environment
+     * @param args
+     *            Function arguments
+     * @return
+     */
+    public AviatorObject call(Map<String, Object> env, AviatorObject... args);
+}
+
+}}}
+
+可以看一个例子，我们实现一个add函数来做数值的相加：
+{{{
+  import com.googlecode.aviator.runtime.function.FunctionUtils;
+  import com.googlecode.aviator.runtime.type.AviatorDouble;
+  import com.googlecode.aviator.runtime.type.AviatorFunction;
+  import com.googlecode.aviator.runtime.type.AviatorObject;
+  public class AddFunction implements AviatorFunction {
+
+        public AviatorObject call(Map<String, Object> env, AviatorObject... args) {
+            if (args.length != 2) {
+                throw new IllegalArgumentException("Add only supports two arguments");
+            }
+            Number left = FunctionUtils.getNumberValue(0, args, env);
+            Number right = FunctionUtils.getNumberValue(1, args, env);
+            return new AviatorDouble(left.doubleValue() + right.doubleValue());
+        }
+
+
+        public String getName() {
+            return "add";
+        }
+
+    }
+
+}}}
+
+注册到AviatorEvaluator并调用如下：
+{{{
+        //注册函数
+        AviatorEvaluator.addFunction(new AddFunction());
+        System.out.println(AviatorEvaluator.execute("add(1,2)"));
+        System.out.println(AviatorEvaluator.execute("add(add(1,2),100)"));
+}}}
+
+注册函数通过AviatorEvaluator.addFunction方法，移除可以通过removeFunction。
 
 == 编译表达式 ==
 
