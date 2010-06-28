@@ -63,6 +63,7 @@ public class AviatorNumberUnitTest {
         assertTrue(a.compare(floatType, env) < 0);
 
         assertTrue(a.compare(doubleType, env) > 0);
+        assertEquals(1, a.compare(new AviatorJavaType("unknow"), env));
     }
 
 
@@ -240,45 +241,45 @@ public class AviatorNumberUnitTest {
         case Add:
 
             assertEquals(1004L, a.add(byteType, env).getValue(null));
-            assertEquals(1004L, a.add(shortType,env).getValue(null));
-            assertEquals(1004L, a.add(intType,env).getValue(null));
-            assertEquals(1004L, a.add(longType,env).getValue(null));
-            assertEquals(1004.3, a.add(doubleType,env).getValue(null));
-            assertEquals(1004.3, a.add(floatType,env).getValue(null));
+            assertEquals(1004L, a.add(shortType, env).getValue(null));
+            assertEquals(1004L, a.add(intType, env).getValue(null));
+            assertEquals(1004L, a.add(longType, env).getValue(null));
+            assertEquals(1004.3, a.add(doubleType, env).getValue(null));
+            assertEquals(1004.3, a.add(floatType, env).getValue(null));
             break;
         case Sub:
-            assertEquals(996L, a.sub(byteType,env).getValue(null));
-            assertEquals(996L, a.sub(shortType,env).getValue(null));
-            assertEquals(996L, a.sub(intType,env).getValue(null));
-            assertEquals(996L, a.sub(longType,env).getValue(null));
-            assertEquals(995.7d, a.sub(doubleType,env).getValue(null));
-            assertEquals(995.7d, a.sub(floatType,env).getValue(null));
+            assertEquals(996L, a.sub(byteType, env).getValue(null));
+            assertEquals(996L, a.sub(shortType, env).getValue(null));
+            assertEquals(996L, a.sub(intType, env).getValue(null));
+            assertEquals(996L, a.sub(longType, env).getValue(null));
+            assertEquals(995.7d, a.sub(doubleType, env).getValue(null));
+            assertEquals(995.7d, a.sub(floatType, env).getValue(null));
             break;
 
         case Mod:
             // 1000 4 4.3
-            assertEquals(0L, a.mod(byteType,env).getValue(null));
-            assertEquals(0L, a.mod(shortType,env).getValue(null));
-            assertEquals(0L, a.mod(intType,env).getValue(null));
-            assertEquals(0L, a.mod(longType,env).getValue(null));
-            assertEquals(2.4000, (Double) a.mod(doubleType,env).getValue(null), 0.001);
-            assertEquals(2.4000, (Double) a.mod(floatType,env).getValue(null), 0.001);
+            assertEquals(0L, a.mod(byteType, env).getValue(null));
+            assertEquals(0L, a.mod(shortType, env).getValue(null));
+            assertEquals(0L, a.mod(intType, env).getValue(null));
+            assertEquals(0L, a.mod(longType, env).getValue(null));
+            assertEquals(2.4000, (Double) a.mod(doubleType, env).getValue(null), 0.001);
+            assertEquals(2.4000, (Double) a.mod(floatType, env).getValue(null), 0.001);
             break;
         case Mult:
-            assertEquals(4000L, a.mult(byteType,env).getValue(null));
-            assertEquals(4000L, a.mult(shortType,env).getValue(null));
-            assertEquals(4000L, a.mult(intType,env).getValue(null));
-            assertEquals(4000L, a.mult(longType,env).getValue(null));
-            assertEquals(4300.0, (Double) a.mult(doubleType,env).getValue(null), 0.001);
-            assertEquals(4300.0, (Double) a.mult(floatType,env).getValue(null), 0.001);
+            assertEquals(4000L, a.mult(byteType, env).getValue(null));
+            assertEquals(4000L, a.mult(shortType, env).getValue(null));
+            assertEquals(4000L, a.mult(intType, env).getValue(null));
+            assertEquals(4000L, a.mult(longType, env).getValue(null));
+            assertEquals(4300.0, (Double) a.mult(doubleType, env).getValue(null), 0.001);
+            assertEquals(4300.0, (Double) a.mult(floatType, env).getValue(null), 0.001);
             break;
         case Div:
-            assertEquals(250L, a.div(byteType,env).getValue(null));
-            assertEquals(250L, a.div(shortType,env).getValue(null));
-            assertEquals(250L, a.div(intType,env).getValue(null));
-            assertEquals(250L, a.div(longType,env).getValue(null));
-            assertEquals(232.558139, (Double) a.div(doubleType,env).getValue(null), 0.001);
-            assertEquals(232.558139, (Double) a.div(floatType,env).getValue(null), 0.001);
+            assertEquals(250L, a.div(byteType, env).getValue(null));
+            assertEquals(250L, a.div(shortType, env).getValue(null));
+            assertEquals(250L, a.div(intType, env).getValue(null));
+            assertEquals(250L, a.div(longType, env).getValue(null));
+            assertEquals(232.558139, (Double) a.div(doubleType, env).getValue(null), 0.001);
+            assertEquals(232.558139, (Double) a.div(floatType, env).getValue(null), 0.001);
             break;
 
         }
@@ -330,71 +331,71 @@ public class AviatorNumberUnitTest {
         AviatorNumber d = AviatorNumber.valueOf(4.3d);
         switch (operatorType) {
         case Add:
-            assertEquals(6.3, a.add(b,null).getValue(null));
-            assertEquals(6.3, b.add(a,null).getValue(null));
+            assertEquals(6.3, a.add(b, null).getValue(null));
+            assertEquals(6.3, b.add(a, null).getValue(null));
 
-            assertEquals(7.6, a.add(d,null).getValue(null));
-            assertEquals(7.6, d.add(a,null).getValue(null));
+            assertEquals(7.6, a.add(d, null).getValue(null));
+            assertEquals(7.6, d.add(a, null).getValue(null));
 
-            assertEquals(1003, b.add(c,null).getValue(null));
-            assertEquals(1003, c.add(b,null).getValue(null));
+            assertEquals(1003, b.add(c, null).getValue(null));
+            assertEquals(1003, c.add(b, null).getValue(null));
 
-            assertEquals(7.3, b.add(d,null).getValue(null));
-            assertEquals(7.3, d.add(b,null).getValue(null));
+            assertEquals(7.3, b.add(d, null).getValue(null));
+            assertEquals(7.3, d.add(b, null).getValue(null));
             break;
         case Sub:
-            assertEquals(0.3, a.sub(b,null).getValue(null));
-            assertEquals(-0.3, b.sub(a,null).getValue(null));
+            assertEquals(0.3, a.sub(b, null).getValue(null));
+            assertEquals(-0.3, b.sub(a, null).getValue(null));
 
-            assertEquals(-1.0, a.sub(d,null).getValue(null));
-            assertEquals(1.0, d.sub(a,null).getValue(null));
+            assertEquals(-1.0, a.sub(d, null).getValue(null));
+            assertEquals(1.0, d.sub(a, null).getValue(null));
 
-            assertEquals(-997, b.sub(c,null).getValue(null));
-            assertEquals(997, c.sub(b,null).getValue(null));
+            assertEquals(-997, b.sub(c, null).getValue(null));
+            assertEquals(997, c.sub(b, null).getValue(null));
 
-            assertEquals(-1.3, b.sub(d,null).getValue(null));
-            assertEquals(1.3, d.sub(b,null).getValue(null));
+            assertEquals(-1.3, b.sub(d, null).getValue(null));
+            assertEquals(1.3, d.sub(b, null).getValue(null));
             break;
         case Mult:
-            assertEquals(9.9, a.mult(b,null).getValue(null));
-            assertEquals(9.9, b.mult(a,null).getValue(null));
+            assertEquals(9.9, a.mult(b, null).getValue(null));
+            assertEquals(9.9, b.mult(a, null).getValue(null));
 
-            assertEquals(14.19, a.mult(d,null).getValue(null));
-            assertEquals(14.19, d.mult(a,null).getValue(null));
+            assertEquals(14.19, a.mult(d, null).getValue(null));
+            assertEquals(14.19, d.mult(a, null).getValue(null));
 
-            assertEquals(3000, b.mult(c,null).getValue(null));
-            assertEquals(3000, c.mult(b,null).getValue(null));
+            assertEquals(3000, b.mult(c, null).getValue(null));
+            assertEquals(3000, c.mult(b, null).getValue(null));
 
-            assertEquals(12.9, b.mult(d,null).getValue(null));
-            assertEquals(12.9, d.mult(b,null).getValue(null));
+            assertEquals(12.9, b.mult(d, null).getValue(null));
+            assertEquals(12.9, d.mult(b, null).getValue(null));
             break;
 
         case Div:
             // 3.3 3 1000 4.3
-            assertEquals(1.1, (Double) a.div(b,null).getValue(null), 0.001);
-            assertEquals(0.90909090, (Double) b.div(a,null).getValue(null), 0.001);
+            assertEquals(1.1, (Double) a.div(b, null).getValue(null), 0.001);
+            assertEquals(0.90909090, (Double) b.div(a, null).getValue(null), 0.001);
 
-            assertEquals(0.76744, (Double) a.div(d,null).getValue(null), 0.001);
-            assertEquals(1.30303030, (Double) d.div(a,null).getValue(null), 0.001);
+            assertEquals(0.76744, (Double) a.div(d, null).getValue(null), 0.001);
+            assertEquals(1.30303030, (Double) d.div(a, null).getValue(null), 0.001);
 
-            assertEquals(0, b.div(c,null).getValue(null));
-            assertEquals(333, c.div(b,null).getValue(null));
+            assertEquals(0, b.div(c, null).getValue(null));
+            assertEquals(333, c.div(b, null).getValue(null));
 
-            assertEquals(0.6976744, (Double) b.div(d,null).getValue(null), 0.001);
-            assertEquals(1.433333333, (Double) d.div(b,null).getValue(null), 0.001);
+            assertEquals(0.6976744, (Double) b.div(d, null).getValue(null), 0.001);
+            assertEquals(1.433333333, (Double) d.div(b, null).getValue(null), 0.001);
             break;
         case Mod:
-            assertEquals(0.3, (Double) a.mod(b,null).getValue(null), 0.001);
-            assertEquals(3.0, (Double) b.mod(a,null).getValue(null), 0.001);
+            assertEquals(0.3, (Double) a.mod(b, null).getValue(null), 0.001);
+            assertEquals(3.0, (Double) b.mod(a, null).getValue(null), 0.001);
 
-            assertEquals(3.3, (Double) a.mod(d,null).getValue(null), 0.001);
-            assertEquals(1.0, (Double) d.mod(a,null).getValue(null), 0.001);
+            assertEquals(3.3, (Double) a.mod(d, null).getValue(null), 0.001);
+            assertEquals(1.0, (Double) d.mod(a, null).getValue(null), 0.001);
 
-            assertEquals(3, b.mod(c,null).getValue(null));
-            assertEquals(1, c.mod(b,null).getValue(null));
+            assertEquals(3, b.mod(c, null).getValue(null));
+            assertEquals(1, c.mod(b, null).getValue(null));
 
-            assertEquals(3.0, (Double) b.mod(d,null).getValue(null), 0.001);
-            assertEquals(1.3, (Double) d.mod(b,null).getValue(null), 0.001);
+            assertEquals(3.0, (Double) b.mod(d, null).getValue(null), 0.001);
+            assertEquals(1.3, (Double) d.mod(b, null).getValue(null), 0.001);
             break;
 
         }

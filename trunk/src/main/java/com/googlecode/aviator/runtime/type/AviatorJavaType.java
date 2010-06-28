@@ -1,5 +1,7 @@
 package com.googlecode.aviator.runtime.type;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Map;
 
 import org.apache.commons.beanutils.PropertyUtils;
@@ -133,31 +135,40 @@ public class AviatorJavaType extends AviatorObject {
             AviatorBoolean aviatorBoolean = (AviatorBoolean) other;
             return -aviatorBoolean.compare(this, env);
         case JavaType:
+
             AviatorJavaType otherJavaType = (AviatorJavaType) other;
-            final Object value = getValue(env);
-            if (value.equals(otherJavaType.getValue(env))) {
+            final Object thisValue = getValue(env);
+            final Object otherValue = otherJavaType.getValue(env);
+            if (thisValue == null) {
+                return AviatorNil.NIL.compare(other, env);
+            }
+            if (thisValue.equals(otherValue)) {
                 return 0;
             }
             else {
-                if (value instanceof Number) {
-                    AviatorNumber thisAviatorNumber = AviatorNumber.valueOf(value);
+                if (thisValue instanceof Number) {
+                    AviatorNumber thisAviatorNumber = AviatorNumber.valueOf(thisValue);
                     return thisAviatorNumber.compare(other, env);
                 }
-                else if (value instanceof String) {
-                    AviatorString thisAviatorString = new AviatorString((String) value);
+                else if (thisValue instanceof String) {
+                    AviatorString thisAviatorString = new AviatorString((String) thisValue);
                     return thisAviatorString.compare(other, env);
                 }
-                else if (value instanceof Character) {
-                    AviatorString thisAviatorString = new AviatorString(String.valueOf(value));
+                else if (thisValue instanceof Character) {
+                    AviatorString thisAviatorString = new AviatorString(String.valueOf(thisValue));
                     return thisAviatorString.compare(other, env);
                 }
-                else if (value instanceof Boolean) {
-                    AviatorBoolean thisAviatorBoolean = new AviatorBoolean((Boolean) value);
+                else if (thisValue instanceof Boolean) {
+                    AviatorBoolean thisAviatorBoolean = new AviatorBoolean((Boolean) thisValue);
                     return thisAviatorBoolean.compare(other, env);
+                }
+                else if (thisValue instanceof Date && otherValue instanceof String) {
+                    // This is date,other is string
+                    return tryCompareDate(thisValue, otherValue);
                 }
                 else {
                     try {
-                        return ((Comparable) value).compareTo(otherJavaType.getValue(env));
+                        return ((Comparable) thisValue).compareTo(otherValue);
                     }
                     catch (Throwable t) {
                         throw new ExpressionRuntimeException("Compare " + this + " with " + other + " error", t);
@@ -174,6 +185,18 @@ public class AviatorJavaType extends AviatorObject {
             }
         default:
             throw new ExpressionRuntimeException("Unknow aviator type");
+        }
+    }
+
+
+    private int tryCompareDate(final Object thisValue, final Object otherValue) {
+        try {
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss:SS");
+            Date otherDate = simpleDateFormat.parse((String) otherValue);
+            return ((Date) thisValue).compareTo(otherDate);
+        }
+        catch (Throwable t) {
+            throw new ExpressionRuntimeException("Compare date error", t);
         }
     }
 
