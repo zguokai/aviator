@@ -8,6 +8,7 @@ import java.util.Map;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.googlecode.aviator.runtime.function.string.StringSubStringFunction;
 import com.googlecode.aviator.runtime.type.AviatorBoolean;
 import com.googlecode.aviator.runtime.type.AviatorFunction;
 import com.googlecode.aviator.runtime.type.AviatorJavaType;

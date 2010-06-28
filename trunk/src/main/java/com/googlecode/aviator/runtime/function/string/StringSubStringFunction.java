@@ -16,34 +16,43 @@
  *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  **/
-package com.googlecode.aviator.runtime.function;
+package com.googlecode.aviator.runtime.function.string;
 
-import java.util.Date;
 import java.util.Map;
 
+import com.googlecode.aviator.runtime.function.FunctionUtils;
 import com.googlecode.aviator.runtime.type.AviatorFunction;
 import com.googlecode.aviator.runtime.type.AviatorObject;
-import com.googlecode.aviator.runtime.type.AviatorRuntimeJavaType;
+import com.googlecode.aviator.runtime.type.AviatorString;
 
 
 /**
- * sysdate() function
+ * string.substring(s1,s2) function
  * 
  * @author dennis
  * 
  */
-public class SysDateFunction implements AviatorFunction {
-
+public class StringSubStringFunction implements AviatorFunction {
     public String getName() {
-        return "sysdate";
+        return "string.substring";
     }
 
 
     public AviatorObject call(Map<String, Object> env, AviatorObject... args) {
-        if (args.length > 0) {
-            throw new IllegalArgumentException("now() doesn't need any arguments");
+        if (args.length != 2 && args.length != 3) {
+            throw new IllegalArgumentException("string.endsWith(string,int[,int]) just need two or three arguments");
         }
-        return new AviatorRuntimeJavaType(new Date());
-    }
+        String target = FunctionUtils.getStringValue(0, args, env);
+        Number beginIndex = FunctionUtils.getNumberValue(1, args, env);
+        switch (args.length) {
+        case 2:
 
+            return new AviatorString(target.substring(beginIndex.intValue()));
+        case 3:
+            Number endIndex = FunctionUtils.getNumberValue(2, args, env);
+            return new AviatorString(target.substring(beginIndex.intValue(), endIndex.intValue()));
+
+        }
+        return null;
+    }
 }

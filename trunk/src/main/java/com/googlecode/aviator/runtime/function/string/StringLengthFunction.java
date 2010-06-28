@@ -16,34 +16,32 @@
  *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  **/
-package com.googlecode.aviator.runtime.function;
+package com.googlecode.aviator.runtime.function.string;
 
-import java.util.Date;
 import java.util.Map;
 
+import com.googlecode.aviator.runtime.function.FunctionUtils;
 import com.googlecode.aviator.runtime.type.AviatorFunction;
+import com.googlecode.aviator.runtime.type.AviatorLong;
 import com.googlecode.aviator.runtime.type.AviatorObject;
-import com.googlecode.aviator.runtime.type.AviatorRuntimeJavaType;
-
 
 /**
- * sysdate() function
- * 
+ * string.length(s) function
  * @author dennis
- * 
+ *
  */
-public class SysDateFunction implements AviatorFunction {
-
-    public String getName() {
-        return "sysdate";
-    }
-
+public class StringLengthFunction implements AviatorFunction {
 
     public AviatorObject call(Map<String, Object> env, AviatorObject... args) {
-        if (args.length > 0) {
-            throw new IllegalArgumentException("now() doesn't need any arguments");
+        if (args.length != 1) {
+            throw new IllegalArgumentException("string.length(string) only use one argument");
         }
-        return new AviatorRuntimeJavaType(new Date());
+        String value = FunctionUtils.getStringValue(0, args, env);
+        return new AviatorLong(value.length());
     }
 
+
+    public String getName() {
+        return "string.length";
+    }
 }

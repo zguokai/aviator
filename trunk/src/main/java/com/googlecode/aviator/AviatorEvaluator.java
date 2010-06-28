@@ -31,10 +31,19 @@ import com.googlecode.aviator.lexer.ExpressionLexer;
 import com.googlecode.aviator.parser.AviatorClassLoader;
 import com.googlecode.aviator.parser.ExpressionParser;
 import com.googlecode.aviator.runtime.function.SysDateFunction;
-import com.googlecode.aviator.runtime.function.StringContainsFunction;
-import com.googlecode.aviator.runtime.function.StringEndsWithFunction;
-import com.googlecode.aviator.runtime.function.StringStartsWithFunction;
-import com.googlecode.aviator.runtime.function.StringSubStringFunction;
+import com.googlecode.aviator.runtime.function.math.MathAbsFunction;
+import com.googlecode.aviator.runtime.function.math.MathCosFunction;
+import com.googlecode.aviator.runtime.function.math.MathLog10Function;
+import com.googlecode.aviator.runtime.function.math.MathLogFunction;
+import com.googlecode.aviator.runtime.function.math.MathPowFunction;
+import com.googlecode.aviator.runtime.function.math.MathSinFunction;
+import com.googlecode.aviator.runtime.function.math.MathSqrtFunction;
+import com.googlecode.aviator.runtime.function.math.MathTanFunction;
+import com.googlecode.aviator.runtime.function.string.StringContainsFunction;
+import com.googlecode.aviator.runtime.function.string.StringEndsWithFunction;
+import com.googlecode.aviator.runtime.function.string.StringLengthFunction;
+import com.googlecode.aviator.runtime.function.string.StringStartsWithFunction;
+import com.googlecode.aviator.runtime.function.string.StringSubStringFunction;
 import com.googlecode.aviator.runtime.type.AviatorFunction;
 
 
@@ -62,11 +71,22 @@ public final class AviatorEvaluator {
 
     static {
         // Load internal functions
+        // load string lib
         addFunction(new SysDateFunction());
         addFunction(new StringContainsFunction());
         addFunction(new StringStartsWithFunction());
         addFunction(new StringEndsWithFunction());
         addFunction(new StringSubStringFunction());
+        addFunction(new StringLengthFunction());
+        // load math lib
+        addFunction(new MathAbsFunction());
+        addFunction(new MathPowFunction());
+        addFunction(new MathSqrtFunction());
+        addFunction(new MathLog10Function());
+        addFunction(new MathLogFunction());
+        addFunction(new MathSinFunction());
+        addFunction(new MathCosFunction());
+        addFunction(new MathTanFunction());
     }
 
     /**

@@ -16,34 +16,36 @@
  *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  **/
-package com.googlecode.aviator.runtime.function;
+package com.googlecode.aviator.runtime.function.math;
 
-import java.util.Date;
 import java.util.Map;
 
+import com.googlecode.aviator.runtime.function.FunctionUtils;
+import com.googlecode.aviator.runtime.type.AviatorDouble;
 import com.googlecode.aviator.runtime.type.AviatorFunction;
 import com.googlecode.aviator.runtime.type.AviatorObject;
-import com.googlecode.aviator.runtime.type.AviatorRuntimeJavaType;
 
 
 /**
- * sysdate() function
+ * math.sqrt(d) function
  * 
  * @author dennis
  * 
  */
-public class SysDateFunction implements AviatorFunction {
+public class MathSqrtFunction implements AviatorFunction {
 
-    public String getName() {
-        return "sysdate";
+    public AviatorObject call(Map<String, Object> env, AviatorObject... args) {
+        if (args.length != 1) {
+            throw new IllegalArgumentException("math.sqrt has only one argument");
+        }
+        Number number = FunctionUtils.getNumberValue(0, args, env);
+        return new AviatorDouble(Math.sqrt(number.doubleValue()));
+
     }
 
 
-    public AviatorObject call(Map<String, Object> env, AviatorObject... args) {
-        if (args.length > 0) {
-            throw new IllegalArgumentException("now() doesn't need any arguments");
-        }
-        return new AviatorRuntimeJavaType(new Date());
+    public String getName() {
+        return "math.sqrt";
     }
 
 }
