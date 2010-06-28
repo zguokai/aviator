@@ -119,6 +119,16 @@ public class CompileExample {
 
 通过compile方法可以将表达式编译成Expression的中间对象，当要执行表达式的时候传入env并调用Expression的execute方法即可。表达式中使用了括号来强制优先级，这个例子还使用了>用于比较数值大小，比较运算符!=、==、>、>=、<、<=不仅可以用于数值，也可以用于String、Pattern、Boolean等等，甚至是任何用户传入的两个都实现了java.lang。Comparable接口的对象之间。
 
+编译后的结果你可以自己缓存，也可以交给Aviator帮你缓存，AviatorEvaluator内部有一个全局的缓存池，如果你决定缓存编译结果，可以通过：
+{{{
+   public static Expression compile(String expression, boolean cached)
+}}}
+将cached设置为true即可，那么下次编译同一个表达式的时候将直接返回上一次编译的结果。使缓存失效通过：
+{{{
+public void invalidateCache(String expression)
+}}}
+方法。
+
 == 三元操作符 ==
 Aviator不提供if else语句，但是提供了三元操作符?:用于条件判断，使用上与java没有什么不同：
 {{{
@@ -174,9 +184,80 @@ Aviator在表达式级别支持正则表达式，通过//括起来的字符序�
 
 Aviator的正则表达式规则跟Java完全一样，因为内部其实就是使用java.util.regex.Pattern做编译的。
 
-== 变量访问的语法糖衣 ==
+== 变量的语法糖衣 ==
 
+Aviator有个方便用户使用变量的语法糖衣，当你要访问变量a中的某个属性b，那么你可以通过a.b访问到，更进一步，a.b.c将访问变量a的b属性中的c属性值，推广开来也就是说Aviator可以将变量声明为嵌套访问的形式，一个例子，Foo类有属性i、f、date：
+{{{
+ public class Foo {
+        int i;
+        float f;
+        Date date = new Date();
 
+        public Foo(int i, float f, Date date) {
+            super();
+            this.i = i;
+            this.f = f;
+            this.date = date;
+        }
+
+        public int getI() {
+            return i;
+        }
+
+        public void setI(int i) {
+            this.i = i;
+        }
+
+        public float getF() {
+            return f;
+        }
+
+        public void setF(float f) {
+            this.f = f;
+        }
+
+        public Date getDate() {
+            return date;
+        }
+
+        public void setDate(Date date) {
+            this.date = date;
+        }
+    }
+}}}
+
+Foo类符合JavaBean规范，并且是public的，我们执行一个表达式来描述Foo:
+
+{{{
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+
+import com.googlecode.aviator.AviatorEvaluator;
+
+public class VariableExample {
+    public static void main(String[] args) {
+        Foo foo = new Foo(100, 3.14f, new Date());
+        Map<String, Object> env = new HashMap<String, Object>();
+        env.put("foo", foo);
+
+        String result =
+                (String) AviatorEvaluator.execute(
+                    " '[foo i='+ foo.i + ' f='+foo.f+' year='+(foo.date.year+1900)+ ' month='+foo.date.month +']' ",
+                    env);
+        System.out.println(result);
+
+    }
+}
+}}}
+
+细看下表达式：
+
+{{{
+'[foo i='+ foo.i + ' f='+foo.f+' year='+(foo.date.year+1900)+ ' month='+foo.date.month +']'
+}}}
+
+可以看到我们通过foo.i和foo.f的方式来访问foo变量中的i和f属性，并且通过foo.date.year的方式来访问foo中date对象的year属性（其实是getYear方法）。
 
 
 
