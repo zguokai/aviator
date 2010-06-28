@@ -64,7 +64,7 @@ public class ExpressionParser {
 
     public void ternary() {
         bool();
-        if (lookhead == null || expectLexeme(":")) {
+        if (lookhead == null || expectLexeme(":") || expectLexeme(",")) {
             return;
         }
         if (expectLexeme("?")) {
@@ -90,7 +90,10 @@ public class ExpressionParser {
                     reportSyntaxError("Insert '(' to complete Expression");
                 }
             }
-            reportSyntaxError();
+            if (!expectLexeme("(")) {
+                reportSyntaxError();
+            }
+
         }
     }
 
@@ -328,12 +331,39 @@ public class ExpressionParser {
                     }
                 }
             }
-
-            codeGenerator.onConstant(lookhead);
             move(true);
+            // function
+            if (prevToken.getType() == TokenType.Variable && expectLexeme("(")) {
+                this.parenDepth++;
+                this.codeGenerator.onMethodName(prevToken);
+                move(true);
+                if (!expectLexeme(")")) {
+                    ternary();
+                    this.codeGenerator.onMethodParameter(lookhead);
+                    while (expectLexeme(",")) {
+                        move(true);
+                        ternary();
+                        this.codeGenerator.onMethodParameter(lookhead);
+                    }
+                }
+                if (!expectLexeme(")")) {
+                    reportSyntaxError("insert ')' to complete Expression");
+                }
+                else {
+                    this.parenDepth--;
+                    move(true);
+                    this.codeGenerator.onMethodInvoke(lookhead);
+                }
+            }
+            else {
+                codeGenerator.onConstant(prevToken);
+            }
         }
         else if (expectLexeme("/")) {
             pattern();
+        }
+        else if (expectLexeme(",")) {
+            return;
         }
         else {
             reportSyntaxError();
