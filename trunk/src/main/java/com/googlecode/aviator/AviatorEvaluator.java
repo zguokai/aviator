@@ -182,6 +182,18 @@ public final class AviatorEvaluator {
 
 
     /**
+     * Invalidate expression cache
+     * 
+     * @param expression
+     */
+    public static void invalidateCache(String expression) {
+        synchronized (cacheExpressions) {
+            cacheExpressions.remove(expression);
+        }
+    }
+
+
+    /**
      * Execute a text expression without caching
      * 
      * @param expression

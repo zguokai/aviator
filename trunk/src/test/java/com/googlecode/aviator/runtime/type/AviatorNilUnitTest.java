@@ -5,7 +5,11 @@ import static org.junit.Assert.*;
 import java.util.HashMap;
 import java.util.Map;
 
+import junit.framework.Assert;
+
 import org.junit.Test;
+
+import com.googlecode.aviator.exception.ExpressionRuntimeException;
 
 
 public class AviatorNilUnitTest {
@@ -60,5 +64,23 @@ public class AviatorNilUnitTest {
 
         assertEquals(1, new AviatorJavaType("s").compare(AviatorNil.NIL, env));
         assertEquals(-1, AviatorNil.NIL.compare(new AviatorJavaType("s"), env));
+    }
+
+
+    @Test
+    public void testAddString() {
+        assertEquals("null", AviatorNil.NIL.add(new AviatorString(""), null).getValue(null));
+        assertEquals("null hello", AviatorNil.NIL.add(new AviatorString(" hello"), null).getValue(null));
+
+        try {
+            AviatorNil.NIL.add(new AviatorJavaType("a"), null);
+            Assert.fail();
+        }
+        catch (ExpressionRuntimeException e) {
+
+        }
+        Map<String, Object> env = new HashMap<String, Object>();
+        env.put("a", " hello");
+        assertEquals("null hello", AviatorNil.NIL.add(new AviatorJavaType("a"), env).getValue(env));
     }
 }

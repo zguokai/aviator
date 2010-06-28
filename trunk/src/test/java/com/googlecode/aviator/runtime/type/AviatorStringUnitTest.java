@@ -182,4 +182,12 @@ public class AviatorStringUnitTest {
         assertEquals(-1, new AviatorString(dateStr).compare(new AviatorJavaType("future"), env));
         assertEquals(1, new AviatorString(dateStr).compare(new AviatorJavaType("old"), env));
     }
+
+
+    @Test
+    public void testAddNil() {
+        assertEquals("null", new AviatorString("").add(AviatorNil.NIL, null).getValue(null));
+        assertEquals("hello null", new AviatorString("hello ").add(AviatorNil.NIL, null).getValue(null));
+        assertEquals("hello null", new AviatorString("hello ").add(new AviatorJavaType("a"), null).getValue(null));
+    }
 }
