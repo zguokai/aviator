@@ -6,6 +6,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import junit.framework.Assert;
+
 import org.junit.Test;
 
 import com.googlecode.aviator.exception.ExpressionRuntimeException;
@@ -48,14 +50,15 @@ public class AviatorPatternUnitTest {
     @Test
     public void testAddString() {
         AviatorPattern p1 = new AviatorPattern("[a-zA-Z]+");
-        assertEquals("[a-zA-Z]+ is a pattern", p1.add(new AviatorString(" is a pattern"),null).getValue(null));
+        assertEquals("[a-zA-Z]+ is a pattern", p1.add(new AviatorString(" is a pattern"), null).getValue(null));
     }
 
 
     @Test
     public void testAddJavaString() {
         AviatorPattern p1 = new AviatorPattern("[a-zA-Z]+");
-        assertEquals("[a-zA-Z]+ is a pattern", p1.add(new AviatorJavaType("s"), createEnvWith("s", " is a pattern")).getValue(null));
+        assertEquals("[a-zA-Z]+ is a pattern", p1.add(new AviatorJavaType("s"), createEnvWith("s", " is a pattern"))
+            .getValue(null));
     }
 
 
@@ -176,7 +179,7 @@ public class AviatorPatternUnitTest {
     @Test(expected = ExpressionRuntimeException.class)
     public void testMatchJavaNumber() {
         AviatorPattern p1 = new AviatorPattern("[a-zA-Z]+");
-        p1.match(new AviatorJavaType("num"),createEnvWith("num", 3000L));
+        p1.match(new AviatorJavaType("num"), createEnvWith("num", 3000L));
 
     }
 
@@ -184,6 +187,31 @@ public class AviatorPatternUnitTest {
     @Test(expected = ExpressionRuntimeException.class)
     public void testNot() {
         new AviatorPattern("\\d+").not(null);
+
+    }
+
+
+    @Test
+    public void testCompareJavaType() {
+        Map<String, Object> env = new HashMap<String, Object>();
+        env.put("a", 1);
+        env.put("s", "hello");
+        try {
+            new AviatorPattern("\\d+").compare(new AviatorJavaType("a"), env);
+            Assert.fail();
+        }
+        catch (ExpressionRuntimeException e) {
+
+        }
+        try {
+            new AviatorPattern("\\d+").compare(new AviatorJavaType("s"), env);
+            Assert.fail();
+        }
+        catch (ExpressionRuntimeException e) {
+
+        }
+
+        assertEquals(1, new AviatorPattern("\\d+").compare(new AviatorJavaType("unknow"), env));
 
     }
 

@@ -1,5 +1,7 @@
 package com.googlecode.aviator.runtime.type;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Map;
 
 import com.googlecode.aviator.exception.ExpressionRuntimeException;
@@ -57,6 +59,18 @@ public class AviatorString extends AviatorObject {
     }
 
 
+    private int tryCompareDate(final Date otherDate) {
+        try {
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss:SS");
+            Date thisDate = simpleDateFormat.parse(this.lexeme);
+            return thisDate.compareTo(otherDate);
+        }
+        catch (Throwable t) {
+            throw new ExpressionRuntimeException("Compare date error", t);
+        }
+    }
+
+
     @Override
     public int compare(AviatorObject other, Map<String, Object> env) {
         switch (other.getAviatorType()) {
@@ -65,12 +79,18 @@ public class AviatorString extends AviatorObject {
             return this.lexeme.compareTo(otherString.lexeme);
         case JavaType:
             AviatorJavaType javaType = (AviatorJavaType) other;
-            final Object javaValue = javaType.getValue(env);
-            if (javaValue instanceof String) {
-                return this.lexeme.compareTo((String) javaValue);
+            final Object otherJavaValue = javaType.getValue(env);
+            if (otherJavaValue == null) {
+                return 1;
             }
-            else if (javaValue instanceof Character) {
-                return this.lexeme.compareTo(String.valueOf(javaValue));
+            if (otherJavaValue instanceof String) {
+                return this.lexeme.compareTo((String) otherJavaValue);
+            }
+            else if (otherJavaValue instanceof Character) {
+                return this.lexeme.compareTo(String.valueOf(otherJavaValue));
+            }
+            else if (otherJavaValue instanceof Date) {
+                return tryCompareDate((Date) otherJavaValue);
             }
             else {
                 throw new ExpressionRuntimeException("Could not compare " + this + " with " + other);

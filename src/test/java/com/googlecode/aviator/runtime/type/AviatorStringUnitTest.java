@@ -2,6 +2,8 @@ package com.googlecode.aviator.runtime.type;
 
 import static org.junit.Assert.*;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -67,7 +69,7 @@ public class AviatorStringUnitTest {
     public void testAddPattern() {
         AviatorString s = new AviatorString("hello ");
         AviatorPattern n = new AviatorPattern("[\\d\\.]+");
-        assertEquals("hello [\\d\\.]+", s.add(n,null).getValue(null));
+        assertEquals("hello [\\d\\.]+", s.add(n, null).getValue(null));
     }
 
 
@@ -75,11 +77,11 @@ public class AviatorStringUnitTest {
     public void testCompareString() {
         AviatorString s = new AviatorString("hello ");
         AviatorString n = new AviatorString("world");
-        assertTrue(s.compare(n,null) < 0);
-        assertEquals(0, s.compare(s,null));
+        assertTrue(s.compare(n, null) < 0);
+        assertEquals(0, s.compare(s, null));
 
         n = new AviatorString("awt");
-        assertFalse(s.compare(n,null) < 0);
+        assertFalse(s.compare(n, null) < 0);
     }
 
 
@@ -88,11 +90,11 @@ public class AviatorStringUnitTest {
         AviatorString s = new AviatorString("hello ");
         assertEquals("hello ", s.getLexeme());
         AviatorJavaType n = new AviatorJavaType("s");
-        assertTrue(s.compare(n,createEnvWith("s", "world")) < 0);
-        assertEquals(0, s.compare(s,createEnvWith("s", "world")));
+        assertTrue(s.compare(n, createEnvWith("s", "world")) < 0);
+        assertEquals(0, s.compare(s, createEnvWith("s", "world")));
 
         n = new AviatorJavaType("s");
-        assertFalse(s.compare(n,createEnvWith("s", "awt")) < 0);
+        assertFalse(s.compare(n, createEnvWith("s", "awt")) < 0);
     }
 
 
@@ -100,11 +102,11 @@ public class AviatorStringUnitTest {
     public void testCompareJavaChar() {
         AviatorString s = new AviatorString("hello ");
         AviatorJavaType n = new AviatorJavaType("s");
-        assertTrue(s.compare(n,createEnvWith("s", 'w')) < 0);
-        assertEquals(0, s.compare(s,createEnvWith("s", 'w')));
+        assertTrue(s.compare(n, createEnvWith("s", 'w')) < 0);
+        assertEquals(0, s.compare(s, createEnvWith("s", 'w')));
 
         n = new AviatorJavaType("s");
-        assertFalse(s.compare(n,createEnvWith("s", 'a')) < 0);
+        assertFalse(s.compare(n, createEnvWith("s", 'a')) < 0);
     }
 
 
@@ -112,7 +114,7 @@ public class AviatorStringUnitTest {
     public void testCompareBoolean() {
         AviatorString s = new AviatorString("hello ");
         AviatorBoolean n = AviatorBoolean.TRUE;
-        s.compare(n,null);
+        s.compare(n, null);
     }
 
 
@@ -120,7 +122,7 @@ public class AviatorStringUnitTest {
     public void testComparePattern() {
         AviatorString s = new AviatorString("hello ");
         AviatorPattern n = new AviatorPattern("\\d+");
-        s.compare(n,null);
+        s.compare(n, null);
     }
 
 
@@ -128,7 +130,7 @@ public class AviatorStringUnitTest {
     public void testCompareNumber() {
         AviatorString s = new AviatorString("hello ");
         AviatorNumber n = AviatorNumber.valueOf(3.4f);
-        s.compare(n,null);
+        s.compare(n, null);
     }
 
 
@@ -136,7 +138,7 @@ public class AviatorStringUnitTest {
     public void testCompareJavaNumber() {
         AviatorString s = new AviatorString("hello ");
         AviatorJavaType n = new AviatorJavaType("f");
-        s.compare(n,createEnvWith("f", 3.4f));
+        s.compare(n, createEnvWith("f", 3.4f));
     }
 
 
@@ -151,5 +153,33 @@ public class AviatorStringUnitTest {
     public void testNeg() {
         new AviatorString("hello").neg(null);
 
+    }
+
+
+    @Test
+    public void testCompareJavaNull() {
+        assertEquals(1, new AviatorString("").compare(new AviatorJavaType("a"), null));
+        assertEquals(1, new AviatorString(" ").compare(new AviatorJavaType("a"), null));
+        assertEquals(1, new AviatorString("hello").compare(new AviatorJavaType("a"), null));
+    }
+
+
+    @Test
+    public void testCompareDate() {
+        Map<String, Object> env = new HashMap<String, Object>();
+        final Date date = new Date();
+        String dateStr = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss:SS").format(date);
+        env.put("date", date);
+        env.put("dateStr", dateStr);
+        final Date futureDate = new Date();
+        futureDate.setYear(2200);
+        env.put("future", futureDate);
+        final Date oldDate = new Date();
+        oldDate.setYear(20);
+        env.put("old", oldDate);
+        assertEquals(0, new AviatorString(dateStr).compare(new AviatorJavaType("date"), env));
+        assertEquals(0, new AviatorString(dateStr).compare(new AviatorJavaType("dateStr"), env));
+        assertEquals(-1, new AviatorString(dateStr).compare(new AviatorJavaType("future"), env));
+        assertEquals(1, new AviatorString(dateStr).compare(new AviatorJavaType("old"), env));
     }
 }

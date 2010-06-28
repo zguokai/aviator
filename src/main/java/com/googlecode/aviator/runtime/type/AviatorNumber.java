@@ -164,6 +164,9 @@ public abstract class AviatorNumber extends AviatorObject {
         case JavaType:
             AviatorJavaType otherJavaType = (AviatorJavaType) other;
             final Object otherValue = otherJavaType.getValue(env);
+            if (otherValue == null) {
+                return 1;
+            }
             if (otherValue instanceof Number) {
                 return innerCompare(AviatorNumber.valueOf(otherValue));
             }

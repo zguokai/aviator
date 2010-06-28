@@ -32,8 +32,9 @@ public class AviatorPattern extends AviatorObject {
             return new AviatorString(this.pattern.pattern() + ((AviatorString) other).lexeme);
         case JavaType:
             AviatorJavaType javaType = (AviatorJavaType) other;
-            if (javaType.getValue(env) instanceof String || javaType.getValue(env) instanceof Character) {
-                return new AviatorString(this.pattern.pattern() + javaType.getValue(env).toString());
+            final Object otherValue = javaType.getValue(env);
+            if (otherValue instanceof String || otherValue instanceof Character) {
+                return new AviatorString(this.pattern.pattern() + otherValue.toString());
             }
             else {
                 return super.add(other, env);
@@ -87,6 +88,13 @@ public class AviatorPattern extends AviatorObject {
         switch (other.getAviatorType()) {
         case Pattern:
             return this.pattern.pattern().compareTo(((AviatorPattern) other).pattern.pattern());
+        case JavaType:
+            if (other.getValue(env) == null) {
+                return 1;
+            }
+            else {
+                throw new ExpressionRuntimeException("Could not compare Pattern with " + other.getAviatorType());
+            }
         case Nil:
             return 1;
         default:

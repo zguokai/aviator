@@ -68,6 +68,9 @@ public class AviatorBoolean extends AviatorObject {
         case JavaType:
             AviatorJavaType javaType = (AviatorJavaType) other;
             final Object otherValue = javaType.getValue(env);
+            if (otherValue == null) {
+                return 1;
+            }
             if (otherValue instanceof Boolean) {
                 return this.value.compareTo((Boolean) otherValue);
             }

@@ -25,7 +25,7 @@ public class AviatorBooleanUnitTest {
     public void testAddJavaString() {
         AviatorBoolean aviatorBoolean = new AviatorBoolean(Boolean.TRUE);
         AviatorJavaType aviatorString = new AviatorJavaType("s");
-        assertEquals("true is true", aviatorBoolean.add(aviatorString, createEnvWith("s"," is true")).getValue(null));
+        assertEquals("true is true", aviatorBoolean.add(aviatorString, createEnvWith("s", " is true")).getValue(null));
 
     }
 
@@ -96,6 +96,9 @@ public class AviatorBooleanUnitTest {
         AviatorJavaType javaType = new AviatorJavaType("true");
         assertEquals(0, t.compare(javaType, createEnvWith("true", Boolean.TRUE)));
         assertEquals(-1, f.compare(javaType, createEnvWith("true", Boolean.TRUE)));
+        // compre to null value
+        assertEquals(1, t.compare(new AviatorJavaType("a"), null));
+        assertEquals(1, f.compare(new AviatorJavaType("a"), null));
     }
 
 

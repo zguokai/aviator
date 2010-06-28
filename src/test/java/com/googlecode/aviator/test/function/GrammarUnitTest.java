@@ -448,19 +448,19 @@ public class GrammarUnitTest {
         catch (ExpressionRuntimeException e) {
         }
         try {
-            AviatorEvaluator.execute("3.999==p1");
+            AviatorEvaluator.execute("3.999==p1", env);
             Assert.fail();
         }
         catch (ExpressionRuntimeException e) {
         }
         try {
-            AviatorEvaluator.execute("false==p1");
+            AviatorEvaluator.execute("false==p1", env);
             Assert.fail();
         }
         catch (ExpressionRuntimeException e) {
         }
         try {
-            AviatorEvaluator.execute("p2<=bool");
+            AviatorEvaluator.execute("p2<=bool", env);
             Assert.fail();
         }
         catch (ExpressionRuntimeException e) {
@@ -486,7 +486,7 @@ public class GrammarUnitTest {
         assertTrue((Boolean) AviatorEvaluator.execute("s==s", env));
 
         try {
-            AviatorEvaluator.execute("bool>s");
+            AviatorEvaluator.execute("bool>s", env);
             Assert.fail();
         }
         catch (ExpressionRuntimeException e) {
@@ -498,7 +498,7 @@ public class GrammarUnitTest {
         catch (ExpressionRuntimeException e) {
         }
         try {
-            AviatorEvaluator.execute("s>bool");
+            AviatorEvaluator.execute("s>bool", env);
             Assert.fail();
         }
         catch (ExpressionRuntimeException e) {
@@ -510,13 +510,13 @@ public class GrammarUnitTest {
         catch (ExpressionRuntimeException e) {
         }
         try {
-            AviatorEvaluator.execute("s!=d");
+            AviatorEvaluator.execute("s!=d", env);
             Assert.fail();
         }
         catch (ExpressionRuntimeException e) {
         }
         try {
-            AviatorEvaluator.execute("/\\d+/<=s");
+            AviatorEvaluator.execute("/\\d+/<=s", env);
             Assert.fail();
         }
         catch (ExpressionRuntimeException e) {
@@ -556,7 +556,7 @@ public class GrammarUnitTest {
         assertTrue((Boolean) AviatorEvaluator.execute("d<a", env));
 
         try {
-            AviatorEvaluator.execute("bool>3");
+            AviatorEvaluator.execute("bool>3", env);
             Assert.fail();
         }
         catch (ExpressionRuntimeException e) {
@@ -568,7 +568,7 @@ public class GrammarUnitTest {
         catch (ExpressionRuntimeException e) {
         }
         try {
-            AviatorEvaluator.execute("d>bool");
+            AviatorEvaluator.execute("d>bool", env);
             Assert.fail();
         }
         catch (ExpressionRuntimeException e) {
@@ -580,7 +580,7 @@ public class GrammarUnitTest {
         catch (ExpressionRuntimeException e) {
         }
         try {
-            AviatorEvaluator.execute("'good'>a");
+            AviatorEvaluator.execute("'good'>a", env);
             Assert.fail();
         }
         catch (ExpressionRuntimeException e) {
@@ -864,6 +864,13 @@ public class GrammarUnitTest {
 
         assertFalse((Boolean) AviatorEvaluator.execute("a==nil", env));
         assertTrue((Boolean) AviatorEvaluator.execute("a>nil", env));
+
+        // null == null
+        assertTrue((Boolean) AviatorEvaluator.execute("a==b"));
+        assertFalse((Boolean) AviatorEvaluator.execute("'s'==a"));
+        assertTrue((Boolean) AviatorEvaluator.execute("'s'>=a"));
+        assertTrue((Boolean) AviatorEvaluator.execute("'s'>a"));
+        assertTrue((Boolean) AviatorEvaluator.execute("bool>unknow",env));
 
     }
 

@@ -2,6 +2,7 @@ package com.googlecode.aviator.runtime.type;
 
 import static org.junit.Assert.*;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -295,7 +296,7 @@ public class AviatorJavaTypeUnitTest {
     public void compareWithAviatorType() {
 
         AviatorJavaType intType = new AviatorJavaType("intType");
-        AviatorJavaType doubleType=new AviatorJavaType("doubleType");
+        AviatorJavaType doubleType = new AviatorJavaType("doubleType");
         AviatorJavaType boolType = new AviatorJavaType("boolType");
         AviatorJavaType stringType = new AviatorJavaType("stringType");
         AviatorJavaType charType = new AviatorJavaType("charType");
@@ -308,62 +309,30 @@ public class AviatorJavaTypeUnitTest {
         env.put("charType", 'c');
         env.put("dateType", new Date());
         env.put("doubleType", 3.4);
-        
 
         AviatorNumber number = AviatorNumber.valueOf(3.4);
         AviatorBoolean bool = AviatorBoolean.TRUE;
         AviatorPattern pattern = new AviatorPattern("\\d+");
         AviatorString string = new AviatorString("hello");
 
-        assertTrue(intType.compare(number,env) < 0);
-        assertEquals(0, doubleType.compare(number,env));
+        assertTrue(intType.compare(number, env) < 0);
+        assertEquals(0, doubleType.compare(number, env));
         try {
-            intType.compare(bool,env);
+            intType.compare(bool, env);
             Assert.fail();
         }
         catch (ExpressionRuntimeException e) {
 
         }
         try {
-            intType.compare(pattern,env);
+            intType.compare(pattern, env);
             Assert.fail();
         }
         catch (ExpressionRuntimeException e) {
 
         }
         try {
-            intType.compare(string,env);
-            Assert.fail();
-        }
-        catch (ExpressionRuntimeException e) {
-
-        }
-
-        try {
-            stringType.compare(number,env);
-            Assert.fail();
-        }
-        catch (ExpressionRuntimeException e) {
-
-        }
-        try {
-            stringType.compare(bool,env);
-            Assert.fail();
-        }
-        catch (ExpressionRuntimeException e) {
-
-        }
-        try {
-            stringType.compare(pattern,env);
-            Assert.fail();
-        }
-        catch (ExpressionRuntimeException e) {
-
-        }
-        assertEquals(0, stringType.compare(string,env));
-
-        try {
-            charType.compare(number,env);
+            intType.compare(string, env);
             Assert.fail();
         }
         catch (ExpressionRuntimeException e) {
@@ -371,7 +340,30 @@ public class AviatorJavaTypeUnitTest {
         }
 
         try {
-            charType.compare(bool,env);
+            stringType.compare(number, env);
+            Assert.fail();
+        }
+        catch (ExpressionRuntimeException e) {
+
+        }
+        try {
+            stringType.compare(bool, env);
+            Assert.fail();
+        }
+        catch (ExpressionRuntimeException e) {
+
+        }
+        try {
+            stringType.compare(pattern, env);
+            Assert.fail();
+        }
+        catch (ExpressionRuntimeException e) {
+
+        }
+        assertEquals(0, stringType.compare(string, env));
+
+        try {
+            charType.compare(number, env);
             Assert.fail();
         }
         catch (ExpressionRuntimeException e) {
@@ -379,37 +371,7 @@ public class AviatorJavaTypeUnitTest {
         }
 
         try {
-            charType.compare(pattern,env);
-            Assert.fail();
-        }
-        catch (ExpressionRuntimeException e) {
-
-        }
-        assertTrue(charType.compare(string,env) < 0);
-
-        try {
-            dateType.compare(number,env);
-            Assert.fail();
-        }
-        catch (ExpressionRuntimeException e) {
-
-        }
-        try {
-            dateType.compare(bool,env);
-            Assert.fail();
-        }
-        catch (ExpressionRuntimeException e) {
-
-        }
-        try {
-            dateType.compare(string,env);
-            Assert.fail();
-        }
-        catch (ExpressionRuntimeException e) {
-
-        }
-        try {
-            dateType.compare(pattern,env);
+            charType.compare(bool, env);
             Assert.fail();
         }
         catch (ExpressionRuntimeException e) {
@@ -417,28 +379,66 @@ public class AviatorJavaTypeUnitTest {
         }
 
         try {
-            boolType.compare(number,env);
+            charType.compare(pattern, env);
+            Assert.fail();
+        }
+        catch (ExpressionRuntimeException e) {
+
+        }
+        assertTrue(charType.compare(string, env) < 0);
+
+        try {
+            dateType.compare(number, env);
             Assert.fail();
         }
         catch (ExpressionRuntimeException e) {
 
         }
         try {
-            boolType.compare(string,env);
+            dateType.compare(bool, env);
             Assert.fail();
         }
         catch (ExpressionRuntimeException e) {
 
         }
         try {
-            boolType.compare(pattern,env);
+            dateType.compare(string, env);
+            Assert.fail();
+        }
+        catch (ExpressionRuntimeException e) {
+
+        }
+        try {
+            dateType.compare(pattern, env);
             Assert.fail();
         }
         catch (ExpressionRuntimeException e) {
 
         }
 
-        assertTrue(boolType.compare(bool,env) < 0);
+        try {
+            boolType.compare(number, env);
+            Assert.fail();
+        }
+        catch (ExpressionRuntimeException e) {
+
+        }
+        try {
+            boolType.compare(string, env);
+            Assert.fail();
+        }
+        catch (ExpressionRuntimeException e) {
+
+        }
+        try {
+            boolType.compare(pattern, env);
+            Assert.fail();
+        }
+        catch (ExpressionRuntimeException e) {
+
+        }
+
+        assertTrue(boolType.compare(bool, env) < 0);
     }
 
 
@@ -458,128 +458,129 @@ public class AviatorJavaTypeUnitTest {
         env.put("charType", 'c');
         env.put("dateType", new Date());
 
-        assertEquals(0, intType.compare(intType,env));
+        assertEquals(0, intType.compare(intType, env));
+        assertEquals(1, intType.compare(new AviatorJavaType("unknow"), env));
         try {
-            intType.compare(boolType,env);
+            intType.compare(boolType, env);
             Assert.fail();
         }
         catch (ExpressionRuntimeException e) {
         }
         try {
-            intType.compare(stringType,env);
+            intType.compare(stringType, env);
             Assert.fail();
         }
         catch (ExpressionRuntimeException e) {
         }
         try {
-            intType.compare(charType,env);
+            intType.compare(charType, env);
             Assert.fail();
         }
         catch (ExpressionRuntimeException e) {
         }
         try {
-            intType.compare(dateType,env);
-            Assert.fail();
-        }
-        catch (ExpressionRuntimeException e) {
-        }
-
-        try {
-            boolType.compare(intType,env);
-            Assert.fail();
-        }
-        catch (ExpressionRuntimeException e) {
-        }
-        assertEquals(0, boolType.compare(boolType,env));
-        try {
-            boolType.compare(stringType,env);
-            Assert.fail();
-        }
-        catch (ExpressionRuntimeException e) {
-        }
-        try {
-            boolType.compare(charType,env);
-            Assert.fail();
-        }
-        catch (ExpressionRuntimeException e) {
-        }
-        try {
-            boolType.compare(dateType,env);
+            intType.compare(dateType, env);
             Assert.fail();
         }
         catch (ExpressionRuntimeException e) {
         }
 
         try {
-            stringType.compare(intType,env);
+            boolType.compare(intType, env);
+            Assert.fail();
+        }
+        catch (ExpressionRuntimeException e) {
+        }
+        assertEquals(0, boolType.compare(boolType, env));
+        try {
+            boolType.compare(stringType, env);
             Assert.fail();
         }
         catch (ExpressionRuntimeException e) {
         }
         try {
-            stringType.compare(boolType,env);
+            boolType.compare(charType, env);
             Assert.fail();
         }
         catch (ExpressionRuntimeException e) {
         }
-        assertEquals(0, stringType.compare(stringType,env));
         try {
-            stringType.compare(dateType,env);
+            boolType.compare(dateType, env);
             Assert.fail();
         }
         catch (ExpressionRuntimeException e) {
         }
-        assertTrue(stringType.compare(charType,env) > 0);
+
+        try {
+            stringType.compare(intType, env);
+            Assert.fail();
+        }
+        catch (ExpressionRuntimeException e) {
+        }
+        try {
+            stringType.compare(boolType, env);
+            Assert.fail();
+        }
+        catch (ExpressionRuntimeException e) {
+        }
+        assertEquals(0, stringType.compare(stringType, env));
+        try {
+            stringType.compare(dateType, env);
+            Assert.fail();
+        }
+        catch (ExpressionRuntimeException e) {
+        }
+        assertTrue(stringType.compare(charType, env) > 0);
 
         // char
 
         try {
-            charType.compare(intType,env);
+            charType.compare(intType, env);
             Assert.fail();
         }
         catch (ExpressionRuntimeException e) {
         }
 
         try {
-            charType.compare(boolType,env);
+            charType.compare(boolType, env);
             Assert.fail();
         }
         catch (ExpressionRuntimeException e) {
         }
-        assertTrue(charType.compare(stringType,env) < 0);
-        assertEquals(0, charType.compare(charType,env));
+        assertTrue(charType.compare(stringType, env) < 0);
+        assertEquals(0, charType.compare(charType, env));
         try {
-            charType.compare(dateType,env);
+            charType.compare(dateType, env);
             Assert.fail();
         }
         catch (ExpressionRuntimeException e) {
         }
 
         try {
-            dateType.compare(intType,env);
+            dateType.compare(intType, env);
             Assert.fail();
         }
         catch (ExpressionRuntimeException e) {
         }
         try {
-            dateType.compare(boolType,env);
+            dateType.compare(boolType, env);
             Assert.fail();
         }
         catch (ExpressionRuntimeException e) {
         }
         try {
-            dateType.compare(stringType,env);
+            dateType.compare(stringType, env);
             Assert.fail();
         }
         catch (ExpressionRuntimeException e) {
         }
         try {
-            dateType.compare(charType,env);
+            dateType.compare(charType, env);
             Assert.fail();
         }
         catch (ExpressionRuntimeException e) {
         }
-        assertEquals(0, dateType.compare(dateType,env));
+        assertEquals(0, dateType.compare(dateType, env));
 
     }
 
@@ -667,5 +668,44 @@ public class AviatorJavaTypeUnitTest {
         }
         catch (ExpressionRuntimeException e) {
         }
+    }
+
+
+    @Test
+    public void testCompareDate() {
+        Map<String, Object> env = new HashMap<String, Object>();
+        final Date date = new Date();
+        String dateStr = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss:SS").format(date);
+        env.put("date", date);
+        env.put("dateStr", dateStr);
+
+        assertEquals(0, new AviatorJavaType("date").compare(new AviatorJavaType("date"), env));
+        assertEquals(0, new AviatorJavaType("date").compare(new AviatorString(dateStr), env));
+        assertEquals(1, new AviatorJavaType("date").compare(new AviatorString("1990-03-21 04:56:30:0"), env));
+        assertEquals(-1, new AviatorJavaType("date").compare(new AviatorString("2200-03-21 04:56:30:0"), env));
+
+        assertEquals(0, new AviatorJavaType("date").compare(new AviatorJavaType("dateStr"), env));
+        try {
+            new AviatorJavaType("date").compare(AviatorNumber.valueOf(191), env);
+            Assert.fail();
+        }
+        catch (ExpressionRuntimeException e) {
+
+        }
+        try {
+            new AviatorJavaType("date").compare(new AviatorString("2200-03 21 04:56:30:0"), env);
+            Assert.fail();
+        }
+        catch (ExpressionRuntimeException e) {
+
+        }
+        try {
+            new AviatorJavaType("date").compare(AviatorBoolean.TRUE, env);
+            Assert.fail();
+        }
+        catch (ExpressionRuntimeException e) {
+
+        }
+
     }
 }
