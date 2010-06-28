@@ -81,7 +81,21 @@ i * pi + (d * b - 199) / (1 - d * pi) - (2 + 100 - i / pi) % 99 ==i * pi + (d * 
 
 结论： Groovy表现最佳，Aviator有一定差距。
 
-= 场景4 =
+= 场景4:日期函数调用 =
+
+ * Aviator执行 sysdate()
+ * groovy执行   new java.util.Date()
+ * IKExpression执行 $SYSDATE()
+
+结果:
+|| 测试 || 耗时（单位:秒）||
+|| Aviator || 22.6        ||
+|| Groovy  || 13.9     ||
+|| IKExpression ||  25.4  ||
+
+结论：仍然是Groovy最佳，Aviator其次。
+
+= 场景5:测试编译 =
 
 测试编译性能，编译表达式
 {{{
