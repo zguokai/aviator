@@ -28,8 +28,22 @@ import java.util.Map;
  * 
  */
 public interface AviatorFunction {
+    /**
+     * Get the function name
+     * 
+     * @return
+     */
     public String getName();
 
 
+    /**
+     * call function
+     * 
+     * @param env
+     *            Variable environment
+     * @param args
+     *            Function arguments
+     * @return
+     */
     public AviatorObject call(Map<String, Object> env, AviatorObject... args);
 }
