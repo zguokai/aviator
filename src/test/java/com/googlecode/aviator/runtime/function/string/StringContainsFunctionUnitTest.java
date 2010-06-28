@@ -1,4 +1,4 @@
-package com.googlecode.aviator.runtime.function;
+package com.googlecode.aviator.runtime.function.string;
 
 import static org.junit.Assert.*;
 
@@ -8,16 +8,17 @@ import java.util.Map;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.googlecode.aviator.runtime.function.string.StringEndsWithFunction;
+import com.googlecode.aviator.runtime.function.string.StringContainsFunction;
 import com.googlecode.aviator.runtime.type.AviatorJavaType;
 import com.googlecode.aviator.runtime.type.AviatorString;
 
 
-public class StringEndsWithFunctionUnitTest extends BaseStringFunctionUnitTest {
+public class StringContainsFunctionUnitTest extends BaseStringFunctionUnitTest{
+
 
     @Before
     public void setUp() {
-        this.function = new StringEndsWithFunction();
+        this.function = new StringContainsFunction();
     }
 
 
@@ -26,9 +27,9 @@ public class StringEndsWithFunctionUnitTest extends BaseStringFunctionUnitTest {
         Map<String, Object> env = new HashMap<String, Object>();
         env.put("s1", "hello");
         env.put("s2", "llo");
-        env.put("ch", 'o');
+        env.put("ch", 'l');
 
-        assertTrue((Boolean) this.function.call(null, new AviatorString("hello"), new AviatorString("llo")).getValue(
+        assertTrue((Boolean) this.function.call(null, new AviatorString("hello"), new AviatorString("ell")).getValue(
             null));
         assertTrue((Boolean) this.function.call(env, new AviatorString("hello"), new AviatorJavaType("s2")).getValue(
             env));
@@ -41,4 +42,6 @@ public class StringEndsWithFunctionUnitTest extends BaseStringFunctionUnitTest {
         assertTrue((Boolean) this.function.call(env, new AviatorJavaType("s1"), new AviatorString("llo")).getValue(env));
     }
 
+
+  
 }

@@ -1,4 +1,4 @@
-package com.googlecode.aviator.runtime.function;
+package com.googlecode.aviator.runtime.function.string;
 
 import static org.junit.Assert.*;
 
@@ -13,7 +13,7 @@ import com.googlecode.aviator.runtime.type.AviatorJavaType;
 import com.googlecode.aviator.runtime.type.AviatorString;
 
 
-public class StringSubstringWithFunctionUnitTest extends BaseStringFunctionUnitTest {
+public class StringEndsWithFunctionUnitTest extends BaseStringFunctionUnitTest {
 
     @Before
     public void setUp() {
