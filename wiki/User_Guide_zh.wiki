@@ -20,7 +20,7 @@ Aviator的特性
 
  * 支持大部分运算操作符，包括算术操作符、关系运算符、逻辑操作符、正则匹配操作符(=~)、三元表达式?: ，并且支持操作符的优先级和括号强制优先级，具体请看后面的操作符列表。
 
- * 支持正则表达式匹配，类似Ruby、Perl的匹配语法，并且支持类Ruby的$num指向匹配分组。
+ * 支持正则表达式匹配，类似Ruby、Perl的匹配语法，并且支持类Ruby的$digit指向匹配分组。
 
  * 自动类型转换，当执行操作的时候，会自动判断操作数类型并做相应转换，无法转换即抛异常。
 
@@ -131,7 +131,7 @@ public class CompileExample {
 }}}
 将cached设置为true即可，那么下次编译同一个表达式的时候将直接返回上一次编译的结果。使缓存失效通过：
 {{{
-public void invalidateCache(String expression)
+public static void invalidateCache(String expression)
 }}}
 方法。
 
