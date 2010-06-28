@@ -3,7 +3,7 @@ package com.googlecode.aviator;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.googlecode.aviator.runtime.type.AviatorMethod;
+import com.googlecode.aviator.runtime.method.AviatorMethod;
 import com.googlecode.aviator.runtime.type.AviatorObject;
 
 

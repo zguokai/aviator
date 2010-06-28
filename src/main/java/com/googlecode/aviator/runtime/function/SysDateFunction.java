@@ -8,7 +8,7 @@ import com.googlecode.aviator.runtime.type.AviatorObject;
 import com.googlecode.aviator.runtime.type.AviatorRuntimeJavaType;
 
 
-public class NowFunction implements AviatorFunction {
+public class SysDateFunction implements AviatorFunction {
 
     public String getName() {
         return "sysdate";

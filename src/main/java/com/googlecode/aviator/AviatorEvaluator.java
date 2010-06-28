@@ -30,7 +30,7 @@ import com.googlecode.aviator.exception.ExpressionRuntimeException;
 import com.googlecode.aviator.lexer.ExpressionLexer;
 import com.googlecode.aviator.parser.AviatorClassLoader;
 import com.googlecode.aviator.parser.ExpressionParser;
-import com.googlecode.aviator.runtime.function.NowFunction;
+import com.googlecode.aviator.runtime.function.SysDateFunction;
 import com.googlecode.aviator.runtime.function.StringContainsFunction;
 import com.googlecode.aviator.runtime.function.StringEndsWithFunction;
 import com.googlecode.aviator.runtime.function.StringStartsWithFunction;
@@ -58,11 +58,11 @@ public final class AviatorEvaluator {
         });
     }
 
-    public final static Map<String, Object> functionMap = new HashMap<String, Object>();
+    public final static Map<String, Object> FUNC_MAP = new HashMap<String, Object>();
 
     static {
         // Load internal functions
-        addFunction(new NowFunction());
+        addFunction(new SysDateFunction());
         addFunction(new StringContainsFunction());
         addFunction(new StringStartsWithFunction());
         addFunction(new StringEndsWithFunction());
@@ -100,7 +100,7 @@ public final class AviatorEvaluator {
      * @param function
      */
     public static void addFunction(AviatorFunction function) {
-        functionMap.put(function.getName(), function);
+        FUNC_MAP.put(function.getName(), function);
     }
 
 
@@ -111,7 +111,7 @@ public final class AviatorEvaluator {
      * @return
      */
     public static AviatorFunction removeFunction(String name) {
-        return (AviatorFunction) functionMap.remove(name);
+        return (AviatorFunction) FUNC_MAP.remove(name);
     }
 
 

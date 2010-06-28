@@ -32,7 +32,7 @@ public class AviatorBooleanUnitTest {
 
     @Test
     public void testAddString() {
-        AviatorBoolean aviatorBoolean = new AviatorBoolean(Boolean.TRUE);
+        AviatorBoolean aviatorBoolean = AviatorBoolean.valueOf(Boolean.TRUE);
         AviatorString aviatorString = new AviatorString(" is true");
         assertEquals("true is true", aviatorBoolean.add(aviatorString, null).getValue(null));
 
@@ -41,7 +41,7 @@ public class AviatorBooleanUnitTest {
 
     @Test
     public void testAddJavaString() {
-        AviatorBoolean aviatorBoolean = new AviatorBoolean(Boolean.TRUE);
+        AviatorBoolean aviatorBoolean = AviatorBoolean.valueOf(Boolean.TRUE);
         AviatorJavaType aviatorString = new AviatorJavaType("s");
         assertEquals("true is true", aviatorBoolean.add(aviatorString, createEnvWith("s", " is true")).getValue(null));
 
@@ -50,7 +50,7 @@ public class AviatorBooleanUnitTest {
 
     @Test
     public void testAddJavaChar() {
-        AviatorBoolean aviatorBoolean = new AviatorBoolean(Boolean.TRUE);
+        AviatorBoolean aviatorBoolean = AviatorBoolean.valueOf(Boolean.TRUE);
         AviatorJavaType aviatorString = new AviatorJavaType("c");
         assertEquals("trueg", aviatorBoolean.add(aviatorString, createEnvWith("c", 'g')).getValue(null));
 
@@ -66,24 +66,24 @@ public class AviatorBooleanUnitTest {
 
     @Test(expected = ExpressionRuntimeException.class)
     public void testAddNumber() {
-        AviatorBoolean aviatorBoolean = new AviatorBoolean(Boolean.TRUE);
+        AviatorBoolean aviatorBoolean = AviatorBoolean.valueOf(Boolean.TRUE);
         aviatorBoolean.add(AviatorNumber.valueOf(1), null);
     }
 
 
     @Test(expected = ExpressionRuntimeException.class)
     public void testAddJavaType() {
-        AviatorBoolean aviatorBoolean = new AviatorBoolean(Boolean.TRUE);
+        AviatorBoolean aviatorBoolean = AviatorBoolean.valueOf(Boolean.TRUE);
         aviatorBoolean.add(new AviatorJavaType("a"), null);
     }
 
 
     @Test
     public void testCompareBoolean() {
-        AviatorBoolean aviatorBoolean1 = new AviatorBoolean(Boolean.TRUE);
-        AviatorBoolean aviatorBoolean2 = new AviatorBoolean(Boolean.TRUE);
-        AviatorBoolean aviatorBoolean3 = new AviatorBoolean(Boolean.FALSE);
-        AviatorBoolean aviatorBoolean4 = new AviatorBoolean(Boolean.FALSE);
+        AviatorBoolean aviatorBoolean1 = AviatorBoolean.valueOf(Boolean.TRUE);
+        AviatorBoolean aviatorBoolean2 = AviatorBoolean.valueOf(Boolean.TRUE);
+        AviatorBoolean aviatorBoolean3 = AviatorBoolean.valueOf(Boolean.FALSE);
+        AviatorBoolean aviatorBoolean4 = AviatorBoolean.valueOf(Boolean.FALSE);
 
         assertEquals(0, aviatorBoolean1.compare(aviatorBoolean2, null));
         assertEquals(1, aviatorBoolean1.compare(aviatorBoolean3, null));
@@ -108,8 +108,8 @@ public class AviatorBooleanUnitTest {
 
     @Test
     public void testCompareJavaBoolean() {
-        AviatorBoolean t = new AviatorBoolean(Boolean.TRUE);
-        AviatorBoolean f = new AviatorBoolean(Boolean.FALSE);
+        AviatorBoolean t = AviatorBoolean.valueOf(Boolean.TRUE);
+        AviatorBoolean f = AviatorBoolean.valueOf(Boolean.FALSE);
 
         AviatorJavaType javaType = new AviatorJavaType("true");
         assertEquals(0, t.compare(javaType, createEnvWith("true", Boolean.TRUE)));
@@ -122,14 +122,14 @@ public class AviatorBooleanUnitTest {
 
     @Test(expected = ExpressionRuntimeException.class)
     public void testCompareNumber() {
-        AviatorBoolean aviatorBoolean = new AviatorBoolean(Boolean.TRUE);
+        AviatorBoolean aviatorBoolean = AviatorBoolean.valueOf(Boolean.TRUE);
         aviatorBoolean.compare(AviatorNumber.valueOf(1), null);
     }
 
 
     @Test(expected = ExpressionRuntimeException.class)
     public void testCompareJavaType() {
-        AviatorBoolean aviatorBoolean = new AviatorBoolean(Boolean.TRUE);
+        AviatorBoolean aviatorBoolean = AviatorBoolean.valueOf(Boolean.TRUE);
         aviatorBoolean.compare(new AviatorJavaType("a"), createEnvWith("a", 4.6));
     }
 }

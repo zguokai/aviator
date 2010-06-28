@@ -117,7 +117,7 @@ public class AviatorNumberUnitTest {
     @Test(expected = ExpressionRuntimeException.class)
     public void testAddWithOtherType1() {
         AviatorNumber a = AviatorNumber.valueOf(1000);
-        a.add(new AviatorBoolean(Boolean.TRUE), null);
+        a.add(AviatorBoolean.valueOf(Boolean.TRUE), null);
     }
 
 
@@ -131,7 +131,7 @@ public class AviatorNumberUnitTest {
     @Test(expected = ExpressionRuntimeException.class)
     public void testSubWithOtherType1() {
         AviatorNumber a = AviatorNumber.valueOf(1000);
-        a.sub(new AviatorBoolean(Boolean.TRUE), null);
+        a.sub(AviatorBoolean.valueOf(Boolean.TRUE), null);
     }
 
 
@@ -145,7 +145,7 @@ public class AviatorNumberUnitTest {
     @Test(expected = ExpressionRuntimeException.class)
     public void testMultWithOtherType1() {
         AviatorNumber a = AviatorNumber.valueOf(1000);
-        a.mult(new AviatorBoolean(Boolean.TRUE), null);
+        a.mult(AviatorBoolean.valueOf(Boolean.TRUE), null);
     }
 
 
@@ -159,7 +159,7 @@ public class AviatorNumberUnitTest {
     @Test(expected = ExpressionRuntimeException.class)
     public void testDivWithOtherType1() {
         AviatorNumber a = AviatorNumber.valueOf(1000);
-        a.div(new AviatorBoolean(Boolean.TRUE), null);
+        a.div(AviatorBoolean.valueOf(Boolean.TRUE), null);
     }
 
 
@@ -173,7 +173,7 @@ public class AviatorNumberUnitTest {
     @Test(expected = ExpressionRuntimeException.class)
     public void testModWithOtherType1() {
         AviatorNumber a = AviatorNumber.valueOf(1000);
-        a.mod(new AviatorBoolean(Boolean.TRUE), null);
+        a.mod(AviatorBoolean.valueOf(Boolean.TRUE), null);
     }
 
 

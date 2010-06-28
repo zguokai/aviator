@@ -24,12 +24,14 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.junit.Before;
 import org.junit.Test;
 
+import com.googlecode.aviator.AviatorEvaluator;
 import com.googlecode.aviator.lexer.token.NumberToken;
 import com.googlecode.aviator.lexer.token.OperatorType;
 import com.googlecode.aviator.lexer.token.PatternToken;
@@ -396,5 +398,30 @@ public class ASMCodeGeneratorUnitTest {
         codeGenerator.onMatch(null);
         Object result = eval(new HashMap<String, Object>());
         assertEquals(Boolean.TRUE, result);
+    }
+
+
+    @Test
+    public void testOnMethod_withoutArguments() throws Exception {
+        codeGenerator.onMethodName(new Variable("sysdate", -1));
+        codeGenerator.onMethodInvoke(null);
+        Object result = eval(AviatorEvaluator.FUNC_MAP);
+        assertNotNull(result);
+        assertTrue(result instanceof Date);
+    }
+
+
+    @Test
+    public void testOnMethod_withTwoArguments() throws Exception {
+        codeGenerator.onMethodName(new Variable("string.substring", -1));
+        codeGenerator.onConstant(new StringToken("hello", -1));
+        codeGenerator.onMethodParameter(null);
+        codeGenerator.onConstant(new NumberToken(2L, "2"));
+        codeGenerator.onMethodParameter(null);
+        codeGenerator.onConstant(new NumberToken(5L, "5"));
+        codeGenerator.onMethodParameter(null);
+        codeGenerator.onMethodInvoke(null);
+        Object result = eval(AviatorEvaluator.FUNC_MAP);
+        assertEquals("llo",result);
     }
 }

@@ -18,9 +18,11 @@ public class StringContainsFunction implements AviatorFunction {
         if (args.length != 2) {
             throw new IllegalArgumentException("string.contains(string,string) just need two arguments");
         }
-        String target = (String) args[0].getValue(env);
-        String param = (String) args[1].getValue(env);
-        return new AviatorBoolean(target.indexOf(param) >= 0);
+
+        String target = FunctionUtils.getStringValue(0, args, env);
+        String param = FunctionUtils.getStringValue(1, args, env);
+
+        return target.indexOf(param) >= 0 ? AviatorBoolean.TRUE : AviatorBoolean.FALSE;
     }
 
 }

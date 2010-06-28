@@ -9,7 +9,7 @@ public class FunctionExample {
         System.out.println(AviatorEvaluator.execute("string.contains('hello','h')"));
         System.out.println(AviatorEvaluator.execute("string.startsWith('hello','h')"));
         System.out.println(AviatorEvaluator.execute("string.endsWith('hello','llo')"));
-        System.out.println(AviatorEvaluator.execute("string.substring('hello',1,2)"));
+        System.out.println(AviatorEvaluator.execute("string.contains(\"test\",string.substring('hello',1,2))"));
     }
 
 }
