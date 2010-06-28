@@ -20,6 +20,7 @@ package com.googlecode.aviator;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.HashMap;
 import java.util.Map;
 
 import com.googlecode.aviator.exception.ExpressionRuntimeException;
@@ -53,7 +54,7 @@ public class Expression {
      */
     public Object execute(Map<String, Object> env) {
         if (env == null) {
-            env = AviatorEvaluator.FUNC_MAP;
+            env = new HashMap<String, Object>(AviatorEvaluator.FUNC_MAP);
         }
         else {
             env.putAll(AviatorEvaluator.FUNC_MAP);

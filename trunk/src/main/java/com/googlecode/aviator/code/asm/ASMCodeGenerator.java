@@ -31,6 +31,7 @@ import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.util.CheckClassAdapter;
 import org.objectweb.asm.util.TraceClassVisitor;
 
+import com.googlecode.aviator.AviatorEvaluator;
 import com.googlecode.aviator.code.CodeGenerator;
 import com.googlecode.aviator.exception.CompileExpressionErrorException;
 import com.googlecode.aviator.lexer.token.NumberToken;
@@ -570,6 +571,12 @@ public class ASMCodeGenerator implements CodeGenerator {
                 pushOperand(0);
             }
             else {
+                // check if it is a function name
+                if (AviatorEvaluator.FUNC_MAP.keySet().contains(variable.getLexeme())) {
+                    throw new CompileExpressionErrorException("index=" + variable.getStartIndex() + ","
+                            + variable.getLexeme() + " is a function name,please don't use it as variable");
+                }
+
                 mv.visitTypeInsn(NEW, "com/googlecode/aviator/runtime/type/AviatorJavaType");
                 mv.visitInsn(DUP);
                 mv.visitLdcInsn(variable.getLexeme());
@@ -640,7 +647,7 @@ public class ASMCodeGenerator implements CodeGenerator {
         final int parameterLocalIndex = createArugmentList();
         methodMetaDataStack.push(new MethodMetaData(methodName, parameterLocalIndex));
 
-        //pushOperand(0);
+        // pushOperand(0);
 
     }
 
