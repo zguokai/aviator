@@ -891,6 +891,11 @@ public class GrammarUnitTest {
         assertTrue((Boolean) AviatorEvaluator.execute("bool>unknow",env));
 
     }
+    
+    @Test
+    public void testFunctionCall(){
+        
+    }
 
 
     private Map<String, Object> createEnv() {

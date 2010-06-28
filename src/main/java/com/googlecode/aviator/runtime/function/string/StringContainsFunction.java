@@ -16,34 +16,38 @@
  *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  **/
-package com.googlecode.aviator.runtime.function;
+package com.googlecode.aviator.runtime.function.string;
 
-import java.util.Date;
 import java.util.Map;
 
+import com.googlecode.aviator.runtime.function.FunctionUtils;
+import com.googlecode.aviator.runtime.type.AviatorBoolean;
 import com.googlecode.aviator.runtime.type.AviatorFunction;
 import com.googlecode.aviator.runtime.type.AviatorObject;
-import com.googlecode.aviator.runtime.type.AviatorRuntimeJavaType;
 
 
 /**
- * sysdate() function
+ * string.contains(s1,s2) function
  * 
  * @author dennis
  * 
  */
-public class SysDateFunction implements AviatorFunction {
+public class StringContainsFunction implements AviatorFunction {
 
     public String getName() {
-        return "sysdate";
+        return "string.contains";
     }
 
 
     public AviatorObject call(Map<String, Object> env, AviatorObject... args) {
-        if (args.length > 0) {
-            throw new IllegalArgumentException("now() doesn't need any arguments");
+        if (args.length != 2) {
+            throw new IllegalArgumentException("string.contains(string,string) just need two arguments");
         }
-        return new AviatorRuntimeJavaType(new Date());
+
+        String target = FunctionUtils.getStringValue(0, args, env);
+        String param = FunctionUtils.getStringValue(1, args, env);
+
+        return target.indexOf(param) >= 0 ? AviatorBoolean.TRUE : AviatorBoolean.FALSE;
     }
 
 }
