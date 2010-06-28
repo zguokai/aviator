@@ -185,19 +185,17 @@ public class FakeCodeGenerator implements CodeGenerator {
 
 
     public void onMethodInvoke(Token<?> lookhead) {
-        // TODO Auto-generated method stub
+        appendToken("method<invoked>");
 
     }
 
 
     public void onMethodName(Token<?> lookhead) {
-        // TODO Auto-generated method stub
 
     }
 
 
     public void onMethodParameter(Token<?> lookhead) {
-        // TODO Auto-generated method stub
 
     }
 

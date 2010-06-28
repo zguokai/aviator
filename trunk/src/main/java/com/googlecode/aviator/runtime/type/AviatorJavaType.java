@@ -177,7 +177,7 @@ public class AviatorJavaType extends AviatorObject {
                     return thisAviatorString.compare(other, env);
                 }
                 else if (thisValue instanceof Boolean) {
-                    AviatorBoolean thisAviatorBoolean = new AviatorBoolean((Boolean) thisValue);
+                    AviatorBoolean thisAviatorBoolean = AviatorBoolean.valueOf((Boolean) thisValue);
                     return thisAviatorBoolean.compare(other, env);
                 }
                 else if (thisValue instanceof Date && otherValue instanceof String) {
@@ -261,7 +261,7 @@ public class AviatorJavaType extends AviatorObject {
     public AviatorObject not(Map<String, Object> env) {
         final Object value = getValue(env);
         if (value instanceof Boolean) {
-            return new AviatorBoolean((Boolean) value).not(env);
+            return AviatorBoolean.valueOf((Boolean) value).not(env);
         }
         else {
             return super.not(env);
@@ -285,7 +285,7 @@ public class AviatorJavaType extends AviatorObject {
             return aviatorNumber.add(other, env);
         }
         else if (value instanceof Boolean) {
-            return new AviatorBoolean((Boolean) value).add(other, env);
+            return AviatorBoolean.valueOf((Boolean) value).add(other, env);
         }
         else {
             return super.add(other, env);

@@ -457,4 +457,26 @@ public class ExpressionParserUnitTest {
 
     }
 
+
+    @Test
+    public void testParseFunction() {
+        this.parser = new ExpressionParser(new ExpressionLexer("string.contains(\"hello\",'fuck')"), codeGenerator);
+        this.parser.parse();
+
+        assertEquals("hello fuck method<invoked>", codeGenerator.getPostFixExpression());
+
+    }
+
+
+    @Test
+    public void testParseFunctionNested() {
+        this.parser =
+                new ExpressionParser(new ExpressionLexer("string.contains(string.substring(\"hello\",3,4),string.substring(\"hello\",1)) && 3>2"),
+                    codeGenerator);
+        this.parser.parse();
+
+        assertEquals("hello 3 4 method<invoked> hello 1 method<invoked> method<invoked> 3 2 > &&", codeGenerator.getPostFixExpression());
+
+    }
+
 }

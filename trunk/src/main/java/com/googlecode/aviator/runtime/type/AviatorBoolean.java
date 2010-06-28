@@ -71,9 +71,14 @@ public class AviatorBoolean extends AviatorObject {
     }
 
 
-    public AviatorBoolean(Boolean value) {
+    private AviatorBoolean(Boolean value) {
         super();
         this.value = value;
+    }
+
+
+    public  static AviatorBoolean valueOf(boolean b) {
+        return b ? AviatorBoolean.TRUE : AviatorBoolean.FALSE;
     }
 
 

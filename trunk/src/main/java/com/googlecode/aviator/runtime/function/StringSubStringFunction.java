@@ -17,13 +17,12 @@ public class StringSubStringFunction implements AviatorFunction {
         if (args.length != 2 && args.length != 3) {
             throw new IllegalArgumentException("string.endsWith(string,int[,int]) just need two or three arguments");
         }
+        String target = FunctionUtils.getStringValue(0, args, env);
         switch (args.length) {
         case 2:
-            String target = (String) args[0].getValue(env);
             Number beginIndex = (Number) args[1].getValue(env);
             return new AviatorString(target.substring(beginIndex.intValue()));
         case 3:
-            target = (String) args[0].getValue(env);
             beginIndex = (Number) args[1].getValue(env);
             Number endIndex = (Number) args[2].getValue(env);
             return new AviatorString(target.substring(beginIndex.intValue(), endIndex.intValue()));

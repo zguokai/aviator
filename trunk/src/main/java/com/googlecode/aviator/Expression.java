@@ -53,10 +53,10 @@ public class Expression {
      */
     public Object execute(Map<String, Object> env) {
         if (env == null) {
-            env = AviatorEvaluator.functionMap;
+            env = AviatorEvaluator.FUNC_MAP;
         }
         else {
-            env.putAll(AviatorEvaluator.functionMap);
+            env.putAll(AviatorEvaluator.FUNC_MAP);
         }
         try {
             return this.runMethod.invoke(null, env);
