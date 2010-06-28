@@ -888,13 +888,22 @@ public class GrammarUnitTest {
         assertFalse((Boolean) AviatorEvaluator.execute("'s'==a"));
         assertTrue((Boolean) AviatorEvaluator.execute("'s'>=a"));
         assertTrue((Boolean) AviatorEvaluator.execute("'s'>a"));
-        assertTrue((Boolean) AviatorEvaluator.execute("bool>unknow",env));
+        assertTrue((Boolean) AviatorEvaluator.execute("bool>unknow", env));
 
     }
-    
+
+
     @Test
-    public void testFunctionCall(){
-        
+    public void testFunctionCall() {
+        Map<String, Object> env = createEnv();
+        assertEquals(10, AviatorEvaluator.execute(" string.length('hello') + string.length('hello') "));
+        assertEquals(3.0, (Double) AviatorEvaluator.execute(" string.length('hello')>5? math.abs(d):math.log10(a) ",
+            env), 0.001);
+        assertEquals(3.3, (Double) AviatorEvaluator.execute(" string.length('hello')==5? math.abs(d):math.log10(a) ",
+            env), 0.001);
+
+        assertEquals(3.3, (Double) AviatorEvaluator.execute(
+            "string.contains(p1,'A-Z')? d<0? math.abs(d): math.sqrt(a) : string.length(p2)  ", env), 0.001);
     }
 
 
