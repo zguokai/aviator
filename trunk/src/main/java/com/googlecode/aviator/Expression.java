@@ -20,7 +20,6 @@ package com.googlecode.aviator;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.Collections;
 import java.util.Map;
 
 import com.googlecode.aviator.exception.ExpressionRuntimeException;
@@ -54,7 +53,10 @@ public class Expression {
      */
     public Object execute(Map<String, Object> env) {
         if (env == null) {
-            env = Collections.emptyMap();
+            env = AviatorEvaluator.functionMap;
+        }
+        else {
+            env.putAll(AviatorEvaluator.functionMap);
         }
         try {
             return this.runMethod.invoke(null, env);

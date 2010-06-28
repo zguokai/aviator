@@ -183,4 +183,22 @@ public class FakeCodeGenerator implements CodeGenerator {
         appendToken("-");
     }
 
+
+    public void onMethodInvoke(Token<?> lookhead) {
+        // TODO Auto-generated method stub
+
+    }
+
+
+    public void onMethodName(Token<?> lookhead) {
+        // TODO Auto-generated method stub
+
+    }
+
+
+    public void onMethodParameter(Token<?> lookhead) {
+        // TODO Auto-generated method stub
+
+    }
+
 }

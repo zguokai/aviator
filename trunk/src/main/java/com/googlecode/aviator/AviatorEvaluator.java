@@ -30,6 +30,12 @@ import com.googlecode.aviator.exception.ExpressionRuntimeException;
 import com.googlecode.aviator.lexer.ExpressionLexer;
 import com.googlecode.aviator.parser.AviatorClassLoader;
 import com.googlecode.aviator.parser.ExpressionParser;
+import com.googlecode.aviator.runtime.function.NowFunction;
+import com.googlecode.aviator.runtime.function.StringContainsFunction;
+import com.googlecode.aviator.runtime.function.StringEndsWithFunction;
+import com.googlecode.aviator.runtime.function.StringStartsWithFunction;
+import com.googlecode.aviator.runtime.function.StringSubStringFunction;
+import com.googlecode.aviator.runtime.type.AviatorFunction;
 
 
 /**
@@ -50,6 +56,17 @@ public final class AviatorEvaluator {
             }
 
         });
+    }
+
+    public final static Map<String, Object> functionMap = new HashMap<String, Object>();
+
+    static {
+        // Load internal functions
+        addFunction(new NowFunction());
+        addFunction(new StringContainsFunction());
+        addFunction(new StringStartsWithFunction());
+        addFunction(new StringEndsWithFunction());
+        addFunction(new StringSubStringFunction());
     }
 
     /**
@@ -74,6 +91,38 @@ public final class AviatorEvaluator {
 
     public static AviatorClassLoader getAviatorClassLoader() {
         return aviatorClassLoader;
+    }
+
+
+    /**
+     * Add a aviator function
+     * 
+     * @param function
+     */
+    public static void addFunction(AviatorFunction function) {
+        functionMap.put(function.getName(), function);
+    }
+
+
+    /**
+     * Remove a aviator function by name
+     * 
+     * @param name
+     * @return
+     */
+    public static AviatorFunction removeFunction(String name) {
+        return (AviatorFunction) functionMap.remove(name);
+    }
+
+
+    /**
+     * Remove a aviator function
+     * 
+     * @param function
+     * @return
+     */
+    public static AviatorFunction removeFunction(AviatorFunction function) {
+        return removeFunction(function.getName());
     }
 
 

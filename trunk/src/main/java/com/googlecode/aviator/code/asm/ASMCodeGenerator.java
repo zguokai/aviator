@@ -66,6 +66,7 @@ public class ASMCodeGenerator implements CodeGenerator {
     private final Stack<Token<?>> operandStack = new Stack<Token<?>>();
 
     private int maxStacks = 0;
+    private int maxLocals = 1;
 
 
     private void setMaxStacks(int newMaxStacks) {
@@ -141,7 +142,7 @@ public class ASMCodeGenerator implements CodeGenerator {
             mv.visitInsn(ACONST_NULL);
             mv.visitInsn(ARETURN);
         }
-        mv.visitMaxs(maxStacks, 1);
+        mv.visitMaxs(maxStacks, maxLocals);
         mv.visitEnd();
         checkClassAdapter.visitEnd();
     }
@@ -613,4 +614,88 @@ public class ASMCodeGenerator implements CodeGenerator {
 
     }
 
+
+    public void onMethodInvoke(Token<?> lookhead) {
+        final MethodMetaData methodMetaData = this.methodMetaDataStack.pop();
+        mv.visitMethodInsn(INVOKEVIRTUAL, "com/googlecode/aviator/runtime/type/AviatorMethod", "invoke",
+            "(Ljava/util/Map;Ljava/util/List;)Lcom/googlecode/aviator/runtime/type/AviatorObject;");
+        popOperand(); // method object
+        popOperand(); // env map
+        // pop operands
+        for (int i = 0; i < methodMetaData.parameterCount; i++) {
+            popOperand();
+        }
+        pushMarkToken();
+    }
+
+
+    public void onMethodParameter(Token<?> lookhead) {
+        this.methodMetaDataStack.peek().parameterCount++;
+        // add parameter to list
+        mv.visitMethodInsn(INVOKEINTERFACE, "java/util/List", "add", "(Ljava/lang/Object;)Z");
+        // pop boolean
+        mv.visitInsn(POP);
+        mv.visitVarInsn(ALOAD, this.methodMetaDataStack.peek().parameterListIndex);
+    }
+
+    private static class MethodMetaData {
+        String methodName;
+
+        int parameterCount;
+        int parameterListIndex;
+
+
+        public MethodMetaData(String methodName, int parameterListIndex) {
+            super();
+            this.methodName = methodName;
+            this.parameterCount = 0;
+            this.parameterListIndex = parameterListIndex;
+        }
+
+    }
+
+    Stack<MethodMetaData> methodMetaDataStack = new Stack<MethodMetaData>();
+
+
+    public int getLocalIndex() {
+        return maxLocals++;
+    }
+
+
+    public void onMethodName(Token<?> lookhead) {
+        String methodName = lookhead.getLexeme();
+        createAviatorMethodObject(methodName);
+        // load env
+        pushMarkToken();
+        mv.visitVarInsn(ALOAD, 0);
+        // create argument list
+        pushMarkToken();
+        pushMarkToken();
+        mv.visitTypeInsn(NEW, "java/util/ArrayList");
+        mv.visitInsn(DUP);
+        popOperand();
+        mv.visitMethodInsn(INVOKESPECIAL, "java/util/ArrayList", "<init>", "()V");
+        // store to local variable
+        final int parameterLocalIndex = getLocalIndex();
+        mv.visitVarInsn(ASTORE, parameterLocalIndex);
+        mv.visitVarInsn(ALOAD, parameterLocalIndex);
+        methodMetaDataStack.push(new MethodMetaData(methodName, parameterLocalIndex));
+
+        pushMarkToken();
+
+    }
+
+
+    private void createAviatorMethodObject(String methodName) {
+        pushMarkToken();
+        pushMarkToken();
+        pushMarkToken();
+        mv.visitTypeInsn(NEW, "com/googlecode/aviator/runtime/type/AviatorMethod");
+        mv.visitInsn(DUP);
+        mv.visitLdcInsn(methodName);
+        popOperand();
+        popOperand();
+        mv.visitMethodInsn(INVOKESPECIAL, "com/googlecode/aviator/runtime/type/AviatorMethod", "<init>",
+            "(Ljava/lang/String;)V");
+    }
 }
