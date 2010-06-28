@@ -38,7 +38,7 @@
 || Groovy  || 79.6       ||
 || IKExpression ||  159.2  ||
 
-结论： Aviator在计算算术表达式的时候是非常快速的，跟Groovy和IKExpression都有一个数量级的差距。
+结论： Aviator在计算算术表达式的时候是非常快速的，跟Groovy和IKExpression都有近一个数量级的差距。
 
 = 场景2 =
 
@@ -53,7 +53,7 @@
 || Groovy  || 13.0      ||
 || IKExpression ||  168.8  ||
 
-结论： Aviator仍然是最快的，IKExpression由于是解释执行结果较差。
+结论： Aviator跟Groovy差不多，IKExpression由于是解释执行结果较差。
 
 = 场景3 =
 
