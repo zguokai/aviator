@@ -30,7 +30,10 @@ Aviator的限制：
 
  * 不允许赋值语句
 
+= 整体结构 =
 
+Aviator的结构非常简单，一个典型的求值器的结构
+[http://www.blogjava.net/killme2008/images/blogjava_net/killme2008/aviator.jpg]
 
 
 = Details =
