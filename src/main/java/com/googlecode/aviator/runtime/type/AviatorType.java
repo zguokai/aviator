@@ -30,6 +30,5 @@ public enum AviatorType {
     JavaType,
     Boolean,
     Pattern,
-    Nil,
-    Method;
+    Nil;
 }

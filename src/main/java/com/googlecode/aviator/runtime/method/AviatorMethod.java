@@ -16,21 +16,24 @@
  *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  **/
-package com.googlecode.aviator.runtime.type;
+package com.googlecode.aviator.runtime.method;
 
 import java.util.List;
 import java.util.Map;
 
 import com.googlecode.aviator.exception.ExpressionRuntimeException;
+import com.googlecode.aviator.runtime.type.AviatorFunction;
+import com.googlecode.aviator.runtime.type.AviatorNil;
+import com.googlecode.aviator.runtime.type.AviatorObject;
 
 
 /**
- * A aviator function
+ * A aviator function call
  * 
  * @author dennis
  * 
  */
-public class AviatorMethod extends AviatorObject {
+public class AviatorMethod {
     private final String methodName;
     private volatile AviatorFunction cachedFunction;
 
@@ -50,24 +53,6 @@ public class AviatorMethod extends AviatorObject {
         }
         final AviatorObject result = cachedFunction.call(env, list.toArray(new AviatorObject[list.size()]));
         return result == null ? AviatorNil.NIL : result;
-    }
-
-
-    @Override
-    public int compare(AviatorObject other, Map<String, Object> env) {
-        throw new UnsupportedOperationException("Method could not be compared");
-    }
-
-
-    @Override
-    public AviatorType getAviatorType() {
-        return AviatorType.Method;
-    }
-
-
-    @Override
-    public Object getValue(Map<String, Object> env) {
-        throw new UnsupportedOperationException("Method has no value");
     }
 
 }
