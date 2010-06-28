@@ -1,0 +1,55 @@
+#summary 性能测试
+#labels Phase-Support,Featured
+
+= Introduction =
+这个测试本质上是不公平的，因为实现的机制完全不同，这里只是为了做一个直观的比较，对Aviator的性能有个直观的感受。参与测试的包括Aviator、groovy和IKExpression。
+
+
+= 硬件和软件 =
+
+ * OS:              Linux dennis-laptop 2.6.31-14-generic #48-Ubuntu SMP Fri Oct 16 14:04:26 UTC 2009 i686 GNU/Linux
+
+ *  MemTotal:        2992176 kB
+
+ * CPU:              Intel(R) Core(TM)2 Duo CPU     P8600  @ 2.40GHz
+
+ * JDK:              java version "1.6.0_18" Java(TM) SE Runtime Environment (build 1.6.0_18-b07) Java HotSpot(TM) Server VM (build 16.0-b13, mixed mode)
+
+ * Aviator :  1.0-RC
+
+ * Groovy:  
+
+ * IKExpression :
+
+= 测试方法 =
+
+三个引擎都采用预先编译再进行测试的方式，循环1000万次执行编译后的结果，测量耗时。
+
+= 场景1 =
+
+计算算术表达式：
+{{{
+1000+100.0*99-(600-3*15)/(((68-9)-3)*2-100)+10000%7*71
+}}}
+
+测试结果：
+|| 测试 || 耗时（单位:秒）||
+|| Aviator || 13.0        ||
+|| Groovy  || 129.5       ||
+|| IKExpression ||  155.7  ||
+
+结论： Aviator在计算算术表达式的时候是非常快速的，跟Groovy和IKExpression都有一个数量级的差距。
+
+= 场景2 =
+
+计算逻辑表达式和三元表达式混合：
+{{{
+6.7-100>39.6 ? 5==5? 4+5:6-1 : !(100%3-39.0<27) ? 8*2-199: 100%3
+}}}
+
+测试结果：
+|| 测试 || 耗时（单位:秒）||
+|| Aviator || 10.0        ||
+|| Groovy  || 36.4      ||
+|| IKExpression ||  166.7  ||
+
