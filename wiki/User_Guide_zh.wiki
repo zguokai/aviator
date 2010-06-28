@@ -12,7 +12,7 @@ Aviator的设计目标是*轻量级*和*高性能 *，相比于Groovy、JRuby的
 
 Aviator的特性
 
- * 支持大部分运算操作符，包括算术操作符、逻辑操作符、正则匹配操作符(=~)、三元表达式?: ，并且支持操作符的优先级和括号强制优先级，具体请看后面的操作符列表。
+ * 支持大部分运算操作符，包括算术操作符、关系运算符、逻辑操作符、正则匹配操作符(=~)、三元表达式?: ，并且支持操作符的优先级和括号强制优先级，具体请看后面的操作符列表。
 
  * 支持正则表达式匹配，类似Ruby、Perl的匹配语法，并且支持类Ruby的$num指向匹配分组。
 
@@ -24,11 +24,11 @@ Aviator的特性
 
 Aviator的限制：
 
- * 没有if else、do while等语句，仅支持逻辑表达式、算术表达式、三元表达式和正则匹配。
+ * 没有if else、do while等语句，没有赋值语句，仅支持逻辑表达式、算术表达式、三元表达式和正则匹配。
 
  * 不允许自定义函数
 
- * 不允许赋值语句
+ * 没有位运算符
 
 = 整体结构 =
 
@@ -259,46 +259,115 @@ public class VariableExample {
 
 可以看到我们通过foo.i和foo.f的方式来访问foo变量中的i和f属性，并且通过foo.date.year的方式来访问foo中date对象的year属性（其实是getYear方法）。
 
+== nil对象 ==
+
+nil是Aviator内置的常量，类似java中的null，表示空的值。nil跟null不同的在于，在java中null只能使用在==、!=的比较运算符，而nil还可以使用>、>=、<、<=等比较运算符。Aviator规定，任何对象都比nil大除了nil本身。用户传入的变量如果为null，将自动以nil替代。
+
+{{{
+        AviatorEvaluator.execute("nil == nil");  //true
+        AviatorEvaluator.execute(" 3> nil");    //true
+        AviatorEvaluator.execute(" true!= nil");    //true
+        AviatorEvaluator.execute(" ' '>nil ");  //true
+        AviatorEvaluator.execute(" a==nil ");   //true,a is null
+}}}
+
+nil与String相加的时候，跟java一样显示为null
+
+== 日期比较 ==
+
+Aviator并不支持日期类型，如果要比较日期，你需要将日期写字符串的形式，并且要求是形如"yyyy-MM-dd HH:mm:ss:SS"的字符串，否则都将报错。 字符串跟java.util.Date比较的时候将自动转换为Date对象进行比较：
+
+{{{
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+
+import com.googlecode.aviator.AviatorEvaluator;
 
 
+public class DateExample {
+    public static void main(String[] args) throws Exception {
+        Map<String, Object> env = new HashMap<String, Object>();
+        final Date date = new Date();
+        String dateStr = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss:SS").format(date);
+        env.put("date", date);
+        env.put("dateStr", dateStr);
 
+        Boolean result = (Boolean) AviatorEvaluator.execute("date==dateStr", env);
+        System.out.println(result);
 
+        result = (Boolean) AviatorEvaluator.execute("date > '2009-12-20 00:00:00:00' ", env);
+        System.out.println(result);
 
+        result = (Boolean) AviatorEvaluator.execute("date < '2200-12-20 00:00:00:00' ", env);
+        System.out.println(result);
 
+        result = (Boolean) AviatorEvaluator.execute("date ==date ", env);
+        System.out.println(result);
+    }
 
+}
 
+}}}
 
-
-
-
-
-
-
-
-
-
-
-
+也就是说String除了能跟String比较之外，还能跟nil和date字符串比较。
 
 
 == 语法手册 ==
+
+下面是Aviator详细的语法规则定义。
 
 === 数据类型 ===
 
  * Number类型：数字类型，支持两种类型，分别对应Java的Long和Double，也就是说任何整数都将被转换为Long，而任何浮点数都将被转换为Double，包括用户传入的数值也是如此转换。不支持科学计数法，仅支持十进制。如-1、100、2.3等。
 
- * String类型：  字符串类型，单引号或者双引号括起来的文本串，如'hello world' 
+ * String类型：  字符串类型，单引号或者双引号括起来的文本串，如'hello world'，变量如果传入的是String或者Character也将转为String类型。
 
- * Bool类型：    常量true和false，表示真值和假值
+ * Bool类型：    常量true和false，表示真值和假值，与java的Boolean.TRUE和Boolean.False对应。
 
- * Pattern类型： 类似Ruby、perl的正则表达式，以//括起来的字符串，如/\d+/
+ * Pattern类型： 类似Ruby、perl的正则表达式，以//括起来的字符串，如/\d+/，内部实现为java.util.Pattern。
 
  * 变量类型：   与Java的变量命名规则相同，变量的值由用户传入，如"a"、"_b"等
 
- * nil类型:     常量nil,类似java中的null，但是nil比较特殊，nil不仅可以参与==、!=的比较，也可以参与>、>=、<、<=的比较，Aviator规定任何类型都n大于nil除了nil本身，nil==nil返回true。用户传入的变量值如果为null，那么也将作为nil处理。
+ * nil类型:     常量nil,类似java中的null，但是nil比较特殊，nil不仅可以参与==、!=的比较，也可以参与>、>=、<、<=的比较，Aviator规定任何类型都n大于nil除了nil本身，nil==nil返回true。用户传入的变量值如果为null，那么也将作为nil处理，nil打印为null。
 
 === 操作符 ===
 
 ==== 算术运算符 ====
 
-Aviator支持常见的算术运算符，包括+  - * / % 五个二元运算符，和一元运算符"-"。
+Aviator支持常见的算术运算符，包括"+"  "-" "*" "/" "%" 五个二元运算符，和一元运算符"-"。其中 "-" "*" "/" "%"和一元的"-"仅能作用于Number类型。
+
+"+"不仅能用于Number类型，还可以用于String的相加，或者字符串与其他对象的相加。Aviator规定，任何类型与String相加，结果为String。
+
+=== 逻辑运算符 ===
+
+Avaitor的支持的逻辑运算符包括，一元否定运算符"!"，以及逻辑与的"&&"，逻辑或的"||"。逻辑运算符的操作数只能为Boolean。
+
+=== 关系运算符 ===
+
+Aviator支持的关系运算符包括"<"  "<="  ">"  ">="  以及"=="和"!=" 。
+
+关系运算符可以作用于Number之间、String之间、Pattern之间、Boolean之间、变量之间以及其他类型与nil之间的关系比较，不同类型除了nil之外不能相互比较。
+
+Aviator规定任何对象都比nil大除了nil之外。
+
+=== 匹配运算符 ===
+
+匹配运算符"=~"用于String和Pattern的匹配，它的左操作数必须为String，右操作数必须为Pattern。匹配成功后，Pattern的分组将存于变量$num，num为分组索引。
+
+=== 三元运算符 ===
+
+Aviator没有提供if else语句，但是提供了三元运算符 "?:"，形式为 bool ? exp1: exp2。
+其中bool必须为结果为Boolean类型的表达式，而exp1和exp2可以为任何合法的Aviator表达式，并且不要求exp1和exp2返回的结果类型一致。
+
+=== 操作符优先级列表 ===
+Aviator支持操作符的优先级，并且允许通过括号来强制优先级：
+
+
+
+
+
+
+
+
