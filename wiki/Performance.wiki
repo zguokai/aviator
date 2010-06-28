@@ -1,6 +1,6 @@
 #summary 性能测试
 #labels Phase-Support,Featured
-
+<wiki:toc max_depth="2" />
 = Introduction =
 这个测试本质上是不公平的，因为实现的机制完全不同，这里只是为了做一个直观的比较，让用户对Aviator的性能有个直观的感受。参与测试的包括Aviator、groovy和[http://code.google.com/p/ik-expression/ IKExpression]。
 
