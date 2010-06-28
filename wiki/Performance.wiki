@@ -2,7 +2,7 @@
 #labels Phase-Support,Featured
 
 = Introduction =
-这个测试本质上是不公平的，因为实现的机制完全不同，这里只是为了做一个直观的比较，让用户对Aviator的性能有个直观的感受。参与测试的包括Aviator、groovy和IKExpression。
+这个测试本质上是不公平的，因为实现的机制完全不同，这里只是为了做一个直观的比较，让用户对Aviator的性能有个直观的感受。参与测试的包括Aviator、groovy和[http://code.google.com/p/ik-expression/ IKExpression]。
 
 
 = 硬件和软件 =
@@ -17,7 +17,7 @@
 
  * Aviator :  1.0-RC
 
- * Groovy:    groovy-all-1.3-jsr-03
+ * Groovy:    groovy-all-1.6.4
 
  * IKExpression :  2.1.2
 
@@ -34,9 +34,9 @@
 
 测试结果：
 || 测试 || 耗时（单位:秒）||
-|| Aviator || 13.0        ||
-|| Groovy  || 129.5       ||
-|| IKExpression ||  155.7  ||
+|| Aviator || 14.0        ||
+|| Groovy  || 79.6       ||
+|| IKExpression ||  159.2  ||
 
 结论： Aviator在计算算术表达式的时候是非常快速的，跟Groovy和IKExpression都有一个数量级的差距。
 
@@ -49,9 +49,9 @@
 
 测试结果：
 || 测试 || 耗时（单位:秒）||
-|| Aviator || 10.0        ||
-|| Groovy  || 36.4      ||
-|| IKExpression ||  166.7  ||
+|| Aviator || 11.0        ||
+|| Groovy  || 13.0      ||
+|| IKExpression ||  168.8  ||
 
 结论： Aviator仍然是最快的，IKExpression由于是解释执行结果较差。
 
@@ -75,8 +75,25 @@ i * pi + (d * b - 199) / (1 - d * pi) - (2 + 100 - i / pi) % 99 ==i * pi + (d * 
 
 结果：
 || 测试 || 耗时（单位:秒）||
-|| Aviator || 31.6        ||
-|| Groovy  || 123.9      ||
-|| IKExpression ||  执行错误  ||
+|| Aviator || 31.2        ||
+|| Groovy  || 9.7      ||
+|| IKExpression ||  编译错误  ||
 
-结论： Aviator的性能仍然表现的非常优秀。
+结论： Groovy表现最佳，Aviator有一定差距。
+
+= 场景4 =
+
+测试编译性能，编译表达式
+{{{
+i * pi + (d * b - 199) / (1 - d * pi) - (2 + 100 - i / pi) % 99 ==i * pi + (d * b - 199) / (1 - d * pi) - (2 + 100 - i / pi) % 99
+}}}
+
+循环编译10000次，因为groovy编译非常慢，只能将次数限制。
+
+结果：
+|| 测试 || 耗时（单位:秒）||
+|| Aviator || 7.5       ||
+|| Groovy  || 71.2     ||
+|| IKExpression ||  编译错误  ||
+
+可以看到，Aviator的编译效率是非常高的，胜在语法简单。
