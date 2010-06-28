@@ -1,4 +1,5 @@
 #summary 用户指南 使用手册
+#labels Phase-Support,Featured
 <wiki:toc max_depth="4" />
 = 简介 =
 
@@ -375,3 +376,31 @@ Aviator支持操作符的优先级，并且允许通过括号来强制优先级�
 ||6     ||   &&   || 从左到右  ||  Boolean之间，短路 ||
 ||7     ||   `|``|`   || 从左到右  ||  Boolean之间，短路 ||
 || 8    ||  ? :   || 从右到左  ||  第一个操作数的结果必须为Boolean，第二和第三操作数结果无限制 ||
+
+=== 类型转换规则 ===
+
+ * Java的byte short int long都转化为Long类型，Java的float,double都将转化为Double类型。Java的char String都将转化为String。Java的null都将转为nil。
+
+ * 当两个操作符都是Double或者都是Long的时候，各自按照Double或者Long的类型执行
+
+ * 当两个操作符中某一个是Double的时候，另一个操作数也将转换成Double，按照Double类型执行。
+
+ * 任何类型与String相加，结果为String
+
+ * 任何类型都比nil大，除了nil本身。
+
+ * nil在打印或者与字符串相加的时候，显示为null
+
+ * 形如"yyyy-MM-dd HH:mm:ss:SS"的字符串，在与java.util.Date做比较的时候将尝试转换成java.util.Date对象比较。
+
+ 
+ * 没有规定的类型转换操作，除了未知的变量类型之间，都将抛出异常。
+
+=== 常量 ===
+
+|| true ||  真值 ||
+|| false || 假值  ||
+|| nil   || 空值 ||
+|| $digit || 正则表达式匹配成功后的分组，$0表示匹配的字符串，$1表示第一个分组 etc. ||
+
+
