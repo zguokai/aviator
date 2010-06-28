@@ -33,12 +33,28 @@ Aviator的限制：
 = 整体结构 =
 
 Aviator的结构非常简单，一个典型的求值器的结构
+
 [http://www.blogjava.net/images/blogjava_net/killme2008/aviator.jpg]
 
 
-= Details =
+= 使用手册 =
 
-Add your content here.  Format your content with:
-  * Text in *bold* or _italic_
-  * Headings, paragraphs, and lists
-  * Automatic links to other wiki pages
+== 数据类型 ==
+
+ * Number类型：数字类型，支持两种类型，分别对应Java的Long和Double，也就是说任何整数都将被转换为Long，而任何浮点数都将被转换为Double，包括用户传入的数值也是如此转换。不支持科学计数法，仅支持十进制。如-1、100、2.3等。
+
+ * String类型：  字符串类型，单引号或者双引号括起来的文本串，如'hello world' 
+
+ * Bool类型：    常量true和false，表示真值和假值
+
+ * Pattern类型： 类似Ruby、perl的正则表达式，以//括起来的字符串，如/\d+/
+
+ * 变量类型：   与Java的变量命名规则相同，变量的值由用户传入，如a、_b等
+
+ * nil类型:     常量nil,类似java中的null，但是nil比较特殊，nil不仅可以参与==、!=的比较，也可以参与>、>=、<、<=的比较，Aviator规定任何类型都nil大除了nil本身，nil==nil返回true。用户传入的变量值如果为null，那么也将作为nil处理。
+
+== 操作符 ==
+
+=== 算术运算符 ===
+
+
