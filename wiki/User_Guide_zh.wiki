@@ -217,6 +217,44 @@ public static void invalidateCache(String expression)
 }}}
 方法。
 
+== 访问数组和集合 ==
+可以通过中括号去访问数组和java.util.List对象，可以通过map.key访问java.util.Map中key对应的value，一个例子：
+{{{
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import com.googlecode.aviator.AviatorEvaluator;
+
+
+public class CollectionExample {
+    public static void main(String[] args) {
+        final List<String> list = new ArrayList<String>();
+        list.add("hello");
+        list.add(" world");
+
+        final int[] array = new int[3];
+        array[0] = 0;
+        array[1] = 1;
+        array[2] = 3;
+
+        final Map<String, Date> map = new HashMap<String, Date>();
+        map.put("date", new Date());
+
+        Map<String, Object> env = new HashMap<String, Object>();
+        env.put("list", list);
+        env.put("array", array);
+        env.put("map", map);
+
+        System.out.println(AviatorEvaluator.execute(
+            "list[0]+list[1]+'\narray[0]+array[1]+array[2]='+(array[0]+array[1]+array[2]) +' \ntoday is '+map.date ", env));
+    }
+}
+
+}}}
+
 == 三元操作符 ==
 Aviator不提供if else语句，但是提供了三元操作符?:用于条件判断，使用上与java没有什么不同：
 {{{
@@ -455,6 +493,7 @@ Aviator没有提供if else语句，但是提供了三元运算符 "?:"，形式�
 Aviator支持操作符的优先级，并且允许通过括号来强制优先级，下面是完整的操作符列表，按照优先级从高到低的顺序排列：
 
 || 序号 || 操作符 || 结合性 || 操作数限制 ||
+|| 0    || () []  || 从左到右 || ()用于函数调用，[]用于数组和java.util.List的元素访问，要求[indx]中的index必须为int ||
 || 1    || ! -    || 从右到左  || ! 能用于Boolean,- 仅能用于Number ||
 || 2    || `*` / %  || 从左到右  || Number之间 ||
 || 3    || + -    || 从左到右  || + - 都能用于Number之间, + 还能用于String之间，或者String和其他对象 ||
