@@ -18,8 +18,10 @@
  **/
 package com.googlecode.aviator.runtime.type;
 
+import java.lang.reflect.Array;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.beanutils.PropertyUtils;
@@ -266,6 +268,39 @@ public class AviatorJavaType extends AviatorObject {
         else {
             return super.not(env);
         }
+    }
+
+
+    /**
+     * Access array or list element
+     * 
+     * @param env
+     * @param indexObject
+     * @return
+     */
+    @SuppressWarnings("unchecked")
+    public AviatorObject getElement(Map<String, Object> env, AviatorObject indexObject) {
+        Object thisValue = getValue(env);
+        if (!thisValue.getClass().isArray() && !(thisValue instanceof List)) {
+            throw new ExpressionRuntimeException(this.desc(env) + " is not a array or list");
+        }
+        Object indexValue = indexObject.getValue(env);
+        if (!isInteger(indexValue)) {
+            throw new IllegalArgumentException("Illegal index " + indexObject.desc(env));
+        }
+        int index = ((Number) indexValue).intValue();
+        if (thisValue.getClass().isArray()) {
+            return new AviatorRuntimeJavaType(Array.get(thisValue, index));
+        }
+        else {
+            return new AviatorRuntimeJavaType(((List) thisValue).get(index));
+        }
+    }
+
+
+    private boolean isInteger(Object value) {
+        return (value instanceof Long && ((Long) value).longValue() < Integer.MAX_VALUE) || value instanceof Integer
+                || value instanceof Short || value instanceof Byte;
     }
 
 

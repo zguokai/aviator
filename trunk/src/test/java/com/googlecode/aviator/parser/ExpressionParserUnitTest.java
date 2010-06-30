@@ -471,12 +471,79 @@ public class ExpressionParserUnitTest {
     @Test
     public void testParseFunctionNested() {
         this.parser =
-                new ExpressionParser(new ExpressionLexer("string.contains(string.substring(\"hello\",3,4),string.substring(\"hello\",1)) && 3>2"),
+                new ExpressionParser(new ExpressionLexer(
+                    "string.contains(string.substring(\"hello\",3,4),string.substring(\"hello\",1)) && 3>2"),
                     codeGenerator);
         this.parser.parse();
 
-        assertEquals("hello 3 4 method<invoked> hello 1 method<invoked> method<invoked> 3 2 > &&", codeGenerator.getPostFixExpression());
+        assertEquals("hello 3 4 method<invoked> hello 1 method<invoked> method<invoked> 3 2 > &&", codeGenerator
+            .getPostFixExpression());
 
+    }
+
+
+    @Test
+    public void testArrayAccess() {
+        this.parser = new ExpressionParser(new ExpressionLexer("a[2]"), codeGenerator);
+        this.parser.parse();
+
+        assertEquals("a 2 []", codeGenerator.getPostFixExpression());
+    }
+
+
+    @Test
+    public void testArrayAccess_IndexIsExp() {
+        this.parser = new ExpressionParser(new ExpressionLexer("a[b+c/2]"), codeGenerator);
+        this.parser.parse();
+
+        assertEquals("a b c 2 / + []", codeGenerator.getPostFixExpression());
+    }
+
+
+    @Test
+    public void testArrayAccessNested1() {
+        this.parser = new ExpressionParser(new ExpressionLexer("a[c[3]]"), codeGenerator);
+        this.parser.parse();
+
+        assertEquals("a c 3 [] []", codeGenerator.getPostFixExpression());
+
+    }
+
+
+    @Test
+    public void testArrayAccessNested2() {
+        this.parser = new ExpressionParser(new ExpressionLexer("a[c[3+c[y*2]]]"), codeGenerator);
+        this.parser.parse();
+
+        assertEquals("a c 3 c y 2 * [] + [] []", codeGenerator.getPostFixExpression());
+
+    }
+
+
+    @Test(expected = ExpressionSyntaxErrorException.class)
+    public void testArrayAccess_Illegal1() {
+        this.parser = new ExpressionParser(new ExpressionLexer("ab+c/2]"), codeGenerator);
+        this.parser.parse();
+    }
+
+
+    @Test(expected = ExpressionSyntaxErrorException.class)
+    public void testArrayAccess_Illegal2() {
+        this.parser = new ExpressionParser(new ExpressionLexer("a[c[3+c[y*2]]"), codeGenerator);
+        this.parser.parse();
+    }
+
+
+    @Test(expected = ExpressionSyntaxErrorException.class)
+    public void testArrayAccess_Illegal3() {
+        this.parser = new ExpressionParser(new ExpressionLexer("a[c[3+true[y*2]]]"), codeGenerator);
+        this.parser.parse();
+    }
+    
+    @Test(expected = ExpressionSyntaxErrorException.class)
+    public void testArrayAccess_Illegal4() {
+        this.parser = new ExpressionParser(new ExpressionLexer("a[c3+c[y*2]]]"), codeGenerator);
+        this.parser.parse();
     }
 
 }

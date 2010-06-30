@@ -199,4 +199,15 @@ public class FakeCodeGenerator implements CodeGenerator {
 
     }
 
+
+    public void onElementStart(Token<?> lookhead) {
+         appendToken(lookhead.getLexeme());
+    }
+
+
+    public void onElementEnd(Token<?> lookhead) {
+        appendToken("[]");
+
+    }
+
 }
