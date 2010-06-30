@@ -585,6 +585,7 @@ public class ASMCodeGenerator implements CodeGenerator {
                 pushOperand(2);
                 popOperand();
                 popOperand();
+
             }
             break;
         }
@@ -632,7 +633,28 @@ public class ASMCodeGenerator implements CodeGenerator {
 
     }
 
-    Stack<MethodMetaData> methodMetaDataStack = new Stack<MethodMetaData>();
+    private final Stack<MethodMetaData> methodMetaDataStack = new Stack<MethodMetaData>();
+
+
+    public void onElementStart(Token<?> lookhead) {
+        onConstant(lookhead);
+        loadEnv();
+    }
+
+
+    public void onElementEnd(Token<?> lookhead) {
+        mv
+            .visitMethodInsn(
+                INVOKEVIRTUAL,
+                "com/googlecode/aviator/runtime/type/AviatorJavaType",
+                "getElement",
+                "(Ljava/util/Map;Lcom/googlecode/aviator/runtime/type/AviatorObject;)Lcom/googlecode/aviator/runtime/type/AviatorObject;");
+
+        popOperand();
+        popOperand();
+        popOperand();
+        pushOperand(0);
+    }
 
 
     public int getLocalIndex() {

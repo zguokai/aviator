@@ -21,8 +21,10 @@ package com.googlecode.aviator.runtime.type;
 import static org.junit.Assert.*;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import junit.framework.Assert;
@@ -725,5 +727,79 @@ public class AviatorJavaTypeUnitTest {
 
         }
 
+    }
+
+
+    @Test
+    public void testGetElement() {
+        Map<String, Object> env = createEnvForArrayTest();
+
+        AviatorJavaType javaTypeForArray = new AviatorJavaType("a");
+
+        assertEquals(9, javaTypeForArray.getElement(env, new AviatorLong(0)).getValue(null));
+        assertEquals(10, javaTypeForArray.getElement(env, new AviatorLong(1)).getValue(null));
+
+        AviatorJavaType javaTypeForList = new AviatorJavaType("list");
+
+        assertEquals("hello", javaTypeForList.getElement(env, new AviatorLong(0)).getValue(null));
+        assertEquals("world", javaTypeForList.getElement(env, new AviatorLong(1)).getValue(null));
+
+    }
+
+
+    private Map<String, Object> createEnvForArrayTest() {
+        Map<String, Object> env = new HashMap<String, Object>();
+        final int[] a = new int[2];
+        a[0] = 9;
+        a[1] = 10;
+
+        final List<String> list = new ArrayList<String>();
+        list.add("hello");
+        list.add("world");
+        env.put("a", a);
+        env.put("list", list);
+        return env;
+    }
+
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testGetElement_IllegalArgument1() {
+        Map<String, Object> env = createEnvForArrayTest();
+
+        AviatorJavaType javaTypeForArray = new AviatorJavaType("a");
+
+        javaTypeForArray.getElement(env, new AviatorDouble(0d)).getValue(null);
+    }
+
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testGetElement_IllegalArgument2() {
+        Map<String, Object> env = createEnvForArrayTest();
+
+        AviatorJavaType javaTypeForArray = new AviatorJavaType("a");
+
+        javaTypeForArray.getElement(env, AviatorBoolean.TRUE).getValue(null);
+    }
+
+
+    @Test(expected = ExpressionRuntimeException.class)
+    public void testGetElement_IllegalTarget1() {
+        Map<String, Object> env = createEnvForArrayTest();
+
+        env.put("a", true);
+        AviatorJavaType javaTypeForArray = new AviatorJavaType("a");
+
+        javaTypeForArray.getElement(env, new AviatorLong(0)).getValue(null);
+    }
+
+
+    @Test(expected = ExpressionRuntimeException.class)
+    public void testGetElement_IllegalTarget2() {
+        Map<String, Object> env = createEnvForArrayTest();
+
+        env.put("a", new HashMap<String, String>());
+        AviatorJavaType javaTypeForArray = new AviatorJavaType("a");
+
+        javaTypeForArray.getElement(env, new AviatorLong(0)).getValue(null);
     }
 }

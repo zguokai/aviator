@@ -96,11 +96,20 @@ public interface CodeGenerator {
 
 
     public void onConstant(Token<?> lookhead);
-    
+
+
     public void onMethodName(Token<?> lookhead);
-    
+
+
     public void onMethodParameter(Token<?> lookhead);
-    
+
+
     public void onMethodInvoke(Token<?> lookhead);
+
+
+    public void onElementStart(Token<?> lookhead);
+
+
+    public void onElementEnd(Token<?> lookhead);
 
 }
