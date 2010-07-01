@@ -23,7 +23,7 @@ term       ->      unary  `|`     term `*` unary   `|`  term/unary
 
 unary     ->      factor  `|`   !factor  `|` -factor
 
-factor    ->       e      `|`    number  `|`   String   `|` variable   `|`  ( ternary ) `|`  / pattern / `|`   method  `|`  variable[ternary]  
+factor    ->       e      `|`    number  `|`   String   `|` variable   `|`  ( ternary ) `|`  / pattern / `|`   method  `|`  variable`[`ternary`]`  
 
 pattern   -> char list
 
