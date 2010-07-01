@@ -1,9 +1,0 @@
-#summary Avaitor的BNF文法
-
-= Introduction =
-
-Avaitor的BNF文法
-
-
-= Details =
-
