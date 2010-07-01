@@ -1,0 +1,15 @@
+#summary Aviator的BNF文法
+
+= Introduction =
+
+Aviator的BNF文法
+
+
+= Details =
+
+ternary    ->     bool     `|`   bool? ternary : ternary
+bool       ->     join     `|`   bool `|``|` join
+join       ->     equality `|`   join && equality
+equality   ->     rel      `|`   equality == rel       `|`  equality =~ rel   `|` equality!= rel
+rel        ->     
+ 
