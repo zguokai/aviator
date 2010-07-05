@@ -342,12 +342,7 @@ public class ExpressionParser {
         else if (lookhead.getType() == TokenType.Number || lookhead.getType() == TokenType.String
                 || lookhead.getType() == TokenType.Variable || lookhead == Variable.TRUE || lookhead == Variable.FALSE) {
             if (lookhead.getType() == TokenType.Variable) {
-                String[] names = lookhead.getLexeme().split("\\.");
-                for (String name : names) {
-                    if (!isJavaIdentifier(name)) {
-                        reportSyntaxError("Illegal identifier " + name + ",index=" + lookhead.getStartIndex());
-                    }
-                }
+                checkVariableName();
             }
             move(true);
             // function
@@ -379,13 +374,20 @@ public class ExpressionParser {
         else if (expectLexeme("/")) {
             pattern();
         }
-        else if (expectLexeme(",")) {
-            return;
-        }
         else {
             reportSyntaxError();
         }
 
+    }
+
+
+    private void checkVariableName() {
+        String[] names = lookhead.getLexeme().split("\\.");
+        for (String name : names) {
+            if (!isJavaIdentifier(name)) {
+                reportSyntaxError("Illegal identifier " + name + ",index=" + lookhead.getStartIndex());
+            }
+        }
     }
 
 
