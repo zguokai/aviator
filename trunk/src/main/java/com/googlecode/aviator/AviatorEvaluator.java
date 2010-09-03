@@ -52,6 +52,7 @@ import com.googlecode.aviator.runtime.function.string.StringSubStringFunction;
 import com.googlecode.aviator.runtime.function.system.BinaryFunction;
 import com.googlecode.aviator.runtime.function.system.PrintFunction;
 import com.googlecode.aviator.runtime.function.system.PrintlnFunction;
+import com.googlecode.aviator.runtime.function.system.RandomFunction;
 import com.googlecode.aviator.runtime.function.system.SysDateFunction;
 import com.googlecode.aviator.runtime.type.AviatorBoolean;
 import com.googlecode.aviator.runtime.type.AviatorFunction;
@@ -85,6 +86,7 @@ public final class AviatorEvaluator {
         addFunction(new SysDateFunction());
         addFunction(new PrintlnFunction());
         addFunction(new PrintFunction());
+        addFunction(new RandomFunction());
         addFunction(new BinaryFunction(OperatorType.ADD));
         addFunction(new BinaryFunction(OperatorType.SUB));
         addFunction(new BinaryFunction(OperatorType.MULT));
