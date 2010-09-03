@@ -16,20 +16,40 @@
  *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  **/
-package com.googlecode.aviator.runtime.type;
+package com.googlecode.aviator.lexer.token;
+
+import java.util.Map;
+
 
 /**
- * Aviator runtime type
+ * Operator token
  * 
  * @author dennis
  * 
  */
-public enum AviatorType {
-    Number,
-    String,
-    JavaType,
-    Boolean,
-    Pattern,
-    Nil,
-    Method;
+public class OperatorToken extends AbstractToken<OperatorType> {
+
+    private final OperatorType operatorType;
+
+
+    public OperatorType getOperatorType() {
+        return operatorType;
+    }
+
+
+    public OperatorToken(int startIndex, OperatorType operatorType) {
+        super(startIndex, operatorType.getToken());
+        this.operatorType=operatorType;
+    }
+
+
+    public com.googlecode.aviator.lexer.token.Token.TokenType getType() {
+        return TokenType.Operator;
+    }
+
+
+    public OperatorType getValue(Map<String, Object> env) {
+        return operatorType;
+    }
+
 }

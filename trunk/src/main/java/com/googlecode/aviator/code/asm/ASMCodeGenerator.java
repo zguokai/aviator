@@ -505,6 +505,9 @@ public class ASMCodeGenerator implements CodeGenerator {
      * .lexer.token.Token)
      */
     public void onConstant(Token<?> lookhead) {
+        if (lookhead == null) {
+            return;
+        }
         // load token to stack
         switch (lookhead.getType()) {
         case Number:

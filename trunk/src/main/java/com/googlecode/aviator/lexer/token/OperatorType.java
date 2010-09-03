@@ -18,8 +18,9 @@
  **/
 package com.googlecode.aviator.lexer.token;
 
-import java.util.HashMap;
-import java.util.Map;
+import com.googlecode.aviator.exception.ExpressionRuntimeException;
+import com.googlecode.aviator.runtime.type.AviatorBoolean;
+import com.googlecode.aviator.runtime.type.AviatorObject;
 
 
 /**
@@ -29,94 +30,91 @@ import java.util.Map;
  * 
  */
 public enum OperatorType {
-    NOT("!", 80, 1),
+    NOT("!", 1),
 
-    NG("-", 80, 1),
+    MULT("*", 2),
 
-    MULT("*", 70, 2),
+    DIV("/", 2),
 
-    DIV("/", 70, 2),
+    MOD("%", 2),
 
-    MOD("%", 70, 2),
+    ADD("+", 2),
 
-    ADD("+", 60, 2),
+    SUB("-", 2),
 
-    SUB("-", 60, 2),
+    LT("<", 2),
 
-    LT("<", 50, 2),
+    LE("<=", 2),
 
-    LE("<=", 50, 2),
+    GT(">", 2),
 
-    GT(">", 50, 2),
+    GE(">=", 2),
 
-    GE(">=", 50, 2),
+    EQ("==", 2),
 
-    EQ("==", 40, 2),
+    NEQ("!=", 2),
 
-    NEQ("!=", 40, 2),
+    AND("&&", 2),
 
-    AND("&&", 30, 2),
+    MATCH("=~", 2),
 
-    OR("||", 20, 2),
+    OR("||", 2),
 
-    QUES("?", 0, 0),
-    COLON(":", 0, 0),
-    SELECT("?:", 0, 3);
+    INDEX("[]", 2),
 
-    private static final Map<String, OperatorType> OP_RESERVE_WORD = new HashMap<String, OperatorType>();
+    FUNC("()", Integer.MAX_VALUE),
 
-    static {
+    NEG("-", 1),
 
-        OP_RESERVE_WORD.put(NOT.getToken(), NOT);
-
-        OP_RESERVE_WORD.put(MULT.getToken(), MULT);
-        OP_RESERVE_WORD.put(DIV.getToken(), DIV);
-        OP_RESERVE_WORD.put(MOD.getToken(), MOD);
-
-        OP_RESERVE_WORD.put(ADD.getToken(), ADD);
-
-        OP_RESERVE_WORD.put(LT.getToken(), LT);
-        OP_RESERVE_WORD.put(LE.getToken(), LE);
-        OP_RESERVE_WORD.put(GT.getToken(), GT);
-        OP_RESERVE_WORD.put(GE.getToken(), GE);
-
-        OP_RESERVE_WORD.put(EQ.getToken(), EQ);
-        OP_RESERVE_WORD.put(NEQ.getToken(), NEQ);
-
-        OP_RESERVE_WORD.put(AND.getToken(), AND);
-
-        OP_RESERVE_WORD.put(OR.getToken(), OR);
-        OP_RESERVE_WORD.put(SELECT.getToken(), SELECT);
-        OP_RESERVE_WORD.put(QUES.getToken(), QUES);
-        OP_RESERVE_WORD.put(COLON.getToken(), COLON);
-    }
-
-
-    /**
-     * 
-     * @param tokenText
-     * @return
-     */
-    public static boolean isLegalOperatorToken(String tokenText) {
-        return OP_RESERVE_WORD.containsKey(tokenText);
-    }
-
-
-    public static OperatorType getOperatorType(String tokenText) {
-        return OP_RESERVE_WORD.get(tokenText);
-    }
+    TERNARY("?:", 3);
 
     private String token;
 
-    private int priority;
-
-    private int opType;
+    private int operandCount;
 
 
-    OperatorType(String token, int priority, int opType) {
+    OperatorType(String token, int operandCount) {
         this.token = token;
-        this.priority = priority;
-        this.opType = opType;
+        this.operandCount = operandCount;
+    }
+
+
+    public AviatorObject eval(AviatorObject[] args) {
+        if (args.length < this.operandCount) {
+            throw new ExpressionRuntimeException("There are not enough operands for " + this);
+        }
+        switch (this) {
+        case ADD:
+            return args[0].add(args[1], null);
+        case SUB:
+            return args[0].sub(args[1], null);
+        case MOD:
+            return args[0].mod(args[1], null);
+        case DIV:
+            return args[0].div(args[1], null);
+        case MULT:
+            return args[0].mult(args[1], null);
+        case EQ:
+            int result = args[0].compare(args[1], null);
+            return AviatorBoolean.valueOf(result == 0);
+        case NEQ:
+            result = args[0].compare(args[1], null);
+            return AviatorBoolean.valueOf(result != 0);
+        case LT:
+            result = args[0].compare(args[1], null);
+            return AviatorBoolean.valueOf(result < 0);
+        case LE:
+            result = args[0].compare(args[1], null);
+            return AviatorBoolean.valueOf(result <= 0);
+        case GT:
+            result = args[0].compare(args[1], null);
+            return AviatorBoolean.valueOf(result > 0);
+        case GE:
+            result = args[0].compare(args[1], null);
+            return AviatorBoolean.valueOf(result >= 0);
+
+        }
+        return null;
     }
 
 
@@ -125,13 +123,7 @@ public enum OperatorType {
     }
 
 
-    public int getPiority() {
-        return this.priority;
+    public int getOperandCount() {
+        return operandCount;
     }
-
-
-    public int getOpType() {
-        return this.opType;
-    }
-
 }
