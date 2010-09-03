@@ -25,6 +25,7 @@ import com.googlecode.aviator.exception.ExpressionRuntimeException;
 import com.googlecode.aviator.runtime.type.AviatorFunction;
 import com.googlecode.aviator.runtime.type.AviatorNil;
 import com.googlecode.aviator.runtime.type.AviatorObject;
+import com.googlecode.aviator.runtime.type.AviatorType;
 
 
 /**
@@ -33,7 +34,25 @@ import com.googlecode.aviator.runtime.type.AviatorObject;
  * @author dennis
  * 
  */
-public class AviatorMethod {
+public class AviatorMethod extends AviatorObject {
+
+    @Override
+    public int compare(AviatorObject other, Map<String, Object> env) {
+        throw new ExpressionRuntimeException("Could not compare method with " + other.desc(env));
+    }
+
+
+    @Override
+    public AviatorType getAviatorType() {
+        return AviatorType.Method;
+    }
+
+
+    @Override
+    public Object getValue(Map<String, Object> env) {
+        return this.methodName;
+    }
+
     private final String methodName;
     private volatile AviatorFunction cachedFunction;
 
