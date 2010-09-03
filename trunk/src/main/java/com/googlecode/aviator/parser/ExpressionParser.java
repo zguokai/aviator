@@ -21,6 +21,7 @@ package com.googlecode.aviator.parser;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.googlecode.aviator.AviatorEvaluator;
 import com.googlecode.aviator.code.CodeGenerator;
 import com.googlecode.aviator.exception.ExpressionSyntaxErrorException;
 import com.googlecode.aviator.lexer.ExpressionLexer;
@@ -306,13 +307,27 @@ public class ExpressionParser {
     public void unary() {
         if (expectLexeme("!")) {
             move(true);
-            unary();
-            this.codeGenerator.onNot(lookhead);
+            // check if it is a seq function call,"!" as variable
+            if (expectLexeme(",") || expectLexeme(")")) {
+                back();
+                factor();
+            }
+            else {
+                unary();
+                this.codeGenerator.onNot(lookhead);
+            }
         }
         else if (expectLexeme("-")) {
             move(true);
-            unary();
-            this.codeGenerator.onNeg(lookhead);
+            // check if it is a seq function call,"!" as variable
+            if (expectLexeme(",") || expectLexeme(")")) {
+                back();
+                factor();
+            }
+            else {
+                unary();
+                this.codeGenerator.onNeg(lookhead);
+            }
         }
         else {
             factor();
@@ -321,6 +336,24 @@ public class ExpressionParser {
 
     public static final CharToken LEFT_PAREN = new CharToken('(', -1);
     public static final CharToken RIGHT_PAREN = new CharToken(')', -1);
+
+
+    public boolean isOPVariable(Token<?> token) {
+        if (token.getType() != TokenType.Char) {
+            return false;
+        }
+        CharToken charToken = (CharToken) token;
+
+        move(true);
+        if (expectLexeme(",") || expectLexeme(")")) {
+            back();
+            return AviatorEvaluator.FUNC_MAP.containsKey(String.valueOf(charToken.getCh()));
+        }
+        else {
+            back();
+            return false;
+        }
+    }
 
 
     public void factor() {
@@ -340,9 +373,16 @@ public class ExpressionParser {
             this.depth--;
         }
         else if (lookhead.getType() == TokenType.Number || lookhead.getType() == TokenType.String
-                || lookhead.getType() == TokenType.Variable || lookhead == Variable.TRUE || lookhead == Variable.FALSE) {
+                || lookhead.getType() == TokenType.Variable || lookhead == Variable.TRUE || lookhead == Variable.FALSE
+                || isOPVariable(lookhead)) {
             if (lookhead.getType() == TokenType.Variable) {
                 checkVariableName();
+            }
+            // binary operation as variable for seq functions
+            if (lookhead.getType() == TokenType.Char) {
+                CharToken charToken = (CharToken) lookhead;
+                // make it as variable
+                lookhead = new Variable(charToken.getLexeme(), charToken.getStartIndex());
             }
             move(true);
             // function
@@ -495,6 +535,12 @@ public class ExpressionParser {
             reportSyntaxError();
         }
 
+    }
+
+
+    public void back() {
+        this.lexer.pushback(lookhead);
+        lookhead = prevToken;
     }
 
 

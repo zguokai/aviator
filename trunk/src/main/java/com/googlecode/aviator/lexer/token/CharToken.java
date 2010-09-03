@@ -32,6 +32,11 @@ public class CharToken extends AbstractToken<Character> {
     private int startIndex;
 
 
+    public char getCh() {
+        return ch;
+    }
+
+
     public CharToken(char peek, int startIndex) {
         super(startIndex, String.valueOf(peek));
         this.ch = peek;

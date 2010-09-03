@@ -6,6 +6,7 @@ import java.util.Date;
 
 import org.junit.Test;
 
+import com.googlecode.aviator.runtime.function.system.SysDateFunction;
 import com.googlecode.aviator.runtime.type.AviatorBoolean;
 import com.googlecode.aviator.runtime.type.AviatorObject;
 
