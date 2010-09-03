@@ -18,20 +18,19 @@
  **/
 package com.googlecode.aviator.code.asm;
 
-import static org.objectweb.asm.Opcodes.*;
+import static com.googlecode.aviator.asm.Opcodes.*;
 
 import java.io.PrintWriter;
 import java.util.Stack;
 import java.util.concurrent.atomic.AtomicLong;
 
-import org.objectweb.asm.ClassVisitor;
-import org.objectweb.asm.ClassWriter;
-import org.objectweb.asm.Label;
-import org.objectweb.asm.MethodVisitor;
-import org.objectweb.asm.util.CheckClassAdapter;
-import org.objectweb.asm.util.TraceClassVisitor;
-
 import com.googlecode.aviator.AviatorEvaluator;
+import com.googlecode.aviator.asm.ClassVisitor;
+import com.googlecode.aviator.asm.ClassWriter;
+import com.googlecode.aviator.asm.Label;
+import com.googlecode.aviator.asm.MethodVisitor;
+import com.googlecode.aviator.asm.util.CheckClassAdapter;
+import com.googlecode.aviator.asm.util.TraceClassVisitor;
 import com.googlecode.aviator.code.CodeGenerator;
 import com.googlecode.aviator.exception.CompileExpressionErrorException;
 import com.googlecode.aviator.lexer.token.NumberToken;
