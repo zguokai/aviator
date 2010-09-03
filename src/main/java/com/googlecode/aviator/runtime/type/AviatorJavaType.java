@@ -43,6 +43,11 @@ public class AviatorJavaType extends AviatorObject {
     }
 
 
+    public String getName() {
+        return name;
+    }
+
+
     public AviatorJavaType(String name) {
         super();
         this.name = name;

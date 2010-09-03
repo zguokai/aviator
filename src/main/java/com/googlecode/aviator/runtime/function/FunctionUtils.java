@@ -20,6 +20,9 @@ package com.googlecode.aviator.runtime.function;
 
 import java.util.Map;
 
+import com.googlecode.aviator.exception.ExpressionRuntimeException;
+import com.googlecode.aviator.runtime.type.AviatorFunction;
+import com.googlecode.aviator.runtime.type.AviatorJavaType;
 import com.googlecode.aviator.runtime.type.AviatorObject;
 
 
@@ -45,9 +48,23 @@ public class FunctionUtils {
     }
 
 
+    public static AviatorFunction getFunction(int index, AviatorObject[] args, Map<String, Object> env) {
+        final AviatorObject arg = args[index];
+        if (!(arg instanceof AviatorJavaType)) {
+            throw new ExpressionRuntimeException(arg.desc(env) + " is not a function");
+        }
+        return (AviatorFunction) env.get(((AviatorJavaType) arg).getName());
+    }
+
+
     public static final Number getNumberValue(int index, AviatorObject[] args, Map<String, Object> env) {
 
         return (Number) args[index].getValue(env);
+    }
+
+
+    public static final Iterable<?> getSeq(int index, AviatorObject[] args, Map<String, Object> env) {
+        return (Iterable<?>) args[index].getValue(env);
     }
 
 }

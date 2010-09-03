@@ -16,34 +16,34 @@
  *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  **/
-package com.googlecode.aviator.runtime.function;
+package com.googlecode.aviator.runtime.function.system;
 
-import java.util.Date;
 import java.util.Map;
 
 import com.googlecode.aviator.runtime.type.AviatorFunction;
+import com.googlecode.aviator.runtime.type.AviatorNil;
 import com.googlecode.aviator.runtime.type.AviatorObject;
-import com.googlecode.aviator.runtime.type.AviatorRuntimeJavaType;
 
 
 /**
- * sysdate() function
+ * println(obj) function
  * 
  * @author dennis
  * 
  */
-public class SysDateFunction implements AviatorFunction {
+public class PrintFunction implements AviatorFunction {
 
     public String getName() {
-        return "sysdate";
+        return "print";
     }
 
 
     public AviatorObject call(Map<String, Object> env, AviatorObject... args) {
-        if (args.length > 0) {
-            throw new IllegalArgumentException("now() doesn't need any arguments");
+        if (args.length != 1) {
+            throw new IllegalArgumentException("println has only one argument");
         }
-        return new AviatorRuntimeJavaType(new Date());
+        System.out.print(args[0].getValue(env));
+        return AviatorNil.NIL;
     }
 
 }

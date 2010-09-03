@@ -28,9 +28,9 @@ import com.googlecode.aviator.code.asm.ASMCodeGenerator;
 import com.googlecode.aviator.exception.CompileExpressionErrorException;
 import com.googlecode.aviator.exception.ExpressionRuntimeException;
 import com.googlecode.aviator.lexer.ExpressionLexer;
+import com.googlecode.aviator.lexer.token.OperatorType;
 import com.googlecode.aviator.parser.AviatorClassLoader;
 import com.googlecode.aviator.parser.ExpressionParser;
-import com.googlecode.aviator.runtime.function.SysDateFunction;
 import com.googlecode.aviator.runtime.function.math.MathAbsFunction;
 import com.googlecode.aviator.runtime.function.math.MathCosFunction;
 import com.googlecode.aviator.runtime.function.math.MathLog10Function;
@@ -39,11 +39,17 @@ import com.googlecode.aviator.runtime.function.math.MathPowFunction;
 import com.googlecode.aviator.runtime.function.math.MathSinFunction;
 import com.googlecode.aviator.runtime.function.math.MathSqrtFunction;
 import com.googlecode.aviator.runtime.function.math.MathTanFunction;
+import com.googlecode.aviator.runtime.function.seq.SeqMapFunction;
+import com.googlecode.aviator.runtime.function.seq.SeqReduceFunction;
 import com.googlecode.aviator.runtime.function.string.StringContainsFunction;
 import com.googlecode.aviator.runtime.function.string.StringEndsWithFunction;
 import com.googlecode.aviator.runtime.function.string.StringLengthFunction;
 import com.googlecode.aviator.runtime.function.string.StringStartsWithFunction;
 import com.googlecode.aviator.runtime.function.string.StringSubStringFunction;
+import com.googlecode.aviator.runtime.function.system.BinaryFunction;
+import com.googlecode.aviator.runtime.function.system.PrintFunction;
+import com.googlecode.aviator.runtime.function.system.PrintlnFunction;
+import com.googlecode.aviator.runtime.function.system.SysDateFunction;
 import com.googlecode.aviator.runtime.type.AviatorFunction;
 
 
@@ -71,8 +77,20 @@ public final class AviatorEvaluator {
 
     static {
         // Load internal functions
-        // load string lib
+        // load sys lib
         addFunction(new SysDateFunction());
+        addFunction(new PrintlnFunction());
+        addFunction(new PrintFunction());
+        addFunction(new BinaryFunction(OperatorType.ADD));
+        addFunction(new BinaryFunction(OperatorType.SUB));
+        addFunction(new BinaryFunction(OperatorType.MULT));
+        addFunction(new BinaryFunction(OperatorType.DIV));
+        addFunction(new BinaryFunction(OperatorType.MOD));
+        addFunction(new BinaryFunction(OperatorType.NEG));
+        addFunction(new BinaryFunction(OperatorType.NOT));
+
+        // load string lib
+
         addFunction(new StringContainsFunction());
         addFunction(new StringStartsWithFunction());
         addFunction(new StringEndsWithFunction());
@@ -87,6 +105,10 @@ public final class AviatorEvaluator {
         addFunction(new MathSinFunction());
         addFunction(new MathCosFunction());
         addFunction(new MathTanFunction());
+
+        // seq lib
+        addFunction(new SeqMapFunction());
+        addFunction(new SeqReduceFunction());
     }
 
     /**

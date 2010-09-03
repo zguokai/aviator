@@ -24,7 +24,6 @@ import java.io.PrintWriter;
 import java.util.Stack;
 import java.util.concurrent.atomic.AtomicLong;
 
-import com.googlecode.aviator.AviatorEvaluator;
 import com.googlecode.aviator.asm.ClassVisitor;
 import com.googlecode.aviator.asm.ClassWriter;
 import com.googlecode.aviator.asm.Label;
@@ -574,10 +573,14 @@ public class ASMCodeGenerator implements CodeGenerator {
             }
             else {
                 // check if it is a function name
-                if (AviatorEvaluator.FUNC_MAP.keySet().contains(variable.getLexeme())) {
-                    throw new CompileExpressionErrorException("index=" + variable.getStartIndex() + ","
-                            + variable.getLexeme() + " is a function name,please don't use it as variable");
-                }
+                // if
+                // (AviatorEvaluator.FUNC_MAP.keySet().contains(variable.getLexeme()))
+                // {
+                // throw new CompileExpressionErrorException("index=" +
+                // variable.getStartIndex() + ","
+                // + variable.getLexeme() +
+                // " is a function name,please don't use it as variable");
+                // }
 
                 mv.visitTypeInsn(NEW, "com/googlecode/aviator/runtime/type/AviatorJavaType");
                 mv.visitInsn(DUP);
