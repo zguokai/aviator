@@ -36,7 +36,7 @@ public class FunctionExample {
         list.add(1);
         env.put("list", list);
         // AviatorEvaluator.execute("seq.map(list,println)", env);
-        list = (ArrayList<Integer>) (AviatorEvaluator.execute("seq.map(list,-)", env));
+        list = (ArrayList<Integer>) (AviatorEvaluator.execute("filter(list,seq.is_true(2))", env));
 
         System.out.println(list);
     }

@@ -1,5 +1,7 @@
 package com.googlecode.aviator.runtime.function.seq;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import com.googlecode.aviator.exception.ExpressionRuntimeException;
@@ -10,33 +12,30 @@ import com.googlecode.aviator.runtime.type.AviatorObject;
 import com.googlecode.aviator.runtime.type.AviatorRuntimeJavaType;
 
 
-/**
- * reduce(col,fun,init) function
- * 
- * @author dennis
- * 
- */
-public class SeqReduceFunction implements AviatorFunction {
+public class SeqFilterFunction implements AviatorFunction {
 
+    @SuppressWarnings("unchecked")
     public AviatorObject call(Map<String, Object> env, AviatorObject... args) {
-        if (args.length != 3) {
-            throw new IllegalArgumentException(getName() + " has only three arguments");
+        if (args.length != 2) {
+            throw new IllegalArgumentException(getName() + " has only two arguments");
         }
         Iterable<?> seq = FunctionUtils.getSeq(0, args, env);
         AviatorFunction fun = FunctionUtils.getFunction(1, args, env);
-        AviatorObject init = args[2];
         if (fun == null) {
             throw new ExpressionRuntimeException("There is no function named " + ((AviatorJavaType) args[1]).getName());
         }
+        List result = new ArrayList();
         for (Object obj : seq) {
-            init = fun.call(env, init, new AviatorRuntimeJavaType(obj));
+            if (fun.call(env, new AviatorRuntimeJavaType(obj)).booleanValue(env)) {
+                result.add(obj);
+            }
         }
-        return init;
+        return new AviatorRuntimeJavaType(result);
     }
 
 
     public String getName() {
-        return "reduce";
+        return "filter";
     }
 
 }
