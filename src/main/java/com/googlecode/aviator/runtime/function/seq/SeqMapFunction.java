@@ -13,13 +13,14 @@ import com.googlecode.aviator.runtime.type.AviatorRuntimeJavaType;
 
 
 /**
- * seq.map(col,fun) function
+ * map(col,fun) function
  * 
  * @author dennis
  * 
  */
 public class SeqMapFunction implements AviatorFunction {
 
+    @SuppressWarnings("unchecked")
     public AviatorObject call(Map<String, Object> env, AviatorObject... args) {
         if (args.length != 2) {
             throw new IllegalArgumentException(getName() + " has only two arguments");
@@ -38,7 +39,7 @@ public class SeqMapFunction implements AviatorFunction {
 
 
     public String getName() {
-        return "seq.map";
+        return "map";
     }
 
 }

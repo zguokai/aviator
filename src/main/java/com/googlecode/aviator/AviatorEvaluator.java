@@ -39,7 +39,10 @@ import com.googlecode.aviator.runtime.function.math.MathPowFunction;
 import com.googlecode.aviator.runtime.function.math.MathSinFunction;
 import com.googlecode.aviator.runtime.function.math.MathSqrtFunction;
 import com.googlecode.aviator.runtime.function.math.MathTanFunction;
+import com.googlecode.aviator.runtime.function.seq.SeqFilterFunction;
+import com.googlecode.aviator.runtime.function.seq.SeqMakePredicateFunFunction;
 import com.googlecode.aviator.runtime.function.seq.SeqMapFunction;
+import com.googlecode.aviator.runtime.function.seq.SeqPredicateFunction;
 import com.googlecode.aviator.runtime.function.seq.SeqReduceFunction;
 import com.googlecode.aviator.runtime.function.string.StringContainsFunction;
 import com.googlecode.aviator.runtime.function.string.StringEndsWithFunction;
@@ -50,6 +53,7 @@ import com.googlecode.aviator.runtime.function.system.BinaryFunction;
 import com.googlecode.aviator.runtime.function.system.PrintFunction;
 import com.googlecode.aviator.runtime.function.system.PrintlnFunction;
 import com.googlecode.aviator.runtime.function.system.SysDateFunction;
+import com.googlecode.aviator.runtime.type.AviatorBoolean;
 import com.googlecode.aviator.runtime.type.AviatorFunction;
 
 
@@ -109,6 +113,15 @@ public final class AviatorEvaluator {
         // seq lib
         addFunction(new SeqMapFunction());
         addFunction(new SeqReduceFunction());
+        addFunction(new SeqFilterFunction());
+        addFunction(new SeqMakePredicateFunFunction("seq.is_eq", OperatorType.EQ));
+        addFunction(new SeqMakePredicateFunFunction("seq.is_neq", OperatorType.NEQ));
+        addFunction(new SeqMakePredicateFunFunction("seq.lt", OperatorType.LT));
+        addFunction(new SeqMakePredicateFunFunction("seq.le", OperatorType.LE));
+        addFunction(new SeqMakePredicateFunFunction("seq.gt", OperatorType.GT));
+        addFunction(new SeqMakePredicateFunFunction("seq.ge", OperatorType.LE));
+        addFunction(new SeqPredicateFunction("seq.is_true", OperatorType.EQ, AviatorBoolean.TRUE));
+        addFunction(new SeqPredicateFunction("seq.is_false", OperatorType.EQ, AviatorBoolean.FALSE));
     }
 
     /**

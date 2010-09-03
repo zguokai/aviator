@@ -57,6 +57,15 @@ public class Expression {
             env = new HashMap<String, Object>(AviatorEvaluator.FUNC_MAP);
         }
         else {
+            env = new HashMap<String, Object>(env);
+            if (env != AviatorEvaluator.FUNC_MAP) {
+                for (String variableName : env.keySet()) {
+                    if (AviatorEvaluator.FUNC_MAP.containsKey(variableName)) {
+                        throw new ExpressionRuntimeException(variableName
+                                + " is a function name,please don't use it as variable");
+                    }
+                }
+            }
             env.putAll(AviatorEvaluator.FUNC_MAP);
         }
         try {

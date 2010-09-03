@@ -135,7 +135,7 @@ public class GrammarUnitTest {
 
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("key", "aviator");
-        env.put("map", map);
+        env.put("tmap", map);
         env.put("bool", Boolean.FALSE);
 
         // long op long=long
@@ -157,11 +157,11 @@ public class GrammarUnitTest {
 
         // object + string =string
         assertEquals("hello world", AviatorEvaluator.execute("'hello '+ 'world'"));
-        assertEquals("hello aviator", AviatorEvaluator.execute("'hello '+map.key", env));
-        assertEquals("true aviator", AviatorEvaluator.execute("true+' '+map.key", env));
-        assertEquals("100aviator", AviatorEvaluator.execute("foo.a+map.key", env));
+        assertEquals("hello aviator", AviatorEvaluator.execute("'hello '+tmap.key", env));
+        assertEquals("true aviator", AviatorEvaluator.execute("true+' '+tmap.key", env));
+        assertEquals("100aviator", AviatorEvaluator.execute("foo.a+tmap.key", env));
         assertEquals("\\d+hello", AviatorEvaluator.execute("/\\d+/+'hello'"));
-        assertEquals("3.2aviator", AviatorEvaluator.execute("3.2+map.key", env));
+        assertEquals("3.2aviator", AviatorEvaluator.execute("3.2+tmap.key", env));
         assertEquals("false is false", AviatorEvaluator.execute("bool+' is false'", env));
 
     }
