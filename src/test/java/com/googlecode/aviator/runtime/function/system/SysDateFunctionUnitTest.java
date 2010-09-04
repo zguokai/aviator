@@ -1,4 +1,4 @@
-package com.googlecode.aviator.runtime.function;
+package com.googlecode.aviator.runtime.function.system;
 
 import static org.junit.Assert.*;
 

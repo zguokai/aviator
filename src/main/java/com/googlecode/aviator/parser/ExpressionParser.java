@@ -347,7 +347,11 @@ public class ExpressionParser {
         move(true);
         if (expectLexeme(",") || expectLexeme(")")) {
             back();
-            return AviatorEvaluator.FUNC_MAP.containsKey(String.valueOf(charToken.getCh()));
+            String lexeme = String.valueOf(charToken.getCh());
+            if (lexeme.equals("-")) {
+                lexeme = "-sub";
+            }
+            return AviatorEvaluator.FUNC_MAP.containsKey(lexeme);
         }
         else {
             back();

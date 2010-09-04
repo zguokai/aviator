@@ -48,23 +48,36 @@ public class FunctionUtils {
     }
 
 
-    public static AviatorFunction getFunction(int index, AviatorObject[] args, Map<String, Object> env) {
+    public static Object getJavaObject(int index, AviatorObject[] args, Map<String, Object> env) {
+        final AviatorObject arg = args[index];
+        if (!(arg instanceof AviatorJavaType)) {
+            throw new ExpressionRuntimeException(arg.desc(env) + " is not a javaType");
+        }
+        return env.get(((AviatorJavaType) arg).getName());
+    }
+
+
+    public static AviatorFunction getFunction(int index, AviatorObject[] args, Map<String, Object> env, int arity) {
         final AviatorObject arg = args[index];
         if (!(arg instanceof AviatorJavaType)) {
             throw new ExpressionRuntimeException(arg.desc(env) + " is not a function");
         }
-        return (AviatorFunction) env.get(((AviatorJavaType) arg).getName());
+        // special processing for "-" operator
+        String name = ((AviatorJavaType) arg).getName();
+        if (name.equals("-")) {
+            if (arity == 2) {
+                name = "-sub";
+            }
+            else {
+                name = "-neg";
+            }
+        }
+        return (AviatorFunction) env.get(name);
     }
 
 
     public static final Number getNumberValue(int index, AviatorObject[] args, Map<String, Object> env) {
-
         return (Number) args[index].getValue(env);
-    }
-
-
-    public static final Iterable<?> getSeq(int index, AviatorObject[] args, Map<String, Object> env) {
-        return (Iterable<?>) args[index].getValue(env);
     }
 
 }

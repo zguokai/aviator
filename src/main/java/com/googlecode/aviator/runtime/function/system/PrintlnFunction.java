@@ -18,15 +18,18 @@
  **/
 package com.googlecode.aviator.runtime.function.system;
 
+import java.io.OutputStream;
+import java.io.PrintStream;
 import java.util.Map;
 
+import com.googlecode.aviator.runtime.function.FunctionUtils;
 import com.googlecode.aviator.runtime.type.AviatorFunction;
 import com.googlecode.aviator.runtime.type.AviatorNil;
 import com.googlecode.aviator.runtime.type.AviatorObject;
 
 
 /**
- * println(obj) function
+ * println(obj) function to print object with newline
  * 
  * @author dennis
  * 
@@ -39,11 +42,25 @@ public class PrintlnFunction implements AviatorFunction {
 
 
     public AviatorObject call(Map<String, Object> env, AviatorObject... args) {
-        if (args.length != 1) {
-            throw new IllegalArgumentException("println has only one argument");
+        if (args.length != 0 && args.length != 1 && args.length != 2) {
+            throw new IllegalArgumentException("println(*out*,*obj*) has only less than three arguments");
         }
-        System.out.println(args[0].getValue(env));
+
+        switch (args.length) {
+        case 0:
+            System.out.println();
+            break;
+        case 1:
+            System.out.println(args[0].getValue(env));
+            break;
+        case 2:
+            OutputStream out = (OutputStream) FunctionUtils.getJavaObject(0, args, env);
+            PrintStream printStream = new PrintStream(out);
+            printStream.println(args[1].getValue(env));
+            break;
+        }
         return AviatorNil.NIL;
+
     }
 
 }
