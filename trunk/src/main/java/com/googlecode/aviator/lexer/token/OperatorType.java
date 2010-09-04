@@ -40,7 +40,7 @@ public enum OperatorType {
 
     ADD("+", 2),
 
-    SUB("-", 2),
+    SUB("-sub", 2),
 
     LT("<", 2),
 
@@ -64,7 +64,7 @@ public enum OperatorType {
 
     FUNC("()", Integer.MAX_VALUE),
 
-    NEG("-", 1),
+    NEG("-neg", 1),
 
     TERNARY("?:", 3);
 

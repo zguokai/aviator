@@ -1,5 +1,6 @@
 package com.googlecode.aviator.runtime.function.seq;
 
+import java.util.Collection;
 import java.util.Map;
 
 import com.googlecode.aviator.exception.ExpressionRuntimeException;
@@ -11,7 +12,8 @@ import com.googlecode.aviator.runtime.type.AviatorRuntimeJavaType;
 
 
 /**
- * reduce(col,fun,init) function
+ * reduce(col,fun,init) function to reduce seq with function fun and initial
+ * value
  * 
  * @author dennis
  * 
@@ -22,16 +24,33 @@ public class SeqReduceFunction implements AviatorFunction {
         if (args.length != 3) {
             throw new IllegalArgumentException(getName() + " has only three arguments");
         }
-        Iterable<?> seq = FunctionUtils.getSeq(0, args, env);
-        AviatorFunction fun = FunctionUtils.getFunction(1, args, env);
-        AviatorObject init = args[2];
+        Object first = args[0].getValue(env);
+        AviatorFunction fun = FunctionUtils.getFunction(1, args, env, 1);
         if (fun == null) {
             throw new ExpressionRuntimeException("There is no function named " + ((AviatorJavaType) args[1]).getName());
         }
-        for (Object obj : seq) {
-            init = fun.call(env, init, new AviatorRuntimeJavaType(obj));
+        if (first == null) {
+            throw new NullPointerException("null seq");
         }
-        return init;
+        AviatorObject result = args[2];
+        Class<?> clazz = first.getClass();
+
+        if (Collection.class.isAssignableFrom(clazz)) {
+            for (Object obj : (Collection<?>) first) {
+                result = fun.call(env, result, new AviatorRuntimeJavaType(obj));
+            }
+        }
+        else if (clazz.isArray()) {
+            Object[] seq = (Object[]) first;
+            for (Object obj : seq) {
+                result = fun.call(env, result, new AviatorRuntimeJavaType(obj));
+            }
+        }
+        else {
+            throw new IllegalArgumentException(args[0].desc(env) + " is not a seq");
+        }
+
+        return result;
     }
 
 
