@@ -1,24 +1,24 @@
 package com.googlecode.aviator.runtime.function.seq;
 
+import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.Map;
 
 import com.googlecode.aviator.runtime.type.AviatorFunction;
-import com.googlecode.aviator.runtime.type.AviatorNil;
 import com.googlecode.aviator.runtime.type.AviatorObject;
+import com.googlecode.aviator.runtime.type.AviatorRuntimeJavaType;
 
 
 /**
- * sort(list) function to sort java.util.List or array
+ * sort(list) function to sort java.util.List or array,return a sorted duplicate
+ * object
  * 
  * @author dennis
  * 
  */
 public class SeqSortFunction implements AviatorFunction {
 
-    @SuppressWarnings("unchecked")
     public AviatorObject call(Map<String, Object> env, AviatorObject... args) {
         if (args.length != 1) {
             throw new IllegalArgumentException(getName() + " has only one argument");
@@ -34,20 +34,18 @@ public class SeqSortFunction implements AviatorFunction {
             List<?> list = (List<?>) first;
             Object[] a = list.toArray();
             Arrays.sort(a);
-            ListIterator i = list.listIterator();
-            for (int j = 0; j < a.length; j++) {
-                i.next();
-                i.set(a[j]);
-            }
+            return new AviatorRuntimeJavaType(Arrays.asList(a));
         }
         else if (clazz.isArray()) {
             Object[] array = (Object[]) first;
-            Arrays.sort(array);
+            Object[] dup = (Object[]) Array.newInstance(array.getClass().getComponentType(), array.length);
+            System.arraycopy(array, 0, dup, 0, dup.length);
+            Arrays.sort(dup);
+            return new AviatorRuntimeJavaType(dup);
         }
         else {
             throw new IllegalArgumentException(args[0].desc(env) + " is not a seq");
         }
-        return AviatorNil.NIL;
     }
 
 

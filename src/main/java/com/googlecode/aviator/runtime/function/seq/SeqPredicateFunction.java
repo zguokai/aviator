@@ -25,7 +25,7 @@ public class SeqPredicateFunction implements AviatorFunction {
 
     public AviatorObject call(Map<String, Object> env, AviatorObject... args) {
         if (args.length != opType.getOperandCount() - 1) {
-            throw new ExpressionRuntimeException(getName() + " only have " + opType.getOperandCount() + " operands");
+            throw new IllegalArgumentException(getName() + " only have " + opType.getOperandCount() + " operands");
         }
         switch (opType) {
         case EQ:

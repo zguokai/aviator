@@ -29,6 +29,11 @@ public class BinaryFunction implements AviatorFunction {
     }
 
 
+    public OperatorType getOpType() {
+        return opType;
+    }
+
+
     public AviatorObject call(Map<String, Object> env, AviatorObject... args) {
         if (args.length != this.opType.getOperandCount()) {
             throw new IllegalArgumentException("println has only one argument");

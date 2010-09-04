@@ -469,6 +469,26 @@ public class ExpressionParserUnitTest {
 
 
     @Test
+    public void testParseSeqFunction() {
+        this.parser = new ExpressionParser(new ExpressionLexer("map(list,println)"), codeGenerator);
+        this.parser.parse();
+
+        assertEquals("list println method<invoked>", codeGenerator.getPostFixExpression());
+
+    }
+
+
+    @Test
+    public void testParseReduceFunction() {
+        this.parser = new ExpressionParser(new ExpressionLexer("reduce(list,-,0)"), codeGenerator);
+        this.parser.parse();
+
+        assertEquals("list - 0 method<invoked>", codeGenerator.getPostFixExpression());
+
+    }
+
+
+    @Test
     public void testParseFunctionNested() {
         this.parser =
                 new ExpressionParser(new ExpressionLexer(
@@ -539,7 +559,8 @@ public class ExpressionParserUnitTest {
         this.parser = new ExpressionParser(new ExpressionLexer("a[c[3+true[y*2]]]"), codeGenerator);
         this.parser.parse();
     }
-    
+
+
     @Test(expected = ExpressionSyntaxErrorException.class)
     public void testArrayAccess_Illegal4() {
         this.parser = new ExpressionParser(new ExpressionLexer("a[c3+c[y*2]]]"), codeGenerator);

@@ -20,6 +20,7 @@ package com.googlecode.aviator.test.function;
 
 import static org.junit.Assert.*;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -126,7 +127,7 @@ public class FunctionTest {
         assertEquals(true, AviatorEvaluator.execute("2*pi*10==2 * pi * 10", env));
         assertEquals(true, AviatorEvaluator.execute("pi*d*d == pi* d *d", env));
 
-        assertEquals((i+pi+d+b)/4%2>0, AviatorEvaluator.execute("(i+pi+d+b)/4%2>0", env));
+        assertEquals((i + pi + d + b) / 4 % 2 > 0, AviatorEvaluator.execute("(i+pi+d+b)/4%2>0", env));
         assertEquals(true, AviatorEvaluator.execute("(i+100)%3!=1", env));
         assertEquals(true, AviatorEvaluator.execute("i%4<=0", env));
         assertEquals(
@@ -135,5 +136,35 @@ public class FunctionTest {
                 .execute(
                     "i * pi + (d * b - 199) / (1 - d * pi) - (2 + 100 - i / pi) % 99 ==i * pi + (d * b - 199) / (1 - d * pi) - (2 + 100 - i / pi) % 99",
                     env));
+    }
+
+
+    @Test
+    public void testSystemFunction() {
+        // sysdate()
+        Object date = AviatorEvaluator.execute("sysdate()");
+        assertNotNull(date);
+        assertTrue(date instanceof Date);
+        assertEquals(((Date) date).getMinutes(), new Date().getMinutes());
+
+        // now()
+        Object now = AviatorEvaluator.execute("now()");
+        assertNotNull(now);
+        assertTrue(now instanceof Long);
+        assertEquals((Long) now, System.currentTimeMillis(), 5L);
+
+        // rand()
+        Object rand1 = AviatorEvaluator.execute("rand()");
+        assertNotNull(rand1);
+        assertTrue(rand1 instanceof Double);
+
+        Object rand2 = AviatorEvaluator.execute("rand()");
+        assertFalse(rand1.equals(rand2));
+
+    }
+    
+    @Test
+    public void SeqFunction(){
+        
     }
 }
