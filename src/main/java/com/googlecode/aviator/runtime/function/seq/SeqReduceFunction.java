@@ -25,7 +25,7 @@ public class SeqReduceFunction implements AviatorFunction {
             throw new IllegalArgumentException(getName() + " has only three arguments");
         }
         Object first = args[0].getValue(env);
-        AviatorFunction fun = FunctionUtils.getFunction(1, args, env, 1);
+        AviatorFunction fun = FunctionUtils.getFunction(1, args, env, 2);
         if (fun == null) {
             throw new ExpressionRuntimeException("There is no function named " + ((AviatorJavaType) args[1]).getName());
         }

@@ -20,13 +20,18 @@ package com.googlecode.aviator.test.function;
 
 import static org.junit.Assert.*;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 
 import org.junit.Test;
 
 import com.googlecode.aviator.AviatorEvaluator;
+import com.googlecode.aviator.exception.ExpressionRuntimeException;
 
 
 public class FunctionTest {
@@ -165,7 +170,134 @@ public class FunctionTest {
 
 
     @Test
-    public void SeqFunction() {
+    public void testSeqFunction() {
+        Map<String, Object> env = new HashMap<String, Object>();
+        Integer[] a = new Integer[10];
+        for (int i = 0; i < a.length; i++) {
+            a[i] = 9 - i;
+        }
+        List<String> list = new ArrayList<String>();
+        list.add("hello");
+        list.add("world");
+        env.put("a", a);
+        env.put("list", list);
+        final HashSet<Boolean> set = new HashSet<Boolean>();
+        set.add(true);
+        set.add(false);
+        env.put("set", set);
+
+        assertEquals(10, AviatorEvaluator.execute("count(a)", env));
+        assertEquals(2, AviatorEvaluator.execute("count(list)", env));
+        assertEquals(2, AviatorEvaluator.execute("count(set)", env));
+
+        assertTrue((Boolean) AviatorEvaluator.execute("include(set,true)", env));
+        assertTrue((Boolean) AviatorEvaluator.execute("include(set,false)", env));
+        assertFalse((Boolean) AviatorEvaluator.execute("include(set,'hello')", env));
+        assertFalse((Boolean) AviatorEvaluator.execute("include(set,10)", env));
+
+        for (int i = 0; i < a.length; i++) {
+            assertTrue((Boolean) AviatorEvaluator.execute("include(a,9-" + i + ")", env));
+        }
+
+        assertEquals(45, AviatorEvaluator.execute("reduce(a,+,0)", env));
+        assertEquals(0, AviatorEvaluator.execute("reduce(a,*,1)", env));
+        try {
+            assertEquals(0, AviatorEvaluator.execute("reduce(a,/,0)", env));
+            fail();
+        }
+        catch (ExpressionRuntimeException e) {
+            // ignore
+        }
+        assertEquals(-45, AviatorEvaluator.execute("reduce(a,-,0)", env));
+
+        assertEquals(5, AviatorEvaluator.execute("count(filter(a,seq.gt(4)))", env));
+        assertEquals(4, AviatorEvaluator.execute("count(filter(a,seq.lt(4)))", env));
+        assertEquals(5, AviatorEvaluator.execute("count(filter(a,seq.le(4)))", env));
+        assertEquals(1, AviatorEvaluator.execute("count(filter(a,seq.eq(4)))", env));
+        assertEquals(0, AviatorEvaluator.execute("count(filter(a,seq.gt(9)))", env));
+        assertEquals(0, AviatorEvaluator.execute("count(filter(a,seq.nil()))", env));
+        assertEquals(10, AviatorEvaluator.execute("count(filter(a,seq.exists()))", env));
+
+        assertEquals(1, AviatorEvaluator.execute("count(filter(set,seq.true()))", env));
+        assertTrue((Boolean) AviatorEvaluator.execute("include(filter(set,seq.true()),true)", env));
+        assertFalse((Boolean) AviatorEvaluator.execute("include(filter(set,seq.true()),false)", env));
+        assertEquals(1, AviatorEvaluator.execute("count(filter(set,seq.eq(true)))", env));
+        assertEquals(1, AviatorEvaluator.execute("count(filter(set,seq.false()))", env));
+        assertFalse((Boolean) AviatorEvaluator.execute("include(filter(set,seq.false()),true)", env));
+        assertTrue((Boolean) AviatorEvaluator.execute("include(filter(set,seq.false()),false)", env));
+        assertEquals(0, AviatorEvaluator.execute("count(filter(set,seq.nil()))", env));
+        assertEquals(2, AviatorEvaluator.execute("count(filter(set,seq.exists()))", env));
+
+        assertEquals(list, AviatorEvaluator.execute("sort(list)", env));
+        assertNotSame(list, AviatorEvaluator.execute("sort(list)", env));
+        try {
+            AviatorEvaluator.execute("sort(set)", env);
+            fail();
+        }
+        catch (ExpressionRuntimeException e) {
+            // ignore
+        }
+
+        assertEquals(9, a[0]);
+        assertFalse(Arrays.equals(a, (Object[]) AviatorEvaluator.execute("sort(a)", env)));
+        assertEquals(9, a[0]);
+        Arrays.sort(a);
+        assertEquals(0, a[0]);
+        assertTrue(Arrays.equals(a, (Object[]) AviatorEvaluator.execute("sort(a)", env)));
+
+        assertEquals(2, AviatorEvaluator.execute("count(map(list,string.length))", env));
+        assertTrue((Boolean)AviatorEvaluator.execute("include(map(list,string.length),5)", env));
+    }
+
+
+    @Test
+    public void testStringFunction() {
+        String s1 = "hello world";
+        String s2 = "just for fun";
+        String s3 = "aviator";
+
+        Map<String, Object> env = new HashMap<String, Object>();
+        env.put("s1", s1);
+        env.put("s2", s2);
+        env.put("s3", s3);
+
+        assertEquals("hello world aviator", AviatorEvaluator.execute("'hello'+' '+'world'+' '+'aviator'"));
+        assertEquals(4, AviatorEvaluator.execute("string.length(\"fuck\")"));
+        assertEquals(0, AviatorEvaluator.execute("string.length('')"));
+        assertEquals(19, AviatorEvaluator.execute("string.length('hello'+' '+'world'+' '+'aviator')"));
+        assertTrue((Boolean) AviatorEvaluator.execute("string.contains('hello','he')"));
+        assertFalse((Boolean) AviatorEvaluator.execute("string.contains('hello','c')"));
+        assertTrue((Boolean) AviatorEvaluator.execute("string.startsWith('hello','he')"));
+        assertFalse((Boolean) AviatorEvaluator.execute("string.startsWith('hello','llo')"));
+        assertFalse((Boolean) AviatorEvaluator.execute("string.endsWith('hello','he')"));
+        assertTrue((Boolean) AviatorEvaluator.execute("string.endsWith('hello','llo')"));
+
+        assertEquals("ello", AviatorEvaluator.execute("string.substring('hello',1)"));
+        assertEquals("el", AviatorEvaluator.execute("string.substring('hello',1,3)"));
+
+        // test with variable
+        assertEquals("hello world aviator", AviatorEvaluator.execute("s1+' '+s3", env));
+        assertEquals(19, AviatorEvaluator.execute("string.length(s1+' '+s3)", env));
+        assertFalse((Boolean) AviatorEvaluator.execute("string.startsWith(s1,'fuck')", env));
+        assertTrue((Boolean) AviatorEvaluator.execute("string.startsWith(s1,s1)", env));
+        assertTrue((Boolean) AviatorEvaluator.execute("string.endsWith(s1+s2,s2)", env));
+        assertTrue((Boolean) AviatorEvaluator.execute("string.contains(s1+s2,s1)", env));
+        assertTrue((Boolean) AviatorEvaluator.execute("string.contains(s1+s2,'world')", env));
+        assertFalse((Boolean) AviatorEvaluator.execute("string.contains(s1+s3,s2)", env));
+        assertTrue((Boolean) AviatorEvaluator.execute("string.contains(s1+s2+s3,s2)", env));
+        assertEquals("ello world", AviatorEvaluator.execute("string.substring(s1,1)", env));
+        assertEquals("el", AviatorEvaluator.execute("string.substring(s1,1,3)", env));
+    }
+
+
+    @Test
+    public void testMathFunction() {
+
+    }
+
+
+    @Test
+    public void testOtherFunction() {
 
     }
 }

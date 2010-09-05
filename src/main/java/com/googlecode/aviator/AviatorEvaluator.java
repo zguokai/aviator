@@ -23,6 +23,7 @@ import java.security.PrivilegedAction;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.googlecode.aviator.asm.Opcodes;
 import com.googlecode.aviator.code.CodeGenerator;
 import com.googlecode.aviator.code.OptimizeCodeGenerator;
 import com.googlecode.aviator.code.asm.ASMCodeGenerator;
@@ -73,11 +74,23 @@ public final class AviatorEvaluator {
     // The classloader to define generated class
     private static AviatorClassLoader aviatorClassLoader;
 
+    /**
+     * Optimized for compile speed,this is the default option
+     */
     public static final int COMPILE = 0;
 
+    /**
+     * Optimized for execute speed
+     */
     public static final int EVAL = 1;
 
+    // optimize level
     private static int optimize = EVAL;
+
+    /**
+     * Generated java class version,default 1.5
+     */
+    public static int version = Opcodes.V1_5;
 
     static {
         aviatorClassLoader = AccessController.doPrivileged(new PrivilegedAction<AviatorClassLoader>() {
@@ -136,11 +149,11 @@ public final class AviatorEvaluator {
         addFunction(new SeqMakePredicateFunFunction("seq.lt", OperatorType.LT));
         addFunction(new SeqMakePredicateFunFunction("seq.le", OperatorType.LE));
         addFunction(new SeqMakePredicateFunFunction("seq.gt", OperatorType.GT));
-        addFunction(new SeqMakePredicateFunFunction("seq.ge", OperatorType.LE));
+        addFunction(new SeqMakePredicateFunFunction("seq.ge", OperatorType.GE));
         addFunction(new SeqMakePredicateFunFunction("seq.true", OperatorType.EQ, AviatorBoolean.TRUE));
         addFunction(new SeqMakePredicateFunFunction("seq.false", OperatorType.EQ, AviatorBoolean.FALSE));
         addFunction(new SeqMakePredicateFunFunction("seq.nil", OperatorType.EQ, AviatorNil.NIL));
-        addFunction(new SeqMakePredicateFunFunction("seq.not_nil", OperatorType.NEQ, AviatorNil.NIL));
+        addFunction(new SeqMakePredicateFunFunction("seq.exists", OperatorType.NEQ, AviatorNil.NIL));
     }
 
     /**
@@ -153,8 +166,23 @@ public final class AviatorEvaluator {
             new HashMap<String, Expression>();
 
 
-    public void setOptimize(int value) {
+    /**
+     * set optimize level,default AviatorEvaluator.COMPILE
+     * 
+     * @see COMPILE,EVAL
+     * 
+     * @param value
+     */
+    public static void setOptimize(int value) {
+        if (value != COMPILE && value != EVAL) {
+            throw new IllegalArgumentException("Invlaid optimize option value");
+        }
         optimize = value;
+    }
+
+
+    public static void setVersion(int nversion) {
+        version = nversion;
     }
 
 

@@ -30,20 +30,30 @@ public class SeqIncludeFunction implements AviatorFunction {
         boolean contains = false;
         if (Collection.class.isAssignableFrom(clazz)) {
             Collection<?> seq = (Collection<?>) first;
-            for (Object obj : seq) {
-                if (new AviatorRuntimeJavaType(obj).compare(second, env) == 0) {
-                    contains = true;
-                    break;
+            try {
+                for (Object obj : seq) {
+                    if (new AviatorRuntimeJavaType(obj).compare(second, env) == 0) {
+                        contains = true;
+                        break;
+                    }
                 }
+            }
+            catch (Exception e) {
+                return AviatorBoolean.FALSE;
             }
         }
         else if (clazz.isArray()) {
             Object[] seq = (Object[]) first;
-            for (Object obj : seq) {
-                if (new AviatorRuntimeJavaType(obj).compare(second, env) == 0) {
-                    contains = true;
-                    break;
+            try {
+                for (Object obj : seq) {
+                    if (new AviatorRuntimeJavaType(obj).compare(second, env) == 0) {
+                        contains = true;
+                        break;
+                    }
                 }
+            }
+            catch (Exception e) {
+                return AviatorBoolean.FALSE;
             }
         }
         else {

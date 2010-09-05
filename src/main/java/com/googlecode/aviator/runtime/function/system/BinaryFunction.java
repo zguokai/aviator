@@ -36,7 +36,7 @@ public class BinaryFunction implements AviatorFunction {
 
     public AviatorObject call(Map<String, Object> env, AviatorObject... args) {
         if (args.length != this.opType.getOperandCount()) {
-            throw new IllegalArgumentException("println has only one argument");
+            throw new IllegalArgumentException(getName() + " has only " + opType.getOperandCount() + " arguments");
         }
         AviatorObject left = args[0];
         switch (opType) {

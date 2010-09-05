@@ -24,6 +24,7 @@ import com.googlecode.aviator.exception.ExpressionRuntimeException;
 import com.googlecode.aviator.runtime.type.AviatorFunction;
 import com.googlecode.aviator.runtime.type.AviatorJavaType;
 import com.googlecode.aviator.runtime.type.AviatorObject;
+import com.googlecode.aviator.runtime.type.AviatorType;
 
 
 /**
@@ -38,6 +39,9 @@ public class FunctionUtils {
         String result = null;
 
         final Object value = args[index].getValue(env);
+        if (value == null && args[index].getAviatorType() == AviatorType.JavaType) {
+            throw new NullPointerException("There is no string named" + ((AviatorJavaType) args[index]).getName());
+        }
         if (value instanceof Character) {
             result = value.toString();
         }

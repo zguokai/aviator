@@ -25,9 +25,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.googlecode.aviator.AviatorEvaluator;
-import com.googlecode.aviator.Expression;
 import com.googlecode.aviator.code.asm.ASMCodeGenerator;
-import com.googlecode.aviator.lexer.ExpressionLexer;
 import com.googlecode.aviator.lexer.token.DelegateToken;
 import com.googlecode.aviator.lexer.token.NumberToken;
 import com.googlecode.aviator.lexer.token.OperatorToken;
@@ -38,7 +36,6 @@ import com.googlecode.aviator.lexer.token.Token;
 import com.googlecode.aviator.lexer.token.Variable;
 import com.googlecode.aviator.lexer.token.DelegateToken.DelegateTokenType;
 import com.googlecode.aviator.lexer.token.Token.TokenType;
-import com.googlecode.aviator.parser.ExpressionParser;
 import com.googlecode.aviator.runtime.type.AviatorBoolean;
 import com.googlecode.aviator.runtime.type.AviatorDouble;
 import com.googlecode.aviator.runtime.type.AviatorLong;
@@ -49,7 +46,7 @@ import com.googlecode.aviator.runtime.type.AviatorString;
 
 
 /**
- * Compile optimize
+ * Optimize code generator
  * 
  * @author dennis
  * 
@@ -59,24 +56,12 @@ public class OptimizeCodeGenerator implements CodeGenerator {
 
     private final List<Token<?>> tokenList = new ArrayList<Token<?>>();
 
-
-    public static void main(String[] args) throws Exception {
-        OptimizeCodeGenerator codeGenerator =
-                new OptimizeCodeGenerator(AviatorEvaluator.getAviatorClassLoader(), false);
-        // ASMCodeGenerator codeGenerator = new
-        // ASMCodeGenerator(AviatorEvaluator.getAviatorClassLoader(), false);
-        ExpressionParser parser = new ExpressionParser(new ExpressionLexer("2<1?1:-1"), codeGenerator);
-        Expression exp = new Expression(parser.parse());
-        Map<String, Object> env = new HashMap<String, Object>();
-        env.put("a", 3);
-        env.put("b", 4.3);
-        env.put("bool", true);
-        System.out.println(exp.execute(env));
-    }
+    private boolean trace = false;
 
 
     public OptimizeCodeGenerator(ClassLoader classLoader, boolean trace) {
-        asmCodeGenerator = new ASMCodeGenerator(AviatorEvaluator.getAviatorClassLoader(), true);
+        asmCodeGenerator = new ASMCodeGenerator(AviatorEvaluator.getAviatorClassLoader(), trace);
+        this.trace = trace;
 
     }
 
@@ -102,6 +87,7 @@ public class OptimizeCodeGenerator implements CodeGenerator {
     private int execute() {
         int exeCount = 0;
         final int size = tokenList.size();
+        printTokenList();
         for (int i = 0; i < size; i++) {
             Token<?> token = tokenList.get(i);
             if (token.getType() == TokenType.Operator) {
@@ -154,17 +140,6 @@ public class OptimizeCodeGenerator implements CodeGenerator {
                 break;
             }
             count++;
-
-            if (index2DelegateType.get(count) != null) {
-                if (token.getType() != TokenType.Delegate) {
-                    canExecute = false;
-                    break;
-                }
-                if (index2DelegateType.get(count) != ((DelegateToken) token).getDelegateTokenType()) {
-                    canExecute = false;
-                    break;
-                }
-            }
 
             if (count == operandCount) {
                 operandStartIndex = j;
@@ -416,10 +391,12 @@ public class OptimizeCodeGenerator implements CodeGenerator {
 
 
     private void printTokenList() {
-        for (Token<?> t : tokenList) {
-            System.out.print(t.getLexeme() + " ");
+        if (trace) {
+            for (Token<?> t : tokenList) {
+                System.out.print(t.getLexeme() + " ");
+            }
+            System.out.println();
         }
-        System.out.println();
     }
 
 
@@ -454,7 +431,6 @@ public class OptimizeCodeGenerator implements CodeGenerator {
 
     public void onElementEnd(Token<?> lookhead) {
         tokenList.add(new OperatorToken(lookhead == null ? -1 : lookhead.getStartIndex(), OperatorType.INDEX));
-
     }
 
 
