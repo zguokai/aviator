@@ -24,28 +24,32 @@ package com.googlecode.aviator.exception;
  * @author dennis
  * 
  */
-public class CompileExpressionErrorException extends RuntimeException {
+public class CompileExpressionErrorException extends ExpressionRuntimeException {
 
-	static final long serialVersionUID = -1;
+    static final long serialVersionUID = -1;
 
-	public CompileExpressionErrorException() {
-		super();
 
-	}
+    public CompileExpressionErrorException() {
+        super();
 
-	public CompileExpressionErrorException(String message, Throwable cause) {
-		super(message, cause);
+    }
 
-	}
 
-	public CompileExpressionErrorException(String message) {
-		super(message);
+    public CompileExpressionErrorException(String message, Throwable cause) {
+        super(message, cause);
 
-	}
+    }
 
-	public CompileExpressionErrorException(Throwable cause) {
-		super(cause);
 
-	}
+    public CompileExpressionErrorException(String message) {
+        super(message);
+
+    }
+
+
+    public CompileExpressionErrorException(Throwable cause) {
+        super(cause);
+
+    }
 
 }

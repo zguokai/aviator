@@ -162,9 +162,10 @@ public class FunctionTest {
         assertFalse(rand1.equals(rand2));
 
     }
-    
+
+
     @Test
-    public void SeqFunction(){
-        
+    public void SeqFunction() {
+
     }
 }

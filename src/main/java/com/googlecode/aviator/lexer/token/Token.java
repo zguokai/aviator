@@ -35,7 +35,8 @@ public interface Token<T> {
         Number,
         Char,
         Operator,
-        Pattern
+        Pattern,
+        Delegate
     }
 
 
