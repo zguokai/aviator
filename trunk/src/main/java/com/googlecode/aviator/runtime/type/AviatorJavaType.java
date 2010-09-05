@@ -287,7 +287,8 @@ public class AviatorJavaType extends AviatorObject {
     public AviatorObject getElement(Map<String, Object> env, AviatorObject indexObject) {
         Object thisValue = getValue(env);
         if (!thisValue.getClass().isArray() && !(thisValue instanceof List)) {
-            throw new ExpressionRuntimeException(this.desc(env) + " is not a array or list");
+            throw new ExpressionRuntimeException(this.desc(env)
+                    + " is not a array or list,could not use [] to get element");
         }
         Object indexValue = indexObject.getValue(env);
         if (!isInteger(indexValue)) {

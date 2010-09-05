@@ -20,8 +20,11 @@ package com.googlecode.aviator.test.function;
 
 import static org.junit.Assert.*;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 
 import junit.framework.Assert;
@@ -890,6 +893,43 @@ public class GrammarUnitTest {
         assertTrue((Boolean) AviatorEvaluator.execute("'s'>a"));
         assertTrue((Boolean) AviatorEvaluator.execute("bool>unknow", env));
 
+    }
+
+
+    @Test
+    public void testIndex() {
+        Map<String, Object> env = new HashMap<String, Object>();
+        Integer[] a = new Integer[10];
+        for (int i = 0; i < a.length; i++) {
+            a[i] = i;
+        }
+        List<String> list = new ArrayList<String>();
+        list.add("hello");
+        list.add("world");
+        env.put("a", a);
+        env.put("list", list);
+        final HashSet<Integer> set = new HashSet<Integer>();
+        set.add(99);
+        env.put("set", set);
+
+        for (int i = 0; i < a.length; i++) {
+            assertEquals(a[i], AviatorEvaluator.execute("a[" + i + "]", env));
+            assertEquals(a[i] + i, AviatorEvaluator.execute("a[" + i + "]+" + i, env));
+            assertEquals(a[i] + i, AviatorEvaluator.execute("a[a[a[" + i + "]-10+10]]+" + i, env));
+        }
+
+        assertEquals("hello", AviatorEvaluator.execute("list[0]", env));
+        assertEquals(5, AviatorEvaluator.execute("string.length(list[0])", env));
+        assertEquals("world", AviatorEvaluator.execute("list[1]", env));
+        assertEquals("hello world", AviatorEvaluator.execute("list[0]+' '+list[1]", env));
+
+        try {
+            AviatorEvaluator.execute("set[0]+' '+set[0]", env);
+            fail();
+        }
+        catch (ExpressionRuntimeException e) {
+            // e.printStackTrace();
+        }
     }
 
 

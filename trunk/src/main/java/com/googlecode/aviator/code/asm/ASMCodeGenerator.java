@@ -24,6 +24,7 @@ import java.io.PrintWriter;
 import java.util.Stack;
 import java.util.concurrent.atomic.AtomicLong;
 
+import com.googlecode.aviator.AviatorEvaluator;
 import com.googlecode.aviator.asm.ClassVisitor;
 import com.googlecode.aviator.asm.ClassWriter;
 import com.googlecode.aviator.asm.Label;
@@ -96,7 +97,8 @@ public class ASMCodeGenerator implements CodeGenerator {
 
     private void startVisitMethodCode() {
         mv =
-                checkClassAdapter.visitMethod(ACC_PUBLIC + ACC_STATIC, "run", "(Ljava/util/Map;)Ljava/lang/Object;",
+                checkClassAdapter.visitMethod(ACC_PUBLIC + ACC_STATIC + ACC_FINAL, "run",
+                    "(Ljava/util/Map;)Ljava/lang/Object;",
                     "(Ljava/util/Map<Ljava/lang/String;Ljava/lang/Object;>;)Ljava/lang/Object;", null);
         mv.visitCode();
     }
@@ -132,7 +134,8 @@ public class ASMCodeGenerator implements CodeGenerator {
      * Make a default constructor
      */
     private void makeConstructor() {
-        checkClassAdapter.visit(V1_5, ACC_PUBLIC + ACC_SUPER, className, null, "java/lang/Object", null);
+        checkClassAdapter.visit(AviatorEvaluator.version, ACC_PUBLIC + ACC_SUPER, className, null, "java/lang/Object",
+            null);
 
         {
             mv = checkClassAdapter.visitMethod(ACC_PUBLIC, "<init>", "()V", null, null);
