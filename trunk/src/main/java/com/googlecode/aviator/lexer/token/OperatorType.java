@@ -20,6 +20,7 @@ package com.googlecode.aviator.lexer.token;
 
 import com.googlecode.aviator.exception.ExpressionRuntimeException;
 import com.googlecode.aviator.runtime.type.AviatorBoolean;
+import com.googlecode.aviator.runtime.type.AviatorJavaType;
 import com.googlecode.aviator.runtime.type.AviatorObject;
 
 
@@ -112,6 +113,26 @@ public enum OperatorType {
         case GE:
             result = args[0].compare(args[1], null);
             return AviatorBoolean.valueOf(result >= 0);
+        case NOT:
+            return args[0].not(null);
+        case NEG:
+            return args[0].neg(null);
+        case MATCH:
+            // swap arguments
+            return args[1].match(args[0], null);
+        case AND:
+            return args[0].booleanValue(null) && args[1].booleanValue(null) ? AviatorBoolean.TRUE
+                    : AviatorBoolean.FALSE;
+        case OR:
+            return args[0].booleanValue(null) || args[1].booleanValue(null) ? AviatorBoolean.TRUE
+                    : AviatorBoolean.FALSE;
+        case FUNC:
+            // TODO
+            break;
+        case INDEX:
+            return ((AviatorJavaType) args[0]).getElement(null, args[1]);
+        case TERNARY:
+            return args[0].booleanValue(null) ? args[1] : args[2];
 
         }
         return null;

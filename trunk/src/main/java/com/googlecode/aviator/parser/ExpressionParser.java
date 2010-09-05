@@ -437,7 +437,6 @@ public class ExpressionParser {
 
     private void method() {
         this.depth++;
-        ((Variable) prevToken).setMethodName(true);
         this.codeGenerator.onMethodName(prevToken);
         move(true);
         if (!expectLexeme(")")) {

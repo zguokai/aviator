@@ -24,6 +24,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.googlecode.aviator.code.CodeGenerator;
+import com.googlecode.aviator.code.OptimizeCodeGenerator;
 import com.googlecode.aviator.code.asm.ASMCodeGenerator;
 import com.googlecode.aviator.exception.CompileExpressionErrorException;
 import com.googlecode.aviator.exception.ExpressionRuntimeException;
@@ -71,6 +72,12 @@ import com.googlecode.aviator.runtime.type.AviatorNil;
 public final class AviatorEvaluator {
     // The classloader to define generated class
     private static AviatorClassLoader aviatorClassLoader;
+
+    public static final int COMPILE = 0;
+
+    public static final int EVAL = 1;
+
+    private static int optimize = EVAL;
 
     static {
         aviatorClassLoader = AccessController.doPrivileged(new PrivilegedAction<AviatorClassLoader>() {
@@ -144,6 +151,11 @@ public final class AviatorEvaluator {
                                                                      * expression
                                                                      */> cacheExpressions =
             new HashMap<String, Expression>();
+
+
+    public void setOptimize(int value) {
+        optimize = value;
+    }
 
 
     private AviatorEvaluator() {
@@ -220,9 +232,7 @@ public final class AviatorEvaluator {
             }
         }
         ExpressionLexer lexer = new ExpressionLexer(expression);
-        CodeGenerator codeGenerator =
-                new ASMCodeGenerator(aviatorClassLoader, Boolean.valueOf(System.getProperty("aviator.asm.trace",
-                    "false")));
+        CodeGenerator codeGenerator = newCodeGenerator();
         ExpressionParser parser = new ExpressionParser(lexer, codeGenerator);
 
         try {
@@ -247,6 +257,21 @@ public final class AviatorEvaluator {
         }
         catch (Throwable t) {
             throw new CompileExpressionErrorException("Compile expression error", t);
+        }
+
+    }
+
+
+    private static CodeGenerator newCodeGenerator() {
+        switch (optimize) {
+        case COMPILE:
+            return new ASMCodeGenerator(aviatorClassLoader, Boolean.valueOf(System.getProperty("aviator.asm.trace",
+                "false")));
+        case EVAL:
+            return new OptimizeCodeGenerator(aviatorClassLoader, Boolean.valueOf(System.getProperty(
+                "aviator.asm.trace", "false")));
+        default:
+            throw new IllegalArgumentException("Unknow option " + optimize);
         }
 
     }

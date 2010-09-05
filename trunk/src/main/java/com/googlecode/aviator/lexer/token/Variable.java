@@ -29,18 +29,6 @@ import java.util.Map;
  */
 public class Variable extends AbstractToken<Object> {
 
-    private boolean methodName = false;
-
-
-    public boolean isMethodName() {
-        return methodName;
-    }
-
-
-    public void setMethodName(boolean methodName) {
-        this.methodName = methodName;
-    }
-
     /**
      * Boolean value true
      */

@@ -43,6 +43,11 @@ public class AviatorPattern extends AviatorObject {
     }
 
 
+    public Pattern getPattern() {
+        return pattern;
+    }
+
+
     @Override
     public AviatorObject add(AviatorObject other, Map<String, Object> env) {
         switch (other.getAviatorType()) {
