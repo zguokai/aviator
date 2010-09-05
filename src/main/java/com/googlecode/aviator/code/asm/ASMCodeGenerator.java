@@ -25,6 +25,8 @@ import java.util.Stack;
 import java.util.concurrent.atomic.AtomicLong;
 
 import com.googlecode.aviator.AviatorEvaluator;
+import com.googlecode.aviator.ClassExpression;
+import com.googlecode.aviator.Expression;
 import com.googlecode.aviator.asm.ClassVisitor;
 import com.googlecode.aviator.asm.ClassWriter;
 import com.googlecode.aviator.asm.Label;
@@ -491,10 +493,15 @@ public class ASMCodeGenerator implements CodeGenerator {
      * 
      * @see com.googlecode.aviator.code.CodeGenerator#getResult()
      */
-    public Class<?> getResult() {
+    public Expression getResult() {
         endVisitCode();
         byte[] bytes = this.classWriter.toByteArray();
-        return this.classLoader.defineClass(className, bytes);
+        try {
+            return new ClassExpression(classLoader.defineClass(className, bytes));
+        }
+        catch (Exception e) {
+            throw new CompileExpressionErrorException("define class error", e);
+        }
     }
 
 

@@ -246,7 +246,7 @@ public class FunctionTest {
         assertTrue(Arrays.equals(a, (Object[]) AviatorEvaluator.execute("sort(a)", env)));
 
         assertEquals(2, AviatorEvaluator.execute("count(map(list,string.length))", env));
-        assertTrue((Boolean)AviatorEvaluator.execute("include(map(list,string.length),5)", env));
+        assertTrue((Boolean) AviatorEvaluator.execute("include(map(list,string.length),5)", env));
     }
 
 
@@ -298,6 +298,9 @@ public class FunctionTest {
 
     @Test
     public void testOtherFunction() {
+        // AviatorEvaluator.setOptimize(AviatorEvaluator.EVAL);
+        // System.setProperty("aviator.asm.trace","true");
+        assertTrue((Boolean) AviatorEvaluator.execute("'A' == 'A' || 'B' == 'B' && 'ABCD' == t &&  'A' == 'A'"));
 
     }
 }

@@ -32,8 +32,8 @@ import junit.framework.Assert;
 import org.junit.Test;
 
 import com.googlecode.aviator.AviatorEvaluator;
-import com.googlecode.aviator.exception.CompileExpressionErrorException;
 import com.googlecode.aviator.exception.ExpressionRuntimeException;
+import com.googlecode.aviator.exception.ExpressionSyntaxErrorException;
 
 
 /**
@@ -828,14 +828,14 @@ public class GrammarUnitTest {
             AviatorEvaluator.execute("!t? (i>0? f:ch) : f>3?email:ch)", env);
             Assert.fail();
         }
-        catch (CompileExpressionErrorException e) {
+        catch (ExpressionSyntaxErrorException e) {
 
         }
         try {
             AviatorEvaluator.execute("!t? (i>0? f:ch : (f>3?email:ch)", env);
             Assert.fail();
         }
-        catch (CompileExpressionErrorException e) {
+        catch (ExpressionSyntaxErrorException e) {
 
         }
     }

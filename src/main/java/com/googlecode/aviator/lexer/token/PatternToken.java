@@ -18,6 +18,12 @@
  **/
 package com.googlecode.aviator.lexer.token;
 
+/**
+ * A pattern token
+ * 
+ * @author dennis
+ * 
+ */
 public class PatternToken extends StringToken {
 
     public PatternToken(String lexeme, int startIndex) {

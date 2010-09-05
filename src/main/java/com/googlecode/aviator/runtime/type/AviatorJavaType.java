@@ -29,12 +29,19 @@ import org.apache.commons.beanutils.PropertyUtils;
 import com.googlecode.aviator.exception.ExpressionRuntimeException;
 
 
-/*
+/**
  * Aviator variable
+ * 
+ * @author dennis
+ * 
  */
 public class AviatorJavaType extends AviatorObject {
 
     final private String name;
+
+    // cache java object,prevent get it from environment repeatly
+    private boolean cached;
+    private Object cachedValue;
 
 
     @Override
@@ -83,8 +90,13 @@ public class AviatorJavaType extends AviatorObject {
     @Override
     public Object getValue(Map<String, Object> env) {
         try {
+            if (cached) {
+                return cachedValue;
+            }
             if (env != null) {
-                return PropertyUtils.getProperty(env, name);
+                cachedValue = PropertyUtils.getProperty(env, name);
+                cached = true;
+                return cachedValue;
             }
             return null;
         }

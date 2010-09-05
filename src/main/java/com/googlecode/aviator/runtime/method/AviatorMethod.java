@@ -29,7 +29,7 @@ import com.googlecode.aviator.runtime.type.AviatorType;
 
 
 /**
- * A aviator function call
+ * A aviator method variable
  * 
  * @author dennis
  * 

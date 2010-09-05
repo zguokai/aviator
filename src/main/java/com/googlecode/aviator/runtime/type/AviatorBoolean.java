@@ -23,6 +23,12 @@ import java.util.Map;
 import com.googlecode.aviator.exception.ExpressionRuntimeException;
 
 
+/**
+ * Aviator boolean type
+ * 
+ * @author dennis
+ * 
+ */
 public class AviatorBoolean extends AviatorObject {
 
     Boolean value;
@@ -35,6 +41,12 @@ public class AviatorBoolean extends AviatorObject {
     @Override
     public AviatorObject not(Map<String, Object> env) {
         return this.value.booleanValue() ? FALSE : TRUE;
+    }
+
+
+    @Override
+    public final boolean booleanValue(Map<String, Object> env) {
+        return value.booleanValue();
     }
 
 
@@ -66,7 +78,7 @@ public class AviatorBoolean extends AviatorObject {
 
 
     @Override
-    public Object getValue(Map<String, Object> env) {
+    public final Object getValue(Map<String, Object> env) {
         return this.value;
     }
 
@@ -77,7 +89,7 @@ public class AviatorBoolean extends AviatorObject {
     }
 
 
-    public  static AviatorBoolean valueOf(boolean b) {
+    public static AviatorBoolean valueOf(boolean b) {
         return b ? AviatorBoolean.TRUE : AviatorBoolean.FALSE;
     }
 

@@ -25,6 +25,8 @@ import java.util.List;
 import java.util.Map;
 
 import com.googlecode.aviator.AviatorEvaluator;
+import com.googlecode.aviator.Expression;
+import com.googlecode.aviator.LiteralExpression;
 import com.googlecode.aviator.code.asm.ASMCodeGenerator;
 import com.googlecode.aviator.lexer.token.DelegateToken;
 import com.googlecode.aviator.lexer.token.NumberToken;
@@ -46,7 +48,7 @@ import com.googlecode.aviator.runtime.type.AviatorString;
 
 
 /**
- * Optimize code generator
+ * Optimized code generator
  * 
  * @author dennis
  * 
@@ -194,6 +196,20 @@ public class OptimizeCodeGenerator implements CodeGenerator {
     }
 
 
+    private boolean isLiteralToken(Token<?> token) {
+        switch (token.getType()) {
+        case Variable:
+            return token == Variable.TRUE || token == Variable.FALSE || token == Variable.NIL;
+        case Char:
+        case Number:
+        case Pattern:
+        case String:
+            return true;
+        }
+        return false;
+    }
+
+
     /**
      * Get token from executing result
      * 
@@ -272,7 +288,7 @@ public class OptimizeCodeGenerator implements CodeGenerator {
     }
 
 
-    public Class<?> getResult() {
+    public Expression getResult() {
         // execute literal expression
         while (execute() > 0) {
             ;
@@ -280,6 +296,16 @@ public class OptimizeCodeGenerator implements CodeGenerator {
 
         // call asm to generate byte codes
         callASM();
+
+        if (tokenList.size() <= 1) {
+            if (tokenList.isEmpty()) {
+                return new LiteralExpression(null);
+            }
+            final Token<?> lastToken = tokenList.get(0);
+            if (isLiteralToken(lastToken)) {
+                return new LiteralExpression(getAviatorObjectFromToken(lastToken).getValue(null));
+            }
+        }
 
         // get result from asm
         return asmCodeGenerator.getResult();

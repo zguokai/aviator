@@ -18,6 +18,7 @@
  **/
 package com.googlecode.aviator.parser;
 
+import com.googlecode.aviator.Expression;
 import com.googlecode.aviator.code.CodeGenerator;
 import com.googlecode.aviator.lexer.token.Token;
 
@@ -40,7 +41,7 @@ public class FakeCodeGenerator implements CodeGenerator {
     }
 
 
-    public Class<?> getResult() {
+    public Expression getResult() {
         return null;
     }
 

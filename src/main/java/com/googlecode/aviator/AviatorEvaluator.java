@@ -160,9 +160,9 @@ public final class AviatorEvaluator {
      * Compiled Expression cache
      */
     private final static Map<String/* text expression */, Expression/*
-                                                                     * Compiled
-                                                                     * expression
-                                                                     */> cacheExpressions =
+                                                                      * Compiled
+                                                                      * expression
+                                                                      */> cacheExpressions =
             new HashMap<String, Expression>();
 
 
@@ -263,28 +263,23 @@ public final class AviatorEvaluator {
         CodeGenerator codeGenerator = newCodeGenerator();
         ExpressionParser parser = new ExpressionParser(lexer, codeGenerator);
 
-        try {
-            if (cached) {
-                synchronized (cacheExpressions) {
-                    // double check
-                    Expression result = cacheExpressions.get(expression);
-                    if (result != null) {
-                        return result;
-                    }
-                    else {
-                        result = innerCompile(parser);
-                        // store result to cache
-                        cacheExpressions.put(expression, result);
-                        return result;
-                    }
+        if (cached) {
+            synchronized (cacheExpressions) {
+                // double check
+                Expression result = cacheExpressions.get(expression);
+                if (result != null) {
+                    return result;
+                }
+                else {
+                    result = parser.parse();
+                    // store result to cache
+                    cacheExpressions.put(expression, result);
+                    return result;
                 }
             }
-            else {
-                return innerCompile(parser);
-            }
         }
-        catch (Throwable t) {
-            throw new CompileExpressionErrorException("Compile expression error", t);
+        else {
+            return parser.parse();
         }
 
     }
@@ -302,14 +297,6 @@ public final class AviatorEvaluator {
             throw new IllegalArgumentException("Unknow option " + optimize);
         }
 
-    }
-
-
-    private static Expression innerCompile(ExpressionParser parser) throws NoSuchMethodException {
-        Expression result;
-        Class<?> clazz = parser.parse();
-        result = new Expression(clazz);
-        return result;
     }
 
 

@@ -22,6 +22,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import com.googlecode.aviator.AviatorEvaluator;
+import com.googlecode.aviator.Expression;
 import com.googlecode.aviator.code.CodeGenerator;
 import com.googlecode.aviator.exception.ExpressionSyntaxErrorException;
 import com.googlecode.aviator.lexer.ExpressionLexer;
@@ -547,7 +548,7 @@ public class ExpressionParser {
     }
 
 
-    public Class<?> parse() {
+    public Expression parse() {
         ternary();
         if (this.depth > 0) {
             reportSyntaxError("insert ')' to complete Expression");
