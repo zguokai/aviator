@@ -21,7 +21,6 @@ package com.googlecode.aviator.code.asm;
 import static org.junit.Assert.*;
 
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.Date;
@@ -31,7 +30,7 @@ import java.util.Map;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.googlecode.aviator.AviatorEvaluator;
+import com.googlecode.aviator.Expression;
 import com.googlecode.aviator.lexer.token.NumberToken;
 import com.googlecode.aviator.lexer.token.OperatorType;
 import com.googlecode.aviator.lexer.token.PatternToken;
@@ -60,9 +59,8 @@ public class ASMCodeGeneratorUnitTest {
     @Test
     public void testOnConstant_Nil() throws Exception {
         this.codeGenerator.onConstant(Variable.NIL);
-        Class<?> clazz = this.codeGenerator.getResult();
-        Method runMethod = clazz.getDeclaredMethod("run", Map.class);
-        Object result = runMethod.invoke(null, new HashMap<String, Object>());
+        Expression exp = this.codeGenerator.getResult();
+        Object result = exp.execute();
         assertNull(result);
     }
 
@@ -70,9 +68,8 @@ public class ASMCodeGeneratorUnitTest {
     @Test
     public void testOnConstant_Long() throws Exception {
         this.codeGenerator.onConstant(new NumberToken(3L, "3"));
-        Class<?> clazz = this.codeGenerator.getResult();
-        Method runMethod = clazz.getDeclaredMethod("run", Map.class);
-        Object result = runMethod.invoke(null, new HashMap<String, Object>());
+        Expression exp = this.codeGenerator.getResult();
+        Object result = exp.execute();
         assertEquals(3L, result);
     }
 
@@ -80,9 +77,8 @@ public class ASMCodeGeneratorUnitTest {
     @Test
     public void testOnConstant_Double() throws Exception {
         this.codeGenerator.onConstant(new NumberToken(3.3D, "3.3"));
-        Class<?> clazz = this.codeGenerator.getResult();
-        Method runMethod = clazz.getDeclaredMethod("run", Map.class);
-        Object result = runMethod.invoke(null, new HashMap<String, Object>());
+        Expression exp = this.codeGenerator.getResult();
+        Object result = exp.execute();
         assertEquals(3.3D, result);
     }
 
@@ -90,9 +86,8 @@ public class ASMCodeGeneratorUnitTest {
     @Test
     public void testOnConstant_Boolean_False() throws Exception {
         this.codeGenerator.onConstant(Variable.FALSE);
-        Class<?> clazz = this.codeGenerator.getResult();
-        Method runMethod = clazz.getDeclaredMethod("run", Map.class);
-        Object result = runMethod.invoke(null, new HashMap<String, Object>());
+        Expression exp = this.codeGenerator.getResult();
+        Object result = exp.execute();
         assertEquals(Boolean.FALSE, result);
     }
 
@@ -100,9 +95,8 @@ public class ASMCodeGeneratorUnitTest {
     @Test
     public void testOnConstant_Boolean_True() throws Exception {
         this.codeGenerator.onConstant(Variable.TRUE);
-        Class<?> clazz = this.codeGenerator.getResult();
-        Method runMethod = clazz.getDeclaredMethod("run", Map.class);
-        Object result = runMethod.invoke(null, new HashMap<String, Object>());
+        Expression exp = this.codeGenerator.getResult();
+        Object result = exp.execute();
         assertEquals(Boolean.TRUE, result);
     }
 
@@ -110,9 +104,8 @@ public class ASMCodeGeneratorUnitTest {
     @Test
     public void testOnConstant_String() throws Exception {
         this.codeGenerator.onConstant(new StringToken("hello", 0));
-        Class<?> clazz = this.codeGenerator.getResult();
-        Method runMethod = clazz.getDeclaredMethod("run", Map.class);
-        Object result = runMethod.invoke(null, new HashMap<String, Object>());
+        Expression exp = this.codeGenerator.getResult();
+        Object result = exp.execute();
         assertEquals("hello", result);
     }
 
@@ -120,9 +113,8 @@ public class ASMCodeGeneratorUnitTest {
     @Test
     public void testOnConstant_Pattern() throws Exception {
         this.codeGenerator.onConstant(new PatternToken("[a-z_A-Z]+", 0));
-        Class<?> clazz = this.codeGenerator.getResult();
-        Method runMethod = clazz.getDeclaredMethod("run", Map.class);
-        Object result = runMethod.invoke(null, new HashMap<String, Object>());
+        Expression exp = this.codeGenerator.getResult();
+        Object result = exp.execute();
         assertEquals("/[a-z_A-Z]+/", result);
     }
 
@@ -130,12 +122,11 @@ public class ASMCodeGeneratorUnitTest {
     @Test
     public void testOnConstant_Variable() throws Exception {
         this.codeGenerator.onConstant(new Variable("a", 0));
-        Class<?> clazz = this.codeGenerator.getResult();
-        Method runMethod = clazz.getDeclaredMethod("run", Map.class);
+        Expression exp = this.codeGenerator.getResult();
         HashMap<String, Object> env = new HashMap<String, Object>();
         long now = System.currentTimeMillis();
         env.put("a", now);
-        Object result = runMethod.invoke(null, env);
+        Object result = exp.execute(env);
         assertEquals(now, result);
     }
 
@@ -215,10 +206,8 @@ public class ASMCodeGeneratorUnitTest {
 
     private Object eval(Map<String, Object> env) throws NoSuchMethodException, IllegalAccessException,
             InvocationTargetException {
-        Class<?> clazz = this.codeGenerator.getResult();
-        Method runMethod = clazz.getDeclaredMethod("run", Map.class);
-        Object result = runMethod.invoke(null, env);
-        return result;
+        Expression exp = this.codeGenerator.getResult();
+        return exp.execute(env);
     }
 
 
@@ -405,7 +394,7 @@ public class ASMCodeGeneratorUnitTest {
     public void testOnMethod_withoutArguments() throws Exception {
         codeGenerator.onMethodName(new Variable("sysdate", -1));
         codeGenerator.onMethodInvoke(null);
-        Object result = eval(AviatorEvaluator.FUNC_MAP);
+        Object result = eval(new HashMap<String, Object>());
         assertNotNull(result);
         assertTrue(result instanceof Date);
     }
@@ -421,7 +410,7 @@ public class ASMCodeGeneratorUnitTest {
         codeGenerator.onConstant(new NumberToken(5L, "5"));
         codeGenerator.onMethodParameter(null);
         codeGenerator.onMethodInvoke(null);
-        Object result = eval(AviatorEvaluator.FUNC_MAP);
-        assertEquals("llo",result);
+        Object result = eval(new HashMap<String, Object>());
+        assertEquals("llo", result);
     }
 }

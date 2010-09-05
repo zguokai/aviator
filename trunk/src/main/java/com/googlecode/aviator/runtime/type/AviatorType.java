@@ -19,7 +19,7 @@
 package com.googlecode.aviator.runtime.type;
 
 /**
- * Aviator runtime type
+ * Aviator types
  * 
  * @author dennis
  * 

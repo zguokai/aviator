@@ -18,6 +18,7 @@
  **/
 package com.googlecode.aviator.code;
 
+import com.googlecode.aviator.Expression;
 import com.googlecode.aviator.lexer.token.Token;
 
 
@@ -92,7 +93,7 @@ public interface CodeGenerator {
     public void onNeg(Token<?> lookhead);
 
 
-    public Class<?> getResult();
+    public Expression getResult();
 
 
     public void onConstant(Token<?> lookhead);

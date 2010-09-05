@@ -23,6 +23,12 @@ import java.util.Map;
 import com.googlecode.aviator.exception.ExpressionRuntimeException;
 
 
+/**
+ * Aviator long type
+ * 
+ * @author dennis
+ * 
+ */
 public class AviatorLong extends AviatorNumber {
 
     public AviatorLong(Number number) {
@@ -32,7 +38,7 @@ public class AviatorLong extends AviatorNumber {
 
 
     @Override
-    public AviatorObject neg( Map<String, Object> env) {
+    public AviatorObject neg(Map<String, Object> env) {
         return new AviatorLong(-this.number.longValue());
     }
 

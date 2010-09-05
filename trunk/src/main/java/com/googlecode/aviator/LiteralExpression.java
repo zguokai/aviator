@@ -1,3 +1,4 @@
+package com.googlecode.aviator;
 /**
  *  Copyright (C) 2010 dennis zhuang (killme2008@gmail.com)
  *
@@ -16,22 +17,32 @@
  *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  **/
-package com.googlecode.aviator.parser;
+import java.util.Map;
+
 
 /**
- * Aviator classloader to define class
+ * A literal expression with a fixed result
  * 
  * @author dennis
  * 
  */
-public class AviatorClassLoader extends ClassLoader {
+public class LiteralExpression implements Expression {
+    private final Object result;
 
-    public AviatorClassLoader(ClassLoader parent) {
-        super(parent);
+
+    public LiteralExpression(Object result) {
+        super();
+        this.result = result;
     }
 
 
-    public Class<?> defineClass(String name, byte[] b) {
-        return defineClass(name, b, 0, b.length);
+    public Object execute() {
+        return result;
     }
+
+
+    public Object execute(Map<String, Object> env) {
+        return result;
+    }
+
 }
