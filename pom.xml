@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<parent>
 		<groupId>org.sonatype.oss</groupId>
 		<artifactId>oss-parent</artifactId>
@@ -9,7 +10,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.googlecode.aviator</groupId>
 	<artifactId>aviator</artifactId>
-	<version>1.0.0</version>
+	<version>1.0.0-SNAPSHOT</version>
 	<name>aviator</name>
 	<description>A lightweight,high performance expression evaluator for java</description>
 	<url>http://code.google.com/p/aviator/</url>
@@ -23,9 +24,9 @@
 		</developer>
 	</developers>
 	<scm>
-		<connection>scm:svn:https://aviator.googlecode.com/svn/tags/aviator-1.0.0</connection>
-		<developerConnection>scm:svn:https://aviator.googlecode.com/svn/tags/aviator-1.0.0</developerConnection>
-		<url>https://aviator.googlecode.com/svn/tags/aviator-1.0.0</url>
+		<connection>scm:svn:https://aviator.googlecode.com/svn/trunk</connection>
+		<developerConnection>scm:svn:https://aviator.googlecode.com/svn/trunk</developerConnection>
+		<url>https://aviator.googlecode.com/svn/trunk</url>
 	</scm>
 
 	<licenses>
@@ -46,19 +47,6 @@
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-source-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>attach-sources</id>
-						<phase>verify</phase>
-						<goals>
-							<goal>jar</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-gpg-plugin</artifactId>
 				<executions>
 					<execution>
@@ -66,6 +54,19 @@
 						<phase>verify</phase>
 						<goals>
 							<goal>sign</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>attach-sources</id>
+						<phase>verify</phase>
+						<goals>
+							<goal>jar</goal>
 						</goals>
 					</execution>
 				</executions>
