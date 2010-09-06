@@ -39,10 +39,6 @@ public class AviatorJavaType extends AviatorObject {
 
     final private String name;
 
-    // cache java object,prevent get it from environment repeatly
-    private boolean cached;
-    private Object cachedValue;
-
 
     @Override
     public AviatorType getAviatorType() {
@@ -90,13 +86,13 @@ public class AviatorJavaType extends AviatorObject {
     @Override
     public Object getValue(Map<String, Object> env) {
         try {
-            if (cached) {
-                return cachedValue;
-            }
             if (env != null) {
-                cachedValue = PropertyUtils.getProperty(env, name);
-                cached = true;
-                return cachedValue;
+                if (name.contains(".")) {
+                    return PropertyUtils.getProperty(env, name);
+                }
+                else {
+                    return env.get(name);
+                }
             }
             return null;
         }
