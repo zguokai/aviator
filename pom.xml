@@ -9,7 +9,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.googlecode.aviator</groupId>
 	<artifactId>aviator</artifactId>
-	<version>1.0.1</version>
+	<version>1.0.2-SNAPSHOT</version>
 	<name>aviator</name>
 	<description>A lightweight,high performance expression evaluator for java</description>
 	<url>http://code.google.com/p/aviator/</url>
@@ -23,9 +23,9 @@
 		</developer>
 	</developers>
 	<scm>
-		<connection>scm:svn:https://aviator.googlecode.com/svn/tags/aviator-1.0.1</connection>
-		<developerConnection>scm:svn:https://aviator.googlecode.com/svn/tags/aviator-1.0.1</developerConnection>
-		<url>https://aviator.googlecode.com/svn/tags/aviator-1.0.1</url>
+		<connection>scm:svn:https://aviator.googlecode.com/svn/trunk</connection>
+		<developerConnection>scm:svn:https://aviator.googlecode.com/svn/trunk</developerConnection>
+		<url>https://aviator.googlecode.com/svn/trunk</url>
 	</scm>
 
 	<licenses>
