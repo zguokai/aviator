@@ -42,7 +42,7 @@ import com.googlecode.aviator.parser.AviatorClassLoader;
 
 
 /**
- * code generator using asm
+ * Code generator using asm
  * 
  * @author dennis
  * 
@@ -149,9 +149,6 @@ public class ASMCodeGenerator implements CodeGenerator {
             mv.visitEnd();
         }
     }
-
-    // 标记Token，用于中间结果表示
-    private static final Token<?> MARK_TOKEN = new Variable("mark", -1);
 
 
     /**

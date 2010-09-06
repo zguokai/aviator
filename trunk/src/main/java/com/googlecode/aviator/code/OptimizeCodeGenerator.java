@@ -283,6 +283,9 @@ public class OptimizeCodeGenerator implements CodeGenerator {
                 result = AviatorNil.NIL;
             }
             break;
+        case Char:
+            result = new AviatorPattern(String.valueOf(lookhead.getValue(null)));
+            break;
         }
         return result;
     }
@@ -297,6 +300,7 @@ public class OptimizeCodeGenerator implements CodeGenerator {
         // call asm to generate byte codes
         callASM();
 
+        // Last token is a literal token,then return a LiteralExpression
         if (tokenList.size() <= 1) {
             if (tokenList.isEmpty()) {
                 return new LiteralExpression(null);
