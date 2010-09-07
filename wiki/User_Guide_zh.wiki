@@ -2,9 +2,10 @@
 #labels Phase-Support,Featured
 <wiki:toc max_depth="4" />
 = 版本变更 =
-当前版本 0.1
+当前版本 0.2
 
  * 2010-06-28 完成0.1版本
+ * 2010-09-07 修改完成0.2版本
 
 = 简介 =
 
