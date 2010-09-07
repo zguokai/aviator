@@ -441,6 +441,17 @@ public class DateExample {
 
 也就是说String除了能跟String比较之外，还能跟nil和date字符串比较。
 
+== 两种模式 ==
+
+默认AviatorEvaluator以编译速度优先：
+{{{
+AviatorEvaluator.setOptimize(AviatorEvaluator.COMPILE);
+}}}
+
+你可以修改为运行速度优先，这会做更多的编译优化：
+{{{
+AviatorEvaluator.setOptimize(AviatorEvaluator.EVAL);
+}}}
 
 == 语法手册 ==
 
@@ -534,6 +545,11 @@ Aviator支持操作符的优先级，并且允许通过括号来强制优先级�
 === 内置函数 ===
 
 || 函数名称 || 说明 ||
+|| sysdate()              ||返回当前日期对象java.util.Date ||
+|| rand()                 || 返回一个介于0-1的随机数，double类型 ||
+|| print([out],obj)       || 打印对象，如果指定out，向out打印，否则输出到控制台||
+|| println([out],obj)     || 与print类似，但是在输出后换行 ||
+|| now()                  || 返回System.currentTimeMillis  ||
 || string.contains(s1,s2) || 判断s1是否包含s2，返回Boolean ||
 || string.length(s)       || 求字符串长度,返回Long ||
 || string.startsWith(s1,s2)  || s1是否以s2开始，返回Boolean ||
@@ -547,3 +563,7 @@ Aviator支持操作符的优先级，并且允许通过括号来强制优先级�
 || math.sin(d)            || 正弦函数 ||
 || math.cos(d)            || 余弦函数 ||
 || math.tan(d)            || 正切函数 ||
+|| map(seq,fun)           || 将函数fun作用到集合seq每个元素上，返回新元素组成的集合 ||
+|| filter(seq,predicate)  || 将谓词predicate作用在集合的每个元素上，返回谓词为true的元素组成的集合||
+|| count(seq)             || 返回集合大小 ||
+
