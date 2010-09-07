@@ -566,3 +566,6 @@ Aviator支持操作符的优先级，并且允许通过括号来强制优先级�
 || map(seq,fun)           || 将函数fun作用到集合seq每个元素上，返回新元素组成的集合 ||
 || filter(seq,predicate)  || 将谓词predicate作用在集合的每个元素上，返回谓词为true的元素组成的集合||
 || count(seq)             || 返回集合大小 ||
+|| include(seq,element)   || 判断element是否在集合seq中，返回boolean值 ||
+|| sort(seq)              || 排序集合，仅对数组和List有效，返回排序后的新集合 ||
+|| reduce(seq,fun,init)   || fun接收两个参数，第一个是集合元素，第二个是累积的init，本函数用于将fun作用在集合每个元素和初始值上面，返回最终的init值||
