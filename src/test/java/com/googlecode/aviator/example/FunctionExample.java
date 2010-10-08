@@ -39,7 +39,7 @@ public class FunctionExample {
         list.add(-100);
         env.put("list", list);
         System.out.println(AviatorEvaluator.execute("reduce(list,+,0)", env));
-        System.out.println(AviatorEvaluator.execute("filter(list,seq.not_nil())", env));
+        System.out.println(AviatorEvaluator.execute("filter(list,seq.exists())", env));
         System.out.println(AviatorEvaluator.execute("count(list)", env));
         System.out.println(AviatorEvaluator.execute("include(list,100)", env));
         System.out.println(AviatorEvaluator.execute("sort(list)", env));
