@@ -249,10 +249,10 @@ public class CollectionExample {
         Map<String, Object> env = new HashMap<String, Object>();
         env.put("list", list);
         env.put("array", array);
-        env.put("map", map);
+        env.put("mmap", map);
 
         System.out.println(AviatorEvaluator.execute(
-            "list[0]+list[1]+'\narray[0]+array[1]+array[2]='+(array[0]+array[1]+array[2]) +' \ntoday is '+map.date ", env));
+            "list[0]+list[1]+'\narray[0]+array[1]+array[2]='+(array[0]+array[1]+array[2]) +' \ntoday is '+mmap.date ", env));
     }
 }
 
