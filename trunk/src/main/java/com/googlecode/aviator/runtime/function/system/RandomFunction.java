@@ -18,7 +18,6 @@
  **/
 package com.googlecode.aviator.runtime.function.system;
 
-import java.security.SecureRandom;
 import java.util.Map;
 import java.util.Random;
 
@@ -35,7 +34,7 @@ import com.googlecode.aviator.runtime.type.AviatorObject;
  */
 public class RandomFunction implements AviatorFunction {
 
-    private static Random random = new SecureRandom();
+    private static Random random = new Random();
 
 
     public AviatorObject call(Map<String, Object> env, AviatorObject... args) {
