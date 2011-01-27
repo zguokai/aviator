@@ -91,9 +91,14 @@ public final class AviatorEvaluator {
     private static int optimize = EVAL;
 
     /**
+     * Aviator version
+     */
+    public static final String VERSION = "1.0.2";
+
+    /**
      * Generated java class version,default 1.5
      */
-    public static int version = Opcodes.V1_5;
+    public static int BYTECODE_VER = Opcodes.V1_5;
 
     static {
         aviatorClassLoader = AccessController.doPrivileged(new PrivilegedAction<AviatorClassLoader>() {
@@ -185,8 +190,8 @@ public final class AviatorEvaluator {
     }
 
 
-    public static void setVersion(int nversion) {
-        version = nversion;
+    public static void setBYTECODE_VER(int nversion) {
+        BYTECODE_VER = nversion;
     }
 
 

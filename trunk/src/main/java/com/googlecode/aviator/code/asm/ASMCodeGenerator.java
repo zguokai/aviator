@@ -136,7 +136,7 @@ public class ASMCodeGenerator implements CodeGenerator {
      * Make a default constructor
      */
     private void makeConstructor() {
-        checkClassAdapter.visit(AviatorEvaluator.version, ACC_PUBLIC + ACC_SUPER, className, null, "java/lang/Object",
+        checkClassAdapter.visit(AviatorEvaluator.BYTECODE_VER, ACC_PUBLIC + ACC_SUPER, className, null, "java/lang/Object",
             null);
 
         {
