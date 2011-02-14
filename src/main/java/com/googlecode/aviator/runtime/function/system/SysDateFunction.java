@@ -41,7 +41,7 @@ public class SysDateFunction implements AviatorFunction {
 
     public AviatorObject call(Map<String, Object> env, AviatorObject... args) {
         if (args.length > 0) {
-            throw new IllegalArgumentException("now() doesn't need any arguments");
+            throw new IllegalArgumentException("sysdate()");
         }
         return new AviatorRuntimeJavaType(new Date());
     }

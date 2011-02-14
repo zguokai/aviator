@@ -36,7 +36,7 @@ public class MathTanFunction implements AviatorFunction {
 
     public AviatorObject call(Map<String, Object> env, AviatorObject... args) {
         if (args.length != 1) {
-            throw new IllegalArgumentException("math.tan has only one argument");
+            throw new IllegalArgumentException("math.tan(number)");
         }
         Number num = FunctionUtils.getNumberValue(0, args, env);
 

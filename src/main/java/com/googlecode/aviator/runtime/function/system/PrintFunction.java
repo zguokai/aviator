@@ -43,7 +43,7 @@ public class PrintFunction implements AviatorFunction {
 
     public AviatorObject call(Map<String, Object> env, AviatorObject... args) {
         if (args.length != 1 && args.length != 2) {
-            throw new IllegalArgumentException("print has only one or two argument");
+            throw new IllegalArgumentException("print([out],obj)");
         }
 
         switch (args.length) {

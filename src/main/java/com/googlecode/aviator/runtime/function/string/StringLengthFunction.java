@@ -34,7 +34,7 @@ public class StringLengthFunction implements AviatorFunction {
 
     public AviatorObject call(Map<String, Object> env, AviatorObject... args) {
         if (args.length != 1) {
-            throw new IllegalArgumentException("string.length(string) only use one argument");
+            throw new IllegalArgumentException("string.length(string)");
         }
         String value = FunctionUtils.getStringValue(0, args, env);
         return new AviatorLong(value.length());

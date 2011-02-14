@@ -37,7 +37,7 @@ public class MathAbsFunction implements AviatorFunction {
 
     public AviatorObject call(Map<String, Object> env, AviatorObject... args) {
         if (args.length != 1) {
-            throw new IllegalArgumentException("math.abs has only one argument");
+            throw new IllegalArgumentException("math.abs(number)");
         }
         Number number = FunctionUtils.getNumberValue(0, args, env);
         if (number instanceof Double || number instanceof Float) {

@@ -42,7 +42,7 @@ public class SeqMapFunction implements AviatorFunction {
     @SuppressWarnings("unchecked")
     public AviatorObject call(Map<String, Object> env, AviatorObject... args) {
         if (args.length != 2) {
-            throw new IllegalArgumentException(getName() + " has only two arguments");
+            throw new IllegalArgumentException("map(seq,fun)");
         }
         Object first = args[0].getValue(env);
         AviatorFunction fun = FunctionUtils.getFunction(1, args, env, 1);
@@ -73,7 +73,7 @@ public class SeqMapFunction implements AviatorFunction {
             Object result = Array.newInstance(Object.class, seq.length);
             int index = 0;
             for (Object obj : seq) {
-                Array.set(result, index++, (fun.call(env, new AviatorRuntimeJavaType(obj)).getValue(env)));
+                Array.set(result, index++, fun.call(env, new AviatorRuntimeJavaType(obj)).getValue(env));
             }
             return new AviatorRuntimeJavaType(result);
         }

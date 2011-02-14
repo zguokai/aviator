@@ -37,7 +37,7 @@ public class SeqCountFunction implements AviatorFunction {
 
     public AviatorObject call(Map<String, Object> env, AviatorObject... args) {
         if (args.length != 1) {
-            throw new IllegalArgumentException(getName() + " has only one argument");
+            throw new IllegalArgumentException("count(seq)");
         }
 
         Object value = args[0].getValue(env);

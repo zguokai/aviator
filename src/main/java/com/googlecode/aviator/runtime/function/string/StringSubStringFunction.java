@@ -40,7 +40,7 @@ public class StringSubStringFunction implements AviatorFunction {
 
     public AviatorObject call(Map<String, Object> env, AviatorObject... args) {
         if (args.length != 2 && args.length != 3) {
-            throw new IllegalArgumentException("string.endsWith(string,int[,int]) just need two or three arguments");
+            throw new IllegalArgumentException("string.endsWith(string,beginIndex[,endIndex])");
         }
         String target = FunctionUtils.getStringValue(0, args, env);
         Number beginIndex = FunctionUtils.getNumberValue(1, args, env);

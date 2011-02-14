@@ -36,7 +36,7 @@ public class MathPowFunction implements AviatorFunction {
 
     public AviatorObject call(Map<String, Object> env, AviatorObject... args) {
         if (args.length != 2) {
-            throw new IllegalArgumentException("math.pow has only two arguments");
+            throw new IllegalArgumentException("math.pow(base,exp)");
         }
         Number left = FunctionUtils.getNumberValue(0, args, env);
         Number right = FunctionUtils.getNumberValue(1, args, env);
