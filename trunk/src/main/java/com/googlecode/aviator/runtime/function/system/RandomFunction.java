@@ -39,7 +39,7 @@ public class RandomFunction implements AviatorFunction {
 
     public AviatorObject call(Map<String, Object> env, AviatorObject... args) {
         if (args.length > 0) {
-            throw new IllegalArgumentException("rand() only have one argument");
+            throw new IllegalArgumentException("rand()");
         }
         return AviatorDouble.valueOf(random.nextDouble());
     }

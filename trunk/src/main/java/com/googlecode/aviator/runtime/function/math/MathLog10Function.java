@@ -36,7 +36,7 @@ public class MathLog10Function implements AviatorFunction {
 
     public AviatorObject call(Map<String, Object> env, AviatorObject... args) {
         if (args.length != 1) {
-            throw new IllegalArgumentException("math.log10 has only one argument");
+            throw new IllegalArgumentException("math.log10(number)");
         }
         Number num = FunctionUtils.getNumberValue(0, args, env);
 

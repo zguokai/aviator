@@ -37,7 +37,7 @@ public class SeqIncludeFunction implements AviatorFunction {
 
     public AviatorObject call(Map<String, Object> env, AviatorObject... args) {
         if (args.length != 2) {
-            throw new IllegalArgumentException(getName() + " has only two arguments");
+            throw new IllegalArgumentException("include(seq,item)");
         }
         Object first = args[0].getValue(env);
         AviatorObject second = args[1];

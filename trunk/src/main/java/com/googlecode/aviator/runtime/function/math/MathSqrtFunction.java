@@ -36,7 +36,7 @@ public class MathSqrtFunction implements AviatorFunction {
 
     public AviatorObject call(Map<String, Object> env, AviatorObject... args) {
         if (args.length != 1) {
-            throw new IllegalArgumentException("math.sqrt has only one argument");
+            throw new IllegalArgumentException("math.sqrt(number)");
         }
         Number number = FunctionUtils.getNumberValue(0, args, env);
         return new AviatorDouble(Math.sqrt(number.doubleValue()));

@@ -36,7 +36,7 @@ public class MathCosFunction implements AviatorFunction {
 
     public AviatorObject call(Map<String, Object> env, AviatorObject... args) {
         if (args.length != 1) {
-            throw new IllegalArgumentException("math.cos has only one argument");
+            throw new IllegalArgumentException("math.cos(number)");
         }
         Number num = FunctionUtils.getNumberValue(0, args, env);
 

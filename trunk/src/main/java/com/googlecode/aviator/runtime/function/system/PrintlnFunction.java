@@ -43,7 +43,7 @@ public class PrintlnFunction implements AviatorFunction {
 
     public AviatorObject call(Map<String, Object> env, AviatorObject... args) {
         if (args.length != 0 && args.length != 1 && args.length != 2) {
-            throw new IllegalArgumentException("println(*out*,*obj*) has only less than three arguments");
+            throw new IllegalArgumentException("println([out],[obj])");
         }
 
         switch (args.length) {

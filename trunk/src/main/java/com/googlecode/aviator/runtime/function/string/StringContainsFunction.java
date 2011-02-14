@@ -41,7 +41,7 @@ public class StringContainsFunction implements AviatorFunction {
 
     public AviatorObject call(Map<String, Object> env, AviatorObject... args) {
         if (args.length != 2) {
-            throw new IllegalArgumentException("string.contains(string,string) just need two arguments");
+            throw new IllegalArgumentException("string.contains(string,string|char)");
         }
 
         String target = FunctionUtils.getStringValue(0, args, env);

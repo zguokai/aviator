@@ -42,7 +42,7 @@ public class SeqFilterFunction implements AviatorFunction {
     @SuppressWarnings("unchecked")
     public AviatorObject call(Map<String, Object> env, AviatorObject... args) {
         if (args.length != 2) {
-            throw new IllegalArgumentException(getName() + " has only two arguments");
+            throw new IllegalArgumentException("filter(seq,pred)");
         }
         Object first = args[0].getValue(env);
         AviatorFunction fun = FunctionUtils.getFunction(1, args, env, 1);

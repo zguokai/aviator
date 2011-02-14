@@ -40,7 +40,7 @@ public class SeqReduceFunction implements AviatorFunction {
 
     public AviatorObject call(Map<String, Object> env, AviatorObject... args) {
         if (args.length != 3) {
-            throw new IllegalArgumentException(getName() + " has only three arguments");
+            throw new IllegalArgumentException("reduce(seq,fun,init)");
         }
         Object first = args[0].getValue(env);
         AviatorFunction fun = FunctionUtils.getFunction(1, args, env, 2);

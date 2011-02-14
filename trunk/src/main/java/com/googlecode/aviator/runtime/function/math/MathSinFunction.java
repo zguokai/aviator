@@ -36,7 +36,7 @@ public class MathSinFunction implements AviatorFunction {
 
     public AviatorObject call(Map<String, Object> env, AviatorObject... args) {
         if (args.length != 1) {
-            throw new IllegalArgumentException("math.sin has only one argument");
+            throw new IllegalArgumentException("math.sin(number)");
         }
         Number num = FunctionUtils.getNumberValue(0, args, env);
 

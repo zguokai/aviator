@@ -39,7 +39,7 @@ public class StringEndsWithFunction implements AviatorFunction {
 
     public AviatorObject call(Map<String, Object> env, AviatorObject... args) {
         if (args.length != 2) {
-            throw new IllegalArgumentException("string.endsWith(string,string) just need two arguments");
+            throw new IllegalArgumentException("string.endsWith(string,string|char)");
         }
         String target = FunctionUtils.getStringValue(0, args, env);
         String param = FunctionUtils.getStringValue(1, args, env);
