@@ -6,6 +6,7 @@
 
  * 2010-06-28 完成0.1版本
  * 2010-09-07 修改完成0.2版本
+ * 2011-07-13 完成0.3版本，适配aviator 2.0
 
 = 简介 =
 
@@ -23,11 +24,13 @@ Aviator的特性
  
  * 支持函数调用和自定义函数
 
- * 支持正则表达式匹配，类似Ruby、Perl的匹配语法，并且支持类Ruby的$digit指向匹配分组。
+ * 内置支持正则表达式匹配，类似Ruby、Perl的匹配语法，并且支持类Ruby的$digit指向匹配分组。
 
  * 自动类型转换，当执行操作的时候，会自动判断操作数类型并做相应转换，无法转换即抛异常。
 
  * 支持传入变量，支持类似a.b.c的嵌套变量访问。
+
+ * 强大函数式风格的seq库
 
  * 性能优秀
 
@@ -418,6 +421,56 @@ public class DateExample {
 }}}
 
 也就是说String除了能跟String比较之外，还能跟nil和date字符串比较。
+
+== 强大的seq库 ==
+
+aviator拥有强大的操作集合和数组的seq库。整个库风格类似函数式编程中的高阶函数。在aviator中，数组以及java.util.Collection下的子类都称为seq，可以直接利用seq库进行遍历、过滤和聚合等操作。
+
+例如，假设我有个list：
+{{{
+         Map<String, Object> env = new HashMap<String, Object>();
+        ArrayList<Integer> list = new ArrayList<Integer>();
+        list.add(3);
+        list.add(100);
+        list.add(-100);
+        env.put("list", list);
+}}}
+
+我可以求长度：
+{{{
+    count(list)
+}}}
+
+可以求和：
+{{{
+reduce(list,+,0)
+}}}
+resuce函数接收三个参数，第一个是seq，第二个是聚合的函数，如+、*等，第三个是聚合的初始值。
+
+还可以过滤：
+{{{
+filter(list,seq.gt(0))
+}}}
+这个例子过滤出list中所有大于0的元素并返回集合。seq.gt函数用于生成一个谓词，表示大于某个值。
+
+我们还可以判断元素在不在集合里：
+{{{
+include(list,100)
+}}}
+
+还可以排序:
+{{{
+sort(list)
+}}}
+
+最后，我们可以遍历整个集合:
+{{{
+map(list,println)
+}}}
+
+map接受的第二个函数将作用于集合中的每个元素，这里简单地调用println打印每个元素。
+
+
 
 == 两种模式 ==
 
