@@ -120,44 +120,21 @@ Aviator的内置函数列表请看后面。
 
 Aviator除了内置的函数之外，还允许用户自定义函数，只要实现com.googlecode.aviator.runtime.type.AviatorFunction接口，并注册到AviatorEvaluator即可使用
 
-{{{
-public interface AviatorFunction {
-    /**
-     * Get the function name
-     * 
-     * @return
-     */
-    public String getName();
-
-
-    /**
-     * call function
-     * 
-     * @param env
-     *            Variable environment
-     * @param args
-     *            Function arguments
-     * @return
-     */
-    public AviatorObject call(Map<String, Object> env, AviatorObject... args);
-}
-
-}}}
+AviatorFunction接口十分庞大，通常来说你并不需要实现所有的方法，只要根据你的方法的参数个数，继承AbstractFunction类并override相应方法即可。
 
 可以看一个例子，我们实现一个add函数来做数值的相加：
 {{{
-  import com.googlecode.aviator.runtime.function.FunctionUtils;
-  import com.googlecode.aviator.runtime.type.AviatorDouble;
-  import com.googlecode.aviator.runtime.type.AviatorFunction;
-  import com.googlecode.aviator.runtime.type.AviatorObject;
-  public class AddFunction implements AviatorFunction {
+ import com.googlecode.aviator.AviatorEvaluator;
+ import com.googlecode.aviator.runtime.function.AbstractFunction;
+ import com.googlecode.aviator.runtime.function.FunctionUtils;
+ import com.googlecode.aviator.runtime.type.AviatorDouble;
+ import com.googlecode.aviator.runtime.type.AviatorObject;
+ public class AddFunction extends AbstractFunction {
 
-        public AviatorObject call(Map<String, Object> env, AviatorObject... args) {
-            if (args.length != 2) {
-                throw new IllegalArgumentException("Add only supports two arguments");
-            }
-            Number left = FunctionUtils.getNumberValue(0, args, env);
-            Number right = FunctionUtils.getNumberValue(1, args, env);
+        @Override
+        public AviatorObject call(Map<String, Object> env, AviatorObject arg1, AviatorObject arg2) {
+            Number left = FunctionUtils.getNumberValue(arg1, env);
+            Number right = FunctionUtils.getNumberValue(arg2, env);
             return new AviatorDouble(left.doubleValue() + right.doubleValue());
         }
 
@@ -167,7 +144,6 @@ public interface AviatorFunction {
         }
 
     }
-
 }}}
 
 注册到AviatorEvaluator并调用如下：
@@ -445,14 +421,14 @@ public class DateExample {
 
 == 两种模式 ==
 
-默认AviatorEvaluator以编译速度优先：
-{{{
-AviatorEvaluator.setOptimize(AviatorEvaluator.COMPILE);
-}}}
-
-你可以修改为运行速度优先，这会做更多的编译优化：
+默认AviatorEvaluator以执行速度优先：
 {{{
 AviatorEvaluator.setOptimize(AviatorEvaluator.EVAL);
+}}}
+
+你可以修改为编译速度优先，这样不会做编译优化：
+{{{
+AviatorEvaluator.setOptimize(AviatorEvaluator.COMPILE);
 }}}
 
 == 语法手册 ==
@@ -560,11 +536,15 @@ Aviator支持操作符的优先级，并且允许通过括号来强制优先级�
 || print(`[`out`]`,obj)       || 打印对象，如果指定out，向out打印，否则输出到控制台||
 || println(`[`out`]`,obj)     || 与print类似，但是在输出后换行 ||
 || now()                  || 返回System.currentTimeMillis  ||
+|| long(v)                || 将值的类型转为long ||
+|| double(v)              || 将值的类型转为double ||
+|| str(v)                 || 将值的类型转为string ||
 || string.contains(s1,s2) || 判断s1是否包含s2，返回Boolean ||
 || string.length(s)       || 求字符串长度,返回Long ||
 || string.startsWith(s1,s2)  || s1是否以s2开始，返回Boolean ||
 || string.endsWith(s1,s2)   || s1是否以s2结尾,返回Boolean ||
 || string.substring(s,begin`[`,end`]`) || 截取字符串s，从begin到end，end如果忽略的话，将从begin到结尾，与java.util.String.substring一样。 ||
+|| string.indexOf(s1,s2)  || java中的s1.indexOf(s2)，求s2在s1中的起始索引位置，如果不存在为-1 ||
 || math.abs(d)            || 求d的绝对值 ||
 || math.sqrt(d)           || 求d的平方根 ||
 || math.pow(d1,d2)        || 求d1的d2次方 ||
