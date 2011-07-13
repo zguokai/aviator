@@ -27,9 +27,14 @@
    -Xmx512m -XX:CompileThreshold=10000 -XX:MaxPermSize=128m
 }}}
 
+
 = 测试方法 =
 
 三个引擎都采用预先编译再进行测试的方式，循环1000万次执行编译后的结果，测量耗时。
+
+= test by yourself=
+
+源码在 https://github.com/killme2008/EL-benchmark，你可以自己构建并测试。
 
 = 场景1 =
 
