@@ -420,7 +420,7 @@ public class DateExample {
 
 }}}
 
-也就是说String除了能跟String比较之外，还能跟nil和date字符串比较。
+也就是说String除了能跟String比较之外，还能跟nil和java.util.Date对象比较。
 
 == 强大的seq库 ==
 
@@ -611,7 +611,7 @@ Aviator支持操作符的优先级，并且允许通过括号来强制优先级�
 || count(seq)             || 返回集合大小 ||
 || include(seq,element)   || 判断element是否在集合seq中，返回boolean值 ||
 || sort(seq)              || 排序集合，仅对数组和List有效，返回排序后的新集合 ||
-|| reduce(seq,fun,init)   || fun接收两个参数，第一个是集合元素，第二个是累积的init，本函数用于将fun作用在集合每个元素和初始值上面，返回最终的init值||
+|| reduce(seq,fun,init)   || fun接收两个参数，第一个是集合元素，第二个是累积的函数，本函数用于将fun作用在集合每个元素和初始值上面，返回最终的init值||
 || seq.eq(value)          || 返回一个谓词，用来判断传入的参数是否跟value相等,用于filter函数，如filter(seq,seq.eq(3)) 过滤返回等于3的元素组成的集合 ||
 || seq.neq(value)         || 与seq.eq类似，返回判断不等于的谓词 ||
 || seq.gt(value)          || 返回判断大于value的谓词 ||
