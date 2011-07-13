@@ -1,4 +1,5 @@
-#版本历史
+#summary 版本历史
+#labels Featured,Phase-Support
 
 = 2.0版本特性  =
  * 支持完整的位运算操作
