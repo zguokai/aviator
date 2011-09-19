@@ -51,6 +51,16 @@ Aviator的结构非常简单，一个典型的求值器的结构
 = 依赖包 =
 [http://commons.apache.org/beanutils/ commons-beanutils]和[http://commons.apache.org/logging/ commons-logging]
 
+=maven依赖=
+使用maven添加下列依赖即可：
+{{{
+<dependency>
+  <groupId>com.googlecode.aviator</groupId>
+  <artifactId>aviator</artifactId>
+  <version>2.1.1</version>
+</dependency>
+}}}
+
 = 使用手册 =
 
 == 执行表达式 ==
