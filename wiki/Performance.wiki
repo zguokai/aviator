@@ -7,15 +7,14 @@
 
 = 硬件和软件 =
 
- * OS:              Linux dennis-laptop 2.6.38-8-generic-pae #42-Ubuntu SMP Mon Apr 11 05:17:09 UTC 2011 i686 i686 i386 GNU/Linux
+ * OS:             Mac OS X Lion 10.7.1 (11B26)
+ *  MemTotal:       4 GB 1333 MHz DDR3
 
- *  MemTotal:        4012044 kB
+ * CPU:              2.3 GHz Intel Core i5
 
- * CPU:              Intel(R) Core(TM)2 Duo CPU     P8600  @ 2.40GHz
+ * JDK:             java version "1.6.0_26"
 
- * JDK:              java version "1.6.0_18" Java(TM) SE Runtime Environment (build 1.6.0_18-b07) Java HotSpot(TM) Server VM (build 16.0-b13, mixed mode)
-
- * Aviator :  2.0
+ * Aviator :  2.1.1
 
  * Groovy:    1.8.0
 
@@ -24,7 +23,7 @@
 = JVM启动参数 =
 
 {{{
-   -Xmx512m -XX:CompileThreshold=10000 -XX:MaxPermSize=128m
+   -Xmx1024m -XX:CompileThreshold=10000 -XX:MaxPermSize=256m
 }}}
 
 
@@ -47,11 +46,11 @@
 
 测试结果：
 || 测试 || 耗时（单位: 毫秒）||
-|| Aviator || 8        ||
-|| Groovy  || 83472       ||
-|| JEXL ||  62128  ||
+|| Aviator || 258        ||
+|| Groovy  || 27031       ||
+|| JEXL ||  43790  ||
 
-结论： Aviator在计算常量算术表达式的时候是非常快速的，跟Groovy和IKExpression差距极大。这是因为aviator会在编译的时候直接计算出常量表达式的结果。
+结论： Aviator在计算常量算术表达式的时候是非常快速的，跟Groovy和JEXL差距极大。这是因为aviator会在编译的时候直接计算出常量表达式的结果。
 
 = 场景2 =
 
@@ -62,9 +61,9 @@
 
 测试结果：
 || 测试 || 耗时（单位:毫秒）||
-|| Aviator || 2        ||
-|| Groovy  || 21914      ||
-|| JEXL ||  39075  ||
+|| Aviator || 0        ||
+|| Groovy  || 8103      ||
+|| JEXL ||  22180  ||
 
 结论： 跟上面一样，aviator仍然有极大优势，得益于编译时做的优化。
 
@@ -88,11 +87,11 @@ i * pi + (d * b - 199) / (1 - d * pi) - (2 + 100 - i / pi) % 99 ==i * pi + (d * 
 
 结果：
 || 测试 || 耗时（单位:毫秒）||
-|| Aviator || 26842        ||
-|| Groovy  || 14611     ||
-|| JEXL || 82121  ||
+|| Aviator || 11359        ||
+|| Groovy  || 10404     ||
+|| JEXL || 53654  ||
 
-结论： Groovy表现最佳，Aviator跟它差距较小，JEXL最差。
+结论： Aviator接近Groovy，JEXL最差。
 
 = 场景4 =
 
@@ -104,11 +103,11 @@ pi*d+b-(1000-d*b/pi)/(pi+99-i*d)-i*pi*d/b
 
 结果：
 || 测试 || 耗时（单位:毫秒）||
-|| Aviator || 18802        ||
-|| Groovy  || 11384     ||
-|| JEXL || 41406  ||
+|| Aviator || 7400        ||
+|| Groovy  || 7725     ||
+|| JEXL || 26737  ||
 
-结论也与场景3一致。aviator和groovy接近，而JEXL最差。
+结论：Aviator最佳，比Groovy稍快一点点，JEXL仍然最差。
 
 = 场景5:日期函数调用 =
 
@@ -118,11 +117,11 @@ pi*d+b-(1000-d*b/pi)/(pi+99-i*d)-i*pi*d/b
 
 结果:
 || 测试 || 耗时（单位:毫秒）||
-|| Aviator || 15514        ||
-|| Groovy  || 15107     ||
-|| JEXL ||  41406  ||
+|| Aviator || 654        ||
+|| Groovy  || 2708     ||
+|| JEXL ||  1563  ||
 
-结论：Aviator和groovy最佳，JEXL仍然垫底。
+结论：Aviator最快，JEXL第二，而Groovy最差。
 
 = 场景6:字符串函数调用 =
 
@@ -139,11 +138,11 @@ pi*d+b-(1000-d*b/pi)/(pi+99-i*d)-i*pi*d/b
 
 结果:
 || 测试 || 耗时（单位:毫秒）||
-|| Aviator || 7735        ||
-|| Groovy  || 4074     ||
-|| JEXL ||  17955  ||
+|| Aviator || 2422        ||
+|| Groovy  || 2611     ||
+|| JEXL ||  8344  ||
 
-结论：Groovy最佳，aviator其次，JEXL垫底。
+结论：Aviator比Groovy稍占优势，JEXL最差。
 
 = 场景6:字符串函数嵌套调用 =
 
@@ -163,9 +162,9 @@ pi*d+b-(1000-d*b/pi)/(pi+99-i*d)-i*pi*d/b
 
 结果:
 || 测试 || 耗时（单位:毫秒）||
-|| Aviator || 13607        ||
-|| Groovy  || 5455     ||
-|| JEXL ||  46302  ||
+|| Aviator || 5755        ||
+|| Groovy  || 3468     ||
+|| JEXL ||  24598  ||
 
 结论：Groovy最佳，aviator其次，JEXL与前两者差距较大。
 
@@ -181,14 +180,14 @@ i * pi + (d * b - 199) / (1 - d * pi) - (2 + 100 - i / pi) % 99 ==i * pi + (d * 
 
 结果：
 || 测试 || 耗时（单位:毫秒）||
-|| Aviator || 1299       ||
-|| Groovy  || 17940    ||
-|| JEXL ||  418  ||
+|| Aviator || 1182       ||
+|| Groovy  || 9971    ||
+|| JEXL ||  452  ||
 
-JEXL编译速度最快，aviator其次，而groovy反而最差。我估计是groovy编译的时候要做很多优化导致。
+JEXL编译速度最快，aviator其次，而groovy反而最差。我估计是groovy的语法解释，以及编译的时候要做很多优化导致。
 
 = 小结 =
 
  * Aviator在执行常量表达式的时候，性能最佳。常量越多的表达式，编译优化效果越好。
- * 带有变量表达式和函数调用上，groovy最佳，aviator接近groovy，而JEXL最差。
+ * 带有变量表达式和函数调用上，Aviator和Groovy在一个数量级上，并且有些场景Aviator稍占优势，JEXL最差。
  * 编译性能上，JEXL最佳，aviator其次，而groovy最差。
