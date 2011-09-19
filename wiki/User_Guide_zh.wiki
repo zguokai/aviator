@@ -472,7 +472,7 @@ map接受的第二个函数将作用于集合中的每个元素，这里简单�
 
 
 
-== 两种模式 ==
+== 两种运行模式 ==
 
 默认AviatorEvaluator以执行速度优先：
 {{{
@@ -482,6 +482,19 @@ AviatorEvaluator.setOptimize(AviatorEvaluator.EVAL);
 你可以修改为编译速度优先，这样不会做编译优化：
 {{{
 AviatorEvaluator.setOptimize(AviatorEvaluator.COMPILE);
+}}}
+
+== 调试信息 ==
+
+从2.1.1.版本开始，Aviator允许设置输出每个表达式生成的字节码，只要设置trace为true即可：
+{{{
+ AviatorEvaluator.setTrace(true);
+}}}
+
+方便用户做跟踪和调试。默认是输出到标准输出，你可以改变输出指向：
+{{{
+  //仍然使用标准输出
+ AviatorEvaluator.setTraceOutputStream(System.out);
 }}}
 
 == 语法手册 ==
