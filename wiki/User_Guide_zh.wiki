@@ -592,12 +592,16 @@ Aviator支持操作符的优先级，并且允许通过括号来强制优先级�
 || long(v)                || 将值的类型转为long ||
 || double(v)              || 将值的类型转为double ||
 || str(v)                 || 将值的类型转为string ||
+|| date_to_string(date,format) || 将Date对象转化化特定格式的字符串 ||
+|| string_to_date(source,format) || 将特定格式的字符串转化为Date对象 ||
 || string.contains(s1,s2) || 判断s1是否包含s2，返回Boolean ||
 || string.length(s)       || 求字符串长度,返回Long ||
 || string.startsWith(s1,s2)  || s1是否以s2开始，返回Boolean ||
 || string.endsWith(s1,s2)   || s1是否以s2结尾,返回Boolean ||
 || string.substring(s,begin`[`,end`]`) || 截取字符串s，从begin到end，end如果忽略的话，将从begin到结尾，与java.util.String.substring一样。 ||
 || string.indexOf(s1,s2)  || java中的s1.indexOf(s2)，求s2在s1中的起始索引位置，如果不存在为-1 ||
+|| string.split(target,regex,[limit]) || Java里的String.split方法一致,2.1.1新增函数 ||
+|| string.join(seq,seperator) || 将集合seq里的元素以seperator为间隔连接起来形成字符串,2.1.1新增函数 ||
 || math.abs(d)            || 求d的绝对值 ||
 || math.sqrt(d)           || 求d的平方根 ||
 || math.pow(d1,d2)        || 求d1的d2次方 ||
