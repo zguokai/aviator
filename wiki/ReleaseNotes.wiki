@@ -25,6 +25,7 @@ AviatorEvaluator.setTrace(true);
 
 = 2.2.0 版本特性
 
+ * 支持多维数组
  * DateFormat缓存无效的bug
  * 添加Expression#getVariableNames()用于返回表达式的变量列表
  * 添加AviatorEvaluator.exec 方法用于简化表达式的执行
