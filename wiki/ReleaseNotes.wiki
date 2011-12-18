@@ -22,3 +22,10 @@ AviatorEvaluator.setTrace(true);
 }}}
 
 生产环境不建议打开输出。
+
+= 2.2.0 版本特性
+
+ * DateFormat缓存无效的bug
+ * 添加Expression#getVariableNames()用于返回表达式的变量列表
+ * 添加AviatorEvaluator.exec 方法用于简化表达式的执行
+ * 修复 issue 2.
