@@ -30,3 +30,7 @@ AviatorEvaluator.setTrace(true);
  * 添加Expression#getVariableNames()用于返回表达式的变量列表
  * 添加AviatorEvaluator.exec 方法用于简化表达式的执行
  * 修复 issue 2.
+
+= 2.2.1 版本特性 ==
+*修复Expression#getVariableNames()无法正常返回数组或者map等集合类型名字的bug，感谢林韬。
+*修复javadoc错误，默认Aviator的优化级别从COMPILE修改为EVAL。
