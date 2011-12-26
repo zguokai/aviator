@@ -32,5 +32,5 @@ AviatorEvaluator.setTrace(true);
  * 修复 issue 2.
 
 = 2.2.1 版本特性 ==
-*修复Expression#getVariableNames()无法正常返回数组或者map等集合类型名字的bug，感谢林韬。
-*修复javadoc错误，默认Aviator的优化级别从COMPILE修改为EVAL。
+ * 修复Expression#getVariableNames()无法正常返回数组或者map等集合类型名字的bug，感谢林韬。
+ * 修复javadoc错误，默认Aviator的优化级别从COMPILE修改为EVAL。
