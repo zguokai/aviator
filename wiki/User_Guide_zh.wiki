@@ -8,6 +8,7 @@
  * 2010-09-07 修改完成0.2版本
  * 2011-07-13 完成0.3版本，适配aviator 2.0
  * 2011-09-18 完成04.版本，适配aviator 2.1.1
+ * 2011-12-27 完成0.5版本，适配aviator 2.2.1
 
 = 简介 =
 
@@ -118,6 +119,8 @@ Aviator 2.2开始新增加一个exec方法，可以更方便地传入变量并�
  String myname="dennis";
  AviatorEvaluator.exec(" 'hello ' + yourname ", myname);
 }}}
+
+只要在exec中按照变量在表达式中的出现顺序传入变量值就可以执行，不需要构建Map了。
 
 == 调用函数 ==
 
@@ -254,6 +257,12 @@ public class CollectionExample {
     }
 }
 
+}}}
+
+Aviator同样支持对多维数组的访问（从2.2版本开始）：
+{{{
+    int [][] a=......
+    AviatorEvaluator.exec("a[0][1]+a[0][0]",a);
 }}}
 
 == 三元操作符 ==
