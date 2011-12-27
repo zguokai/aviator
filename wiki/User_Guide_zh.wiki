@@ -57,7 +57,7 @@ Aviator的结构非常简单，一个典型的求值器的结构
 <dependency>
   <groupId>com.googlecode.aviator</groupId>
   <artifactId>aviator</artifactId>
-  <version>2.1.1</version>
+  <version>2.2.1</version>
 </dependency>
 }}}
 
@@ -110,6 +110,13 @@ AviatorEvaluator.execute(" 'a\"b' ");   //字符串 a'b
 AviatorEvaluator.execute(" \"a\'b\" ");  //字符串 a"b
 AviatorEvaluator.execute(" 'hello'+3 ");  //字符串 hello 3
 AviatorEvaluator.execute(" 'hello '+ unknow ");  //字符串 hello null
+}}}
+
+=== exec方法 ===
+Aviator 2.2开始新增加一个exec方法，可以更方便地传入变量并执行，而不需要构造env这个map了：
+{{{
+ String myname="dennis";
+ AviatorEvaluator.exec(" 'hello ' + yourname ", myname);
 }}}
 
 == 调用函数 ==
