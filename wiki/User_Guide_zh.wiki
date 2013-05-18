@@ -59,7 +59,7 @@ Aviator的结构非常简单，一个典型的求值器的结构
 <dependency>
   <groupId>com.googlecode.aviator</groupId>
   <artifactId>aviator</artifactId>
-  <version>2.2.1</version>
+  <version>2.3.0</version>
 </dependency>
 }}}
 
