@@ -471,6 +471,7 @@ public class DateExample {
 big int和decimal的表示与其他数字不同，两条规则：
 
  * 以大写字母N为后缀的整数都被认为是big int，如1N,2N,9999999999999999999999N等，都是big int类型。
+ * 超过long范围的整数字面量都将自动转换为big int类型。
  * 以大写字母M为后缀的数字都被认为是decimal，如1M,2.222M, 100000.9999M等等，都是decimal类型。
 
 用户也可以通过变量传入这两种类型来参与计算。
@@ -523,6 +524,7 @@ big int类型同时支持各种位运算。
 
  * 1 + 3N， 结果为big int的4N
  * 1 + 3.1M，结果为decimal的4.1M
+ * 1N + 3.1M，结果为decimal的4.1M
  * 1.0 + 3N，结果为double的4.0
  * 1.0 + 3.1M，结果为double的4.1
 
@@ -618,7 +620,15 @@ AviatorEvaluator.setTraceOutputStream(new FileOutputStream(new File("aviator.log
 
 === 数据类型 ===
 
- * Number类型：数字类型，支持四种类型，分别是long,double,`java.math.BigInteger`（简称big int）和`java.math.BigDecimal`（简称decimal），规则如下：任何以大写字母N结尾的整数都被认为是big int；任何以大写字母M结尾的数字都被认为是decimal；其他的任何整数都将被转换为Long，而其他任何浮点数都将被转换为Double。其中big int和decimal是2.3.0版本开始引入的。数字还支持十六进制（以0x或者0X开头的数字），以及科学计数法，如1e-3等。不支持其他进制。
+ * Number类型：数字类型，支持四种类型，分别是long,double,`java.math.BigInteger`（简称big int）和`java.math.BigDecimal`（简称decimal），规则如下：
+
+ ** 任何以大写字母N结尾的整数都被认为是big int；
+ ** 任何以大写字母M结尾的数字都被认为是decimal；
+ ** 其他的任何整数都将被转换为Long，
+ ** 其他任何浮点数都将被转换为Double。
+ **  超过long范围的整数字面量都将自动转换为big int类型。
+
+其中big int和decimal是2.3.0版本开始引入的。数字还支持十六进制（以0x或者0X开头的数字），以及科学计数法，如1e-3等。不支持其他进制。
 
  * String类型：  字符串类型，单引号或者双引号括起来的文本串，如'hello world'，变量如果传入的是String或者Character也将转为String类型。
 
