@@ -5,7 +5,7 @@
 
  * 支持大整数计算，引入big int类型，以大写字母N为后缀或者超过long范围的整数将被解析为`java.math.BigInteger`。
  * 支持精度计算，引入decimal类型，以大写字母M为后缀的数字将被解析为`java.math.BigDecimal`。
- * `AviatorEvaluator`加入新方法`setMathContext(MathContext)`用于设置默认计算精度
+ * `AviatorEvaluator`加入新方法`setMathContext(MathContext)`用于设置decimal的计算精度。
  * 更新math函数库支持大数和精度运算。
 
 = 2.0版本特性  =
