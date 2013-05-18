@@ -4,6 +4,7 @@
 = 版本变更 =
 当前版本 0.4
 
+ * 2013-05-18 完成0.6版本，适配aviator 2.3.0
  * 2010-06-28 完成0.1版本
  * 2010-09-07 修改完成0.2版本
  * 2011-07-13 完成0.3版本，适配aviator 2.0
@@ -529,7 +530,7 @@ AviatorEvaluator.setTraceOutputStream(new FileOutputStream(new File("aviator.log
 
 === 数据类型 ===
 
- * Number类型：数字类型，支持两种类型，分别对应Java的Long和Double，也就是说任何整数都将被转换为Long，而任何浮点数都将被转换为Double，包括用户传入的数值也是如此转换。不支持科学计数法，仅支持十进制。如-1、100、2.3等。
+ * Number类型：数字类型，支持四种类型，分别是long,double,`java.math.BigInteger`（简称big int）和`java.math.BigDecimal`（简称decimal），规则如下：任何以大写字母N结尾的整数都被认为是big int；任何以大写字母M结尾的数字都被认为是decimal；其他的任何整数都将被转换为Long，而其他任何浮点数都将被转换为Double。其中big int和decimal是2.3.0版本开始引入的。数字还支持十六进制（以0x或者0X开头的数字），以及科学计数法，如1e-3等。不支持其他进制。
 
  * String类型：  字符串类型，单引号或者双引号括起来的文本串，如'hello world'，变量如果传入的是String或者Character也将转为String类型。
 
@@ -596,11 +597,19 @@ Aviator支持操作符的优先级，并且允许通过括号来强制优先级�
 
 === 类型转换规则 ===
 
- * Java的byte short int long都转化为Long类型，Java的float,double都将转化为Double类型。Java的char String都将转化为String。Java的null都将转为nil。
+ * Java的byte short int long都转化为Long类型，Java的float,double都将转化为Double类型。Java的char String都将转化为String。Java的null都将转为nil。Java的`java.math.BigInteger`和`java.math.BigDecimal`保持不变。
 
- * 当两个操作符都是Double或者都是Long的时候，各自按照Double或者Long的类型执行
+ * 当两个操作数都是Double或者都是Long的时候，各自按照Double或者Long的类型执行，数字运算溢出不会做自动类型提升。
 
- * 当两个操作符中某一个是Double的时候，另一个操作数也将转换成Double，按照Double类型执行。
+ * 当两个操作数中某一个是Double的时候，无论另一个操作数字是什么类型都将被转换成Double，按照Double类型执行。
+
+* 当两个操作数分别是big int和long的时候，结果为big int。
+
+* 当两个操作数分别为decimal和long，结果为decimal。
+
+* 当两个操作数分别为decimal和big int，结果为decimal。
+
+* 简单来说，可以认为 long < big int < decimal < double，当两个操作数类型不同的时候，结果的类型为两个类型中更高的一个。
 
  * 任何类型与String相加，结果为String
 
