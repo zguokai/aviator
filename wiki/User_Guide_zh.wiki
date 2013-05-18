@@ -4,7 +4,7 @@
 = 版本变更 =
 当前版本 0.4
 
- * 2013-05-18 完成0.6版本，适配aviator 2.3.0
+ * 2013-05-18 完成0.6版本，添加大数和精度计算小节，适配aviator 2.3.0
  * 2010-06-28 完成0.1版本
  * 2010-09-07 修改完成0.2版本
  * 2011-07-13 完成0.3版本，适配aviator 2.0
@@ -454,16 +454,89 @@ public class DateExample {
 
 从2.3.0版本开始，aviator开始支持大数字计算和特定精度的计算，本质上就是支持`java.math.BigInteger`和`java.math.BigDecimal`两种类型，这两种类型在aviator中简称为big int和decimal类型。
 
-=== 大数的字面量表示 ===
+类似“99999999999999999999999999999999”这样的数字在Java语言里是没办法编译通过的，因为它超过了Long类型的范围，只能用`BigInteger`来封装。但是aviator通过包装，可以直接支持这种大整数的计算，例如：
+
+{{{
+ System.out.println(AviatorEvaluator.exec("99999999999999999999999999999999+99999999999999999999999999999999"));
+}}}
+
+结果为类型big int的：
+
+{{{
+199999999999999999999999999999998
+}}}
+
+=== 字面量表示 ===
 
 big int和decimal的表示与其他数字不同，两条规则：
 
  * 以大写字母N为后缀的整数都被认为是big int，如1N,2N,9999999999999999999999N等，都是big int类型。
  * 以大写字母M为后缀的数字都被认为是decimal，如1M,2.222M, 100000.9999M等等，都是decimal类型。
 
-=== 大数字的计算 ===
+用户也可以通过变量传入这两种类型来参与计算。
 
+ps.熟悉Clojure语言的朋友应该会注意到这个表示法是来自该语言。
 
+=== 运算 ===
+
+big int和decimal的运算，跟其他数字类型long,double没有什么区别，操作符仍然是一样的。aviator重载了基本算术操作符来支持这两种新类型：
+
+{{{
+ Object rt = AviatorEvaluator.exec("9223372036854775807100.356M * 2");
+        System.out.println(rt + "  " + rt.getClass());
+
+        rt = AviatorEvaluator.exec("92233720368547758074+1000");
+        System.out.println(rt + "  " + rt.getClass());
+
+        BigInteger a = new BigInteger(String.valueOf(Long.MAX_VALUE) + String.valueOf(Long.MAX_VALUE));
+        BigDecimal b = new BigDecimal("3.2");
+        BigDecimal c = new BigDecimal("9999.99999");
+
+        rt = AviatorEvaluator.exec("a+10000000000000000000", a);
+        System.out.println(rt + "  " + rt.getClass());
+
+        rt = AviatorEvaluator.exec("b+c*2", b, c);
+        System.out.println(rt + "  " + rt.getClass());
+
+        rt = AviatorEvaluator.exec("a*b/c", a, b, c);
+        System.out.println(rt + "  " + rt.getClass());
+}}}
+
+打印结果为：
+{{{
+18446744073709551614200.712  class java.math.BigDecimal
+92233720368547759074  class java.math.BigInteger
+92233720368547758089223372036854775807  class java.math.BigInteger
+20003.19998  class java.math.BigDecimal
+2.951479054745007313280155218459508E+34  class java.math.BigDecimal
+}}}
+
+big int类型同时支持各种位运算。
+
+math库的函数也都相应更新来支持big int和decimal类型。
+
+=== 类型转换和提升 ===
+
+当big int或者decimal和其他类型的数字做运算的时候，按照 long < big int < decimal < double的规则做提升，也就是说运算的数字如果类型不一致，结果的类型为两者之间更“高”的类型。
+
+例如:
+
+ * 1 + 3N， 结果为big int的4N
+ * 1 + 3.1M，结果为decimal的4.1M
+ * 1.0 + 3N，结果为double的4.0
+ * 1.0 + 3.1M，结果为double的4.1
+
+=== decimal的计算精度 ===
+
+Java的`java.math.BigDecimal`通过`java.math.MathContext`支持特定精度的计算，任何涉及到金额的计算都应该使用decimal类型。
+
+默认Aviator的计算精度为`MathContext.DECIMAL128`，你可以自定义精度，通过:
+
+{{{
+ AviatorEvaluator.setMathContext(MathContext.DECIMAL64);
+}}}
+
+即可设置，更多关于decimal的精度问题请看`java.math.BigDecimal`的[http://docs.oracle.com/javase/6/docs/api/java/math/BigDecimal.html javadoc文档]。
 
 == 强大的seq库 ==
 
