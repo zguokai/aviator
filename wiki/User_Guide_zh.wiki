@@ -450,6 +450,21 @@ public class DateExample {
 
 也就是说String除了能跟String比较之外，还能跟nil和java.util.Date对象比较。
 
+== 大数计算和精度 ==
+
+从2.3.0版本开始，aviator开始支持大数字计算和特定精度的计算，本质上就是支持`java.math.BigInteger`和`java.math.BigDecimal`两种类型，这两种类型在aviator中简称为big int和decimal类型。
+
+=== 大数的字面量表示 ===
+
+big int和decimal的表示与其他数字不同，两条规则：
+
+ * 以大写字母N为后缀的整数都被认为是big int，如1N,2N,9999999999999999999999N等，都是big int类型。
+ * 以大写字母M为后缀的数字都被认为是decimal，如1M,2.222M, 100000.9999M等等，都是decimal类型。
+
+=== 大数字的计算 ===
+
+
+
 == 强大的seq库 ==
 
 aviator拥有强大的操作集合和数组的seq库。整个库风格类似函数式编程中的高阶函数。在aviator中，数组以及java.util.Collection下的子类都称为seq，可以直接利用seq库进行遍历、过滤和聚合等操作。
