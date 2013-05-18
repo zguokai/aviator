@@ -603,13 +603,13 @@ Aviator支持操作符的优先级，并且允许通过括号来强制优先级�
 
  * 当两个操作数中某一个是Double的时候，无论另一个操作数字是什么类型都将被转换成Double，按照Double类型执行。
 
-* 当两个操作数分别是big int和long的时候，结果为big int。
+ * 当两个操作数分别是big int和long的时候，结果为big int。
 
-* 当两个操作数分别为decimal和long，结果为decimal。
+ * 当两个操作数分别为decimal和long，结果为decimal。
 
-* 当两个操作数分别为decimal和big int，结果为decimal。
+ * 当两个操作数分别为decimal和big int，结果为decimal。
 
-* 简单来说，可以认为 long < big int < decimal < double，当两个操作数类型不同的时候，结果的类型为两个类型中更高的一个。
+ * 简单来说，可以认为 long < big int < decimal < double，当两个操作数类型不同的时候，结果的类型为两个类型中更高的一个。
 
  * 任何类型与String相加，结果为String
 
