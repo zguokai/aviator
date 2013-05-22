@@ -1,6 +1,13 @@
 #summary 用户指南 使用手册
 #labels Phase-Support,Featured
 <wiki:toc max_depth="4" />
+
+= 下载本文档 = 
+
+请到[下载页 https://code.google.com/p/aviator/downloads/detail?name=Aviator-2.3.0%E7%94%A8%E6%88%B7%E6%8C%87%E5%8D%97.pdf&can=2&q=#makechanges]
+
+感谢网友jinliang.yan
+
 = 版本变更 =
 
  * 2013-05-18 完成0.6版本，添加大数和精度计算小节，适配aviator 2.3.0
