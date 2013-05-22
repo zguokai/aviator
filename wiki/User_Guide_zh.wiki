@@ -8,6 +8,10 @@
 
 感谢网友jinliang.yan
 
+= 示例源码 =
+
+请到github仓库查看[https://github.com/killme2008/aviator/tree/master/src/test/java/com/googlecode/aviator/example example]
+
 = 版本变更 =
 
  * 2013-05-18 完成0.6版本，添加大数和精度计算小节，适配aviator 2.3.0
