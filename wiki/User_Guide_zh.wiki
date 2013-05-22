@@ -14,6 +14,7 @@
 
 = 版本变更 =
 
+ * 2013-05-22 完成0.7版本，修正一些小错误。
  * 2013-05-18 完成0.6版本，添加大数和精度计算小节，适配aviator 2.3.0
  * 2010-06-28 完成0.1版本
  * 2010-09-07 修改完成0.2版本
@@ -34,6 +35,8 @@ Aviator的设计目标是*轻量级*和*高性能 *，相比于Groovy、JRuby的
 Aviator的特性
 
  * 支持大部分运算操作符，包括算术操作符、关系运算符、逻辑操作符、位运算符、正则匹配操作符(=~)、三元表达式?: ，并且支持操作符的优先级和括号强制优先级，具体请看后面的操作符列表。
+
+ * 支持大整数和精度运算（2.3.0版本引入）
  
  * 支持函数调用和自定义函数
 
@@ -91,7 +94,7 @@ public class SimpleExample {
 
 }}}
 
-细心的朋友肯定注意到结果是Long，而不是Integer。这是因为Aviator的数值类型仅支持Long和Double，任何整数都将转换成Long，任何浮点数都将转换为Double，包括用户传入的变量数值。这个例子的打印结果将是正确答案6。
+细心的朋友肯定注意到结果是Long，而不是Integer。这是因为Aviator的数值类型仅支持Long和Double，任何整数都将转换成Long，任何浮点数都将转换为Double（这个规则在2.3.0引入big int和decimal类型后有所改变，具体见大数计算一节），包括用户传入的变量数值。这个例子的打印结果将是正确答案是Long类型的6。
 
 == 使用变量 ==
 
@@ -118,9 +121,9 @@ public class SayHello {
 
 上面例子中的'hello '是一个Aviator的String，Aviator的String是任何用单引号或者双引号括起来的字符序列，String可以比较大小（基于unicode顺序），可以参与正则匹配，可以与任何对象相加，任何对象与String相加结果为String。String中也可以有转义字符，如\n、\\、\'等。
 {{{
-AviatorEvaluator.execute(" 'a\"b' ");   //字符串 a'b
-AviatorEvaluator.execute(" \"a\'b\" ");  //字符串 a"b
-AviatorEvaluator.execute(" 'hello'+3 ");  //字符串 hello 3
+AviatorEvaluator.execute(" 'a\"b' ");   //字符串 a"b
+AviatorEvaluator.execute(" \"a\'b\" ");  //字符串 a'b
+AviatorEvaluator.execute(" 'hello '+3 ");  //字符串 hello 3
 AviatorEvaluator.execute(" 'hello '+ unknow ");  //字符串 hello null
 }}}
 
@@ -140,14 +143,14 @@ Aviator支持函数调用，函数调用的风格类似lua，下面的例子获�
 AviatorEvaluator.execute("string.length('hello')");
 }}}
 
-string.length('hello')是一个函数调用，string.length是一个函数,'hello'是调用的参数。
+`string.length('hello')`是一个函数调用，`string.length`是一个函数,`'hello'`是调用的参数。
 
-再用string.substring来截取字符串：
+再用`string.substring`来截取字符串：
 {{{
 AviatorEvaluator.execute("string.contains(\"test\",string.substring('hello',1,2))");
 }}}
 
-通过string.substring('hello',1,2)获取字符串'e'，然后通过函数string.contains判断e是否在'test'中。可以看到，函数可以嵌套调用。
+通过`string.substring('hello',1,2)`获取字符串'e'，然后通过函数`string.contains`判断e是否在'test'中。可以看到，函数可以嵌套调用。
 
 Aviator的内置函数列表请看后面。
 
@@ -155,9 +158,9 @@ Aviator的内置函数列表请看后面。
 
 Aviator除了内置的函数之外，还允许用户自定义函数，只要实现com.googlecode.aviator.runtime.type.AviatorFunction接口，并注册到AviatorEvaluator即可使用
 
-AviatorFunction接口十分庞大，通常来说你并不需要实现所有的方法，只要根据你的方法的参数个数，继承AbstractFunction类并override相应方法即可。
+`AviatorFunction`接口十分庞大，通常来说你并不需要实现所有的方法，只要根据你的方法的参数个数，继承`AbstractFunction`类并覆写相应参数个数的方法即可。
 
-可以看一个例子，我们实现一个add函数来做数值的相加：
+可以看一个例子，我们实现一个`add`函数来做数值的相加：
 {{{
  import com.googlecode.aviator.AviatorEvaluator;
  import com.googlecode.aviator.runtime.function.AbstractFunction;
@@ -189,11 +192,11 @@ AviatorFunction接口十分庞大，通常来说你并不需要实现所有的�
         System.out.println(AviatorEvaluator.execute("add(add(1,2),100)"));
 }}}
 
-注册函数通过AviatorEvaluator.addFunction方法，移除可以通过removeFunction。
+注册函数通过`AviatorEvaluator.addFunction`方法，移除可以通过`removeFunction`。
 
 == 编译表达式 ==
 
-上面提到的例子都是直接执行表达式，事实上Aviator背后都帮你做了编译并执行的工作。你可以自己先编译表达式，返回一个编译的结果，然后传入不同的env来复用编译结果，提高性能，这是更推荐的使用方式：
+上面提到的例子都是直接执行表达式，事实上Aviator背后都帮你做了编译并执行的工作。你可以自己先编译表达式，返回一个编译的结果，然后传入不同的变量来复用编译结果，提高性能，这是更推荐的使用方式：
 {{{
 import java.util.HashMap;
 import java.util.Map;
@@ -220,7 +223,7 @@ public class CompileExample {
 
 }}}
 
-通过compile方法可以将表达式编译成Expression的中间对象，当要执行表达式的时候传入env并调用Expression的execute方法即可。表达式中使用了括号来强制优先级，这个例子还使用了>用于比较数值大小，比较运算符!=、==、>、>=、<、<=不仅可以用于数值，也可以用于String、Pattern、Boolean等等，甚至是任何用户传入的两个都实现了java.lang。Comparable接口的对象之间。
+通过compile方法可以将表达式编译成`Expression`的中间对象，当要执行表达式的时候传入env并调用`Expression`的`execute`方法即可。表达式中使用了括号来强制优先级，这个例子还使用了>用于比较数值大小，比较运算符!=、==、>、>=、<、<=不仅可以用于数值，也可以用于String、Pattern、Boolean等等，甚至是任何用户传入的两个都实现了`java.lang.Comparable`接口的对象之间。
 
 编译后的结果你可以自己缓存，也可以交给Aviator帮你缓存，AviatorEvaluator内部有一个全局的缓存池，如果你决定缓存编译结果，可以通过：
 {{{
@@ -233,7 +236,7 @@ public static void invalidateCache(String expression)
 方法。
 
 == 访问数组和集合 ==
-可以通过中括号去访问数组和java.util.List对象，可以通过map.key访问java.util.Map中key对应的value，一个例子：
+可以通过中括号去访问数组和`java.util.Lis`t对象，可以通过map.key访问`java.util.Map`中key对应的value，一个例子：
 {{{
 import java.util.ArrayList;
 import java.util.Date;
@@ -307,7 +310,7 @@ Aviator的三元表达式对于两个分支的结果类型并不要求一致，�
 
 == 正则表达式匹配 ==
 
-Aviator支持类Ruby和Perl风格的表达式匹配运算，通过=~操作符，如下面这个例子匹配email并提取用户名返回：
+Aviator支持类Ruby和Perl风格的表达式匹配运算，通过`=~`操作符，如下面这个例子匹配email并提取用户名返回：
 {{{
 import java.util.HashMap;
 import java.util.Map;
@@ -325,11 +328,11 @@ public class RegularExpressionExample {
 }
 }}}
 
-email与正则表达式//([\\w0-8]+@\\w+[\\.\\w+]+)/通过=~操作符来匹配，结果为一个Boolean类型，因此可以用于三元表达式判断，匹配成功的时候返回$1，指代正则表达式的分组1，也就是用户名，否则返回unknown。这个例子将打印killme2008这个用户名。
+email与正则表达式`//([\\w0-8]+@\\w+[\\.\\w+]+)/`通过=~操作符来匹配，结果为一个Boolean类型，因此可以用于三元表达式判断，匹配成功的时候返回$1，指代正则表达式的分组1，也就是用户名，否则返回unknown。这个例子将打印killme2008这个用户名。
 
-Aviator在表达式级别支持正则表达式，通过//括起来的字符序列构成一个正则表达式，正则表达式可以用于匹配（作为=~的右操作数)、比较大小，匹配仅能与字符串进行匹配。匹配成功后，Aviator会自动将匹配成功的分组放入$num的变量中，其中$0指代整个匹配的字符串，而$1表示第一个分组，以此类推。
+Aviator在表达式级别支持正则表达式，通过`//`括起来的字符序列构成一个正则表达式，正则表达式可以用于匹配（作为=~的右操作数)、比较大小，匹配仅能与字符串进行匹配。匹配成功后，Aviator会自动将匹配成功的分组放入$num的变量中，其中$0指代整个匹配的字符串，而$1表示第一个分组，以此类推。
 
-Aviator的正则表达式规则跟Java完全一样，因为内部其实就是使用java.util.regex.Pattern做编译的。
+Aviator的正则表达式规则跟Java完全一样，因为内部其实就是使用`java.util.regex.Pattern`做编译的。
 
 == 变量的语法糖衣 ==
 
@@ -422,7 +425,7 @@ nil与String相加的时候，跟java一样显示为null
 
 == 日期比较 ==
 
-Aviator并不支持日期类型，如果要比较日期，你需要将日期写字符串的形式，并且要求是形如"yyyy-MM-dd HH:mm:ss:SS"的字符串，否则都将报错。 字符串跟java.util.Date比较的时候将自动转换为Date对象进行比较：
+Aviator并不支持日期类型，如果要比较日期，你需要将日期写字符串的形式，并且要求是形如`yyyy-MM-dd HH:mm:ss:SS`的GMT格式的字符串，否则都将报错。 字符串跟`java.util.Date`比较的时候将自动转换为`Date`对象进行比较：
 
 {{{
 import java.text.SimpleDateFormat;
@@ -552,7 +555,7 @@ Java的`java.math.BigDecimal`通过`java.math.MathContext`支持特定精度的�
 
 == 强大的seq库 ==
 
-aviator拥有强大的操作集合和数组的seq库。整个库风格类似函数式编程中的高阶函数。在aviator中，数组以及java.util.Collection下的子类都称为seq，可以直接利用seq库进行遍历、过滤和聚合等操作。
+aviator拥有强大的操作集合和数组的seq库。整个库风格类似函数式编程中的高阶函数。在aviator中，数组以及`java.util.Collection`下的子类都称为seq，可以直接利用seq库进行遍历、过滤和聚合等操作。
 
 例如，假设我有个list：
 {{{
@@ -602,7 +605,7 @@ map接受的第二个函数将作用于集合中的每个元素，这里简单�
 
 == 两种运行模式 ==
 
-默认AviatorEvaluator以执行速度优先：
+默认`AviatorEvaluator`以执行速度优先：
 {{{
 AviatorEvaluator.setOptimize(AviatorEvaluator.EVAL);
 }}}
