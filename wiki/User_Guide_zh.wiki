@@ -4,7 +4,7 @@
 
 = 下载本文档 = 
 
-请到[下载页 https://code.google.com/p/aviator/downloads/detail?name=Aviator-2.3.0%E7%94%A8%E6%88%B7%E6%8C%87%E5%8D%97.pdf&can=2&q=#makechanges]
+请到[https://code.google.com/p/aviator/downloads/list 下载页]
 
 感谢网友jinliang.yan
 
