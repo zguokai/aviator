@@ -233,7 +233,13 @@ public class CompileExample {
 {{{
 public static void invalidateCache(String expression)
 }}}
-方法。
+方法。同样，execute方法也有重载的方法可以缓存动态编译的结果：
+
+{{{
+ public static Object execute(String expression, Map<String, Object> env, boolean cached)
+}}}
+
+如果不缓存结果，可能会因为动态生成的类太多，导致Perm区内存溢出。
 
 == 访问数组和集合 ==
 可以通过中括号去访问数组和`java.util.Lis`t对象，可以通过map.key访问`java.util.Map`中key对应的value，一个例子：
